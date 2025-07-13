@@ -7,6 +7,8 @@ const contacts: Contact[] = [
     { id: 'contact-4', firstName: 'Liam', lastName: 'O\'Connor', email: 'l.oconnor@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Team', addressCity: 'Patra' },
     { id: 'contact-5', firstName: 'Fatima', lastName: 'Al-Jamil', email: 'f.aljamil@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Stakeholder', addressCity: 'Heraklion' },
     { id: 'contact-6', firstName: 'George', lastName: 'Papadopoulos', email: 'g.papadopoulos@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Client', addressCity: 'Larissa', addressStreet: 'Papakyriazi', addressNumber: '22' },
+    { id: 'contact-admin', firstName: 'Admin', lastName: 'User', email: 'admin@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Admin' }
+
 ];
 
 export async function getContacts(db?: any) {

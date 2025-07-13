@@ -53,7 +53,10 @@ export type Project = {
   
   export type AuditLog = {
     id: string;
-    user: string;
+    user: {
+        name: string;
+        avatar?: string;
+    };
     action: string;
     timestamp: string;
     details: string;
@@ -65,7 +68,7 @@ export type Project = {
       lastName: string;
       email: string;
       avatarUrl?: string;
-      role: 'Client' | 'Team' | 'Stakeholder';
+      role: 'Client' | 'Team' | 'Stakeholder' | 'Admin';
       addressStreet?: string;
       addressNumber?: string;
       addressCity?: string;

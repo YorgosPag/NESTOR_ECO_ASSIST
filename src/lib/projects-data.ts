@@ -24,8 +24,8 @@ const projects: Project[] = [
         ]}
     ],
     auditLog: [
-        { id: 'log-p1-1', user: 'Dr. Elena Vasquez', action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf' },
-        { id: 'log-p1-2', user: 'Kenji Tanaka', action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Scoping for Environmental Impact Assessment' },
+        { id: 'log-p1-1', user: { name: 'Elena Vasquez', avatar: 'https://placehold.co/32x32.png' }, action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf' },
+        { id: 'log-p1-2', user: { name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Scoping for Environmental Impact Assessment' },
     ]
   },
   {
@@ -48,7 +48,7 @@ const projects: Project[] = [
         ]}
     ],
     auditLog: [
-        { id: 'log-p2-1', user: 'Kenji Tanaka', action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed project status to At Risk' },
+        { id: 'log-p2-1', user: { name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed project status to At Risk' },
     ]
   },
   {
