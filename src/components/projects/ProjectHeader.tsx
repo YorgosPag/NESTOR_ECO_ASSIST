@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { Project, Contact } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, AlertCircle, AlertTriangle } from 'lucide-react';
 import { calculateClientProjectMetrics } from '@/lib/client-utils';
 import { Skeleton } from '../ui/skeleton';
 
@@ -21,7 +21,7 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
     const statusConfig = {
         'On Hold': { text: 'Σε Προσφορά', variant: 'outline', icon: <Clock className="h-4 w-4" /> },
         'On Track': { text: 'Εντός Χρονοδιαγράμματος', variant: 'default', icon: <CheckCircle className="h-4 w-4" /> },
-        'At Risk': { text: 'Σε Καθυστέρηση', variant: 'destructive', icon: <AlertCircle className="h-4 w-4" /> },
+        'At Risk': { text: 'Σε Κίνδυνο', variant: 'destructive', icon: <AlertTriangle className="h-4 w-4" /> },
         'Completed': { text: 'Ολοκληρωμένο', variant: 'secondary', icon: <CheckCircle className="h-4 w-4" /> },
     }[project.status] || { text: 'Άγνωστο', variant: 'outline', icon: <Clock className="h-4 w-4" /> };
     
@@ -47,7 +47,7 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
             </div>
             <div className="flex items-center gap-2 self-start md:self-center shrink-0">
                 {isMounted ? (
-                    <Badge variant={statusConfig.variant} className="text-sm py-1 px-3 gap-2">
+                    <Badge variant={statusConfig.variant as any} className="text-sm py-1 px-3 gap-2">
                         {statusConfig.icon}
                         {statusConfig.text}
                     </Badge>
