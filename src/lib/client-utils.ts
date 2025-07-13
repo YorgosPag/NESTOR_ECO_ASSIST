@@ -3,7 +3,7 @@
 import type { Project } from "@/types";
 import { isPast } from 'date-fns';
 
-export function calculateClientProjectMetrics(project: Project): Project {
+export function calculateClientProjectMetrics(project: Project, isClient: boolean): Project {
     if (!project) {
         return project;
     }
@@ -19,7 +19,7 @@ export function calculateClientProjectMetrics(project: Project): Project {
                 if (stage.status === 'Completed') {
                     completedStages++;
                 } else if (stage.status !== 'Completed') {
-                     if (stage.deadline && isPast(new Date(stage.deadline))) {
+                     if (isClient && stage.deadline && isPast(new Date(stage.deadline))) {
                         overdueStages++;
                     }
                 }
@@ -30,11 +30,11 @@ export function calculateClientProjectMetrics(project: Project): Project {
     const progress = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
     
     let status: Project['status'] = project.status;
-    if (status !== 'On Hold' && status !== 'Completed') {
+    if (status !== 'Quotation' && status !== 'Completed') {
         if (progress === 100 && totalStages > 0) {
             status = 'Completed';
         } else if (overdueStages > 0) {
-            status = 'At Risk';
+            status = 'Delayed';
         } else {
             status = 'On Track';
         }

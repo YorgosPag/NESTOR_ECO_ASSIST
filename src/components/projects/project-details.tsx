@@ -44,7 +44,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
       
       <ProjectActions project={serverProject} contacts={contacts} />
 
-      {isMounted && <ProjectAlerts project={serverProject} />}
+      <ProjectAlerts project={serverProject} isMounted={isMounted} />
 
       {isMounted && hasInterventions && (
         <Accordion type="single" collapsible value={isSummaryOpen ? "summary" : ""} onValueChange={(value) => setIsSummaryOpen(value === "summary")}>

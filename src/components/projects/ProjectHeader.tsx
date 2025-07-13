@@ -16,12 +16,12 @@ interface ProjectHeaderProps {
 
 export function ProjectHeader({ project: serverProject, owner, isMounted }: ProjectHeaderProps) {
     
-    const project = useMemo(() => calculateClientProjectMetrics(serverProject), [serverProject]);
+    const project = useMemo(() => calculateClientProjectMetrics(serverProject, isMounted), [serverProject, isMounted]);
 
     const statusConfig = {
-        'On Hold': { text: 'Σε Προσφορά', variant: 'outline', icon: <Clock className="h-4 w-4" /> },
+        'Quotation': { text: 'Σε Προσφορά', variant: 'outline', icon: <Clock className="h-4 w-4" /> },
         'On Track': { text: 'Εντός Χρονοδιαγράμματος', variant: 'default', icon: <CheckCircle className="h-4 w-4" /> },
-        'At Risk': { text: 'Σε Κίνδυνο', variant: 'destructive', icon: <AlertTriangle className="h-4 w-4" /> },
+        'Delayed': { text: 'Σε Καθυστέρηση', variant: 'destructive', icon: <AlertTriangle className="h-4 w-4" /> },
         'Completed': { text: 'Ολοκληρωμένο', variant: 'secondary', icon: <CheckCircle className="h-4 w-4" /> },
     }[project.status] || { text: 'Άγνωστο', variant: 'outline', icon: <Clock className="h-4 w-4" /> };
     
