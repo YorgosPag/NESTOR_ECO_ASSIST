@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { getDocumentTags } from '@/actions/ai';
+import { getDocumentTags } from '@/ai/flows/document-tagging';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

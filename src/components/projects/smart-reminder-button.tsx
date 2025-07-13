@@ -1,7 +1,6 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
-import { getSmartReminder } from '@/actions/ai';
 import type { Project } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +13,6 @@ export function SmartReminderButton({ project }: { project: Project }) {
   const handleGenerateReminder = async () => {
     setIsLoading(true);
     try {
-      // Find the next upcoming, non-completed stage
       const upcomingStage = project.stages.find(s => s.status !== 'Completed');
       if (!upcomingStage) {
         toast({
@@ -23,16 +21,26 @@ export function SmartReminderButton({ project }: { project: Project }) {
         });
         return;
       }
-      
-      const result = await getSmartReminder({
-        taskName: upcomingStage.name,
-        deadline: upcomingStage.deadline,
-        projectDetails: `Project: ${project.name}. Current progress is ${project.progress}%.`,
+
+      const response = await fetch('/api/smart-reminder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          taskName: upcomingStage.name,
+          deadline: upcomingStage.deadline,
+          projectDetails: `Project: ${project.name}. Current progress is ${project.progress}%.`,
+        }),
       });
-      
+
+      if (!response.ok) throw new Error('Failed to fetch reminder');
+
+      const data = await response.json();
+
       toast({
         title: '✨ Smart Reminder',
-        description: result.reminder,
+        description: data.reminder,
         duration: 9000,
       });
 
