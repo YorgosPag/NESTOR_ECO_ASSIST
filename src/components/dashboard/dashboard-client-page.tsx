@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, FileText, PlusCircle, Activity, LayoutGrid } from 'lucide-react';
+import { Users, FileText, PlusCircle, Activity, LayoutGrid, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { OverviewChart } from '@/components/dashboard/overview-chart';
 import { UpcomingDeadlines } from '@/components/dashboard/upcoming-deadlines';
@@ -122,7 +123,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                             <CardTitle className="text-sm font-medium">
                             Ολοκληρωμένα
                             </CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
+                            <CheckCircle className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{completedProjects}</div>
@@ -134,13 +135,13 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                 </Link>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Προθεσμίες</CardTitle>
-                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Επαφές</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{upcomingDeadlines.length}</div>
+                        <div className="text-2xl font-bold">{contacts.length}</div>
                          <p className="text-xs text-muted-foreground">
-                            Εντός 7 ημερών
+                            Σύνολο επαφών
                         </p>
                     </CardContent>
                 </Card>
@@ -156,7 +157,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
             <div className="space-y-4">
                  <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Πρόσφατα Έργα</h2>
+                        <h2 className="text-2xl font-bold tracking-tight">Πρόσφατα Ενεργά Έργα</h2>
                         <p className="text-muted-foreground">Μια ματιά στα πιο πρόσφατα ενεργά έργα σας.</p>
                     </div>
                      <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
