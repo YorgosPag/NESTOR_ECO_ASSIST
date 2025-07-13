@@ -8,7 +8,6 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarFooter,
-  SidebarTrigger,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -16,10 +15,9 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { LayoutDashboard, FolderKanban, Settings, History, Leaf } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, History, Leaf } from 'lucide-react';
 import { Separator } from './ui/separator';
-import { ThemeToggle } from './layout/theme-toggle';
+import { Header } from './layout/header';
 
 function SidebarLogo() {
   const { state } = useSidebar();
@@ -97,16 +95,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </SidebarFooter>
             </Sidebar>
             <SidebarInset>
-                <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-6">
-                    <SidebarTrigger className="md:hidden" />
-                    <div className="flex-1">
-                        {/* Can add breadcrumbs here */}
-                    </div>
-                    <ThemeToggle />
-                    <Button variant="ghost" size="icon">
-                        <Settings className="size-5" />
-                    </Button>
-                </header>
+                <Header />
                 <main className="flex-1">
                     {children}
                 </main>
