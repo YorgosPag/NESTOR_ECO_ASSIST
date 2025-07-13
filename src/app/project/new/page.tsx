@@ -1,35 +1,29 @@
-import { getContacts } from "@/lib/contacts-data";
+
 import { CreateProjectForm } from "@/components/projects/create-project-form";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getContacts } from "@/lib/contacts-data";
+import { getAdminDb } from "@/lib/firebase-admin";
+import { PlusCircle } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
-
-export default async function CreateProjectPage() {
-  const contacts = await getContacts();
-
-  return (
-    <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-        <Breadcrumb>
-            <BreadcrumbList>
-                <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                    <Link href="/projects">Projects</Link>
-                </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                <BreadcrumbPage>Create</BreadcrumbPage>
-                </BreadcrumbItem>
-            </BreadcrumbList>
-        </Breadcrumb>
-        <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold tracking-tight">Create a New Project or Quotation</h1>
-            <p className="text-muted-foreground mt-2">Fill in the initial details to get started. You can add more complex information like interventions and stages after creation.</p>
-        </div>
-        <div className="max-w-2xl mt-4">
-           <CreateProjectForm contacts={contacts} />
-        </div>
-    </main>
-  );
+export default async function NewProjectPage() {
+    const db = getAdminDb();
+    const contacts = await getContacts(db);
+    return (
+        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+            <div className="max-w-2xl mx-auto w-full">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-2xl flex items-center gap-2">
+                            <PlusCircle className="h-5 w-5" />
+                            Δημιουργία Νέου Έργου / Προσφοράς
+                        </CardTitle>
+                        <CardDescription>Συμπληρώστε τις παρακάτω πληροφορίες. Το νέο έργο θα δημιουργηθεί αρχικά σε κατάσταση "Προσφοράς".</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <CreateProjectForm contacts={contacts}/>
+                    </CardContent>
+                </Card>
+            </div>
+        </main>
+    )
 }

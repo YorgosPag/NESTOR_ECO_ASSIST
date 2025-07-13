@@ -23,7 +23,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Create Project"}
+      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Δημιουργία Έργου"}
     </Button>
   );
 }
@@ -39,13 +39,13 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
 
     useEffect(() => {
         if (state?.success === true) {
-            toast({ title: 'Success!', description: state.message });
+            toast({ title: 'Επιτυχία!', description: state.message });
             router.push('/projects');
         } else if (state?.success === false && state.message) {
             const errorMessages = state.errors ? Object.values(state.errors).flat().join('\n') : '';
             toast({
                 variant: 'destructive',
-                title: 'Error',
+                title: 'Σφάλμα',
                 description: `${state.message}\n${errorMessages}`,
             });
         }
@@ -54,24 +54,24 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
     return (
         <form action={formAction} className="space-y-4 pt-4">
              <div className="space-y-2">
-                <Label htmlFor="name">Project Name</Label>
-                <Input id="name" name="name" placeholder="e.g., Amazon Rainforest Reforestation" required />
+                <Label htmlFor="name">Όνομα Έργου</Label>
+                <Input id="name" name="name" placeholder="π.χ., Αναδάσωση Αμαζονίου" required />
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
             </div>
              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" placeholder="A brief description of the project's goals and scope." required />
+                <Label htmlFor="description">Περιγραφή</Label>
+                <Textarea id="description" name="description" placeholder="Μια σύντομη περιγραφή των στόχων και του αντικειμένου του έργου." required />
                 {state.errors?.description && <p className="text-sm font-medium text-destructive mt-1">{state.errors.description[0]}</p>}
             </div>
             <div className="space-y-2">
-                <Label htmlFor="applicationNumber">Application Number (Optional)</Label>
-                <Input id="applicationNumber" name="applicationNumber" placeholder="e.g., APP-2024-001" />
+                <Label htmlFor="applicationNumber">Αριθμός Αίτησης (Προαιρετικό)</Label>
+                <Input id="applicationNumber" name="applicationNumber" placeholder="π.χ., APP-2024-001" />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="ownerContactId">Owner / Beneficiary</Label>
+                <Label htmlFor="ownerContactId">Ιδιοκτήτης / Δικαιούχος</Label>
                 <Select name="ownerContactId">
                     <SelectTrigger>
-                        <SelectValue placeholder="Select an owner" />
+                        <SelectValue placeholder="Επιλέξτε ιδιοκτήτη" />
                     </SelectTrigger>
                     <SelectContent>
                         {contacts.filter(c => c.role === 'Client').map(contact => (
@@ -84,7 +84,7 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
                  {state.errors?.ownerContactId && <p className="text-sm font-medium text-destructive mt-1">{state.errors.ownerContactId[0]}</p>}
             </div>
              <div className="space-y-2">
-                <Label htmlFor="deadline">Project Deadline (Optional)</Label>
+                <Label htmlFor="deadline">Προθεσμία Έργου (Προαιρετικό)</Label>
                 <Input id="deadline" name="deadline" type="date" />
             </div>
             <SubmitButton />

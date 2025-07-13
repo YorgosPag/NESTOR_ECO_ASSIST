@@ -10,10 +10,10 @@ import type { Stage, StageStatus } from '@/types';
 
 // Project Actions
 const CreateFormSchema = z.object({
-  name: z.string().min(1, { message: 'Project name is required.' }),
-  description: z.string().min(1, { message: 'Description is required.' }),
+  name: z.string().min(1, { message: 'Το όνομα του έργου είναι υποχρεωτικό.' }),
+  description: z.string().min(1, { message: 'Η περιγραφή είναι υποχρεωτική.' }),
   applicationNumber: z.string().optional(),
-  ownerContactId: z.string().min(1, { message: 'Please select an owner.' }),
+  ownerContactId: z.string().min(1, { message: 'Παρακαλώ επιλέξτε έναν ιδιοκτήτη.' }),
   deadline: z.string().optional(),
 });
 
@@ -75,7 +75,7 @@ export async function createProjectAction(prevState: State, formData: FormData) 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Validation failed. Please check the form fields.',
+      message: 'Η επικύρωση απέτυχε. Παρακαλώ ελέγξτε τα πεδία της φόρμας.',
       success: false,
     };
   }
@@ -87,7 +87,7 @@ export async function createProjectAction(prevState: State, formData: FormData) 
   // We will redirect in the component after a success toast.
   // redirect('/projects');
   
-  return { message: 'Project created successfully.', success: true };
+  return { message: 'Το έργο δημιουργήθηκε επιτυχώς.', success: true };
 }
 
 
@@ -196,7 +196,7 @@ export async function moveStageAction(formData: FormData) {
         projectId: formData.get('projectId'),
         stageId: formData.get('stageId'),
         interventionMasterId: formData.get('interventionMasterId'),
-        direction: z.enum(['up', 'down']),
+        direction: formData.get('direction'),
     });
 
     if (!validatedFields.success) {
@@ -401,14 +401,13 @@ export async function deleteStageAction(prevState: DeleteStageState, formData: F
     }
 
     let stageFound = false;
-    for (const intervention of project.interventions) {
-      const stageIndex = intervention.stages.findIndex(s => s.id === stageId);
-      if (stageIndex !== -1) {
-        intervention.stages.splice(stageIndex, 1);
-        stageFound = true;
-        break;
-      }
-    }
+    project.interventions.forEach(intervention => {
+        const stageIndex = intervention.stages.findIndex(s => s.id === stageId);
+        if (stageIndex > -1) {
+            intervention.stages.splice(stageIndex, 1);
+            stageFound = true;
+        }
+    });
 
     if (!stageFound) {
       return { message: 'Stage not found in any intervention.', success: false };
