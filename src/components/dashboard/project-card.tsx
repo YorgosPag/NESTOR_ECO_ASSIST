@@ -1,50 +1,60 @@
+"use client";
+
 import Link from "next/link";
-import type { Project } from "@/lib/data";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { Project } from "@/lib/data";
 import { ArrowUpRight } from "lucide-react";
 
-type ProjectCardProps = {
+interface ProjectCardProps {
   project: Project;
-};
-
-const statusVariantMap: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
-  "On Track": "default",
-  "Completed": "secondary",
-  "At Risk": "destructive",
-  "On Hold": "outline",
-};
-
+}
 
 export function ProjectCard({ project }: ProjectCardProps) {
+
+  const statusVariant = {
+    'On Track': 'default',
+    'At Risk': 'destructive',
+    'Completed': 'secondary',
+    'On Hold': 'outline',
+  }[project.status] as "default" | "destructive" | "secondary" | "outline" | undefined;
+
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        <CardTitle className="text-lg">{project.name}</CardTitle>
-        <CardDescription>{project.manager}</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow space-y-4">
-        <div>
-            <Badge variant={statusVariantMap[project.status]}>{project.status}</Badge>
+        <div className="flex justify-between items-start gap-2">
+            <div className="flex-1">
+                <p className="text-sm text-muted-foreground">{project.manager}</p>
+                <CardTitle className="mt-1 text-lg">
+                    <Link href={`/project/${project.id}`} className="hover:underline">
+                        {project.name}
+                    </Link>
+                </CardTitle>
+            </div>
+            {statusVariant && <Badge variant={statusVariant}>{project.status}</Badge>}
         </div>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4 flex-grow">
         <div>
-          <p className="text-sm font-medium mb-1">{project.progress}% Complete</p>
-          <Progress value={project.progress} />
+          <div className="flex justify-between text-sm text-muted-foreground mb-1">
+            <span>Progress</span>
+            <span>{project.progress}%</span>
+          </div>
+          <Progress value={project.progress} aria-label={`${project.progress}% complete`} />
         </div>
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
             <Link href={`/project/${project.id}`}>
-                View Project <ArrowUpRight className="ml-2" />
+                View Project <ArrowUpRight className="h-4 w-4 ml-2" />
             </Link>
         </Button>
       </CardFooter>
