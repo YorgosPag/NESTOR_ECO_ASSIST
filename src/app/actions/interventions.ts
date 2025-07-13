@@ -2,10 +2,8 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { getProjectById } from '@/lib/projects-data'; // We'll need this to "update" the project
-
-// In a real app, you would have a proper database update function.
-// For now, we'll just log the action.
+import { getProjectById, updateProject } from '@/lib/projects-data'; 
+import { getAdminDb } from '@/lib/firebase-admin';
 
 const AddInterventionSchema = z.object({
   projectId: z.string(),
@@ -35,12 +33,39 @@ export async function addInterventionAction(prevState: AddInterventionState, for
   }
   
   const { projectId, interventionName } = validatedFields.data;
+  const db = getAdminDb();
 
-  // In a real app, you'd add the intervention to the project in your database.
-  // For this mock implementation, we'll just log it.
-  console.log(`Adding intervention ${interventionName} to project ${projectId}`);
+  try {
+    const project = await getProjectById(db, projectId);
+
+    if (!project) {
+        return { message: 'Project not found.', success: false };
+    }
+
+    // This is where we simulate adding the intervention to the database.
+    const newIntervention = {
+        id: `inter-${new Date().getTime()}`, // Simple unique ID
+        masterInterventionId: `master-int-${new Date().getTime()}`, // Simple unique ID
+        projectId: projectId,
+        interventionCategory: 'Uncategorized', // Default category
+        interventionSubcategory: interventionName,
+        name: interventionName,
+        stages: [], // Start with no stages
+        costOfMaterials: 0,
+        costOfLabor: 0,
+        totalCost: 0,
+    };
+
+    project.interventions.push(newIntervention);
+    
+    await updateProject(db, project);
+
+  } catch (error) {
+    console.error('Error adding intervention:', error);
+    return { message: 'Database error: Could not add intervention.', success: false };
+  }
   
-  // And then revalidate the path to show the new data.
+  // Revalidate the path to show the new data.
   revalidatePath(`/project/${projectId}`);
 
   return { message: 'Intervention added successfully.', success: true };

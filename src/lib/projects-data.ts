@@ -118,3 +118,12 @@ export async function getProjectById(db: any, id: string) {
     // Return a deep copy to avoid mutations affecting the "database"
     return Promise.resolve(project ? JSON.parse(JSON.stringify(project)) : undefined);
 }
+
+export async function updateProject(db: any, updatedProject: Project) {
+    const projectIndex = projects.findIndex(p => p.id === updatedProject.id);
+    if (projectIndex !== -1) {
+        projects[projectIndex] = JSON.parse(JSON.stringify(updatedProject));
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
+}
