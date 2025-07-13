@@ -20,7 +20,7 @@ interface AddInterventionDialogProps {
     masterInterventions: MasterIntervention[];
 }
 
-export function AddInterventionDialog({ projectId, children, customLists, customListItems }: AddInterventionDialogProps) {
+export function AddInterventionDialog({ projectId, children, customLists, customListItems, masterInterventions }: AddInterventionDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (

@@ -24,6 +24,8 @@ export type Project = {
     price?: number;
     vat?: number;
     stages: Stage[];
+    interventionCategory?: string;
+    interventionSubcategory?: string;
   }
 
   export type MasterIntervention = {
