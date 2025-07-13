@@ -1,8 +1,6 @@
-// src/components/contacts/create-contact-dialog.tsx
 "use client";
 
 import { useState } from 'react';
-import type { CustomList, CustomListItem } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ContactForm } from './contact-form';
+import type { CustomList, CustomListItem } from '@/types';
+import { ScrollArea } from '../ui/scroll-area';
+import { CreateContactForm } from './create-contact-form';
 
 interface CreateContactDialogProps {
     children: React.ReactNode;
@@ -25,14 +25,14 @@ export function CreateContactDialog({ children, customLists, customListItems }: 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Δημιουργία Νέας Επαφής</DialogTitle>
-          <DialogDescription>
-            Συμπληρώστε τα στοιχεία της νέας επαφής παρακάτω.
-          </DialogDescription>
+          <DialogDescription>Συμπληρώστε τα στοιχεία της νέας επαφής.</DialogDescription>
         </DialogHeader>
-        <ContactForm setOpen={setOpen} />
+        <ScrollArea className="max-h-[70vh] pr-6">
+          <CreateContactForm setOpen={setOpen} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,3 @@
-// src/components/contacts/edit-contact-dialog.tsx
 "use client";
 
 import { useState } from 'react';
@@ -11,7 +10,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ContactForm } from './contact-form';
+import { ScrollArea } from '../ui/scroll-area';
+import { EditContactForm } from './edit-contact-form';
 
 interface EditContactDialogProps {
     contact: Contact;
@@ -26,14 +26,16 @@ export function EditContactDialog({ contact, children, customLists, customListIt
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Επεξεργασία Επαφής</DialogTitle>
           <DialogDescription>
             Ενημερώστε τα στοιχεία της επαφής παρακάτω.
           </DialogDescription>
         </DialogHeader>
-        <ContactForm contact={contact} setOpen={setOpen} />
+        <ScrollArea className="max-h-[70vh] pr-6">
+            <EditContactForm contact={contact} setOpen={setOpen} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
