@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Tabs,
   TabsContent,
@@ -27,8 +28,23 @@ interface ProjectsPageProps {
     contacts: Contact[];
 }
 
-export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
+function ProjectsClientContent({ projects, contacts }: ProjectsPageProps) {
+    const searchParams = useSearchParams();
+    const statusFromQuery = searchParams.get('status');
+
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState('all');
+
+    useEffect(() => {
+        const tabMap: { [key: string]: string } = {
+            'active': 'on_track',
+            'quotation': 'quotation',
+            'completed': 'completed'
+        };
+        if (statusFromQuery && tabMap[statusFromQuery]) {
+            setActiveTab(tabMap[statusFromQuery]);
+        }
+    }, [statusFromQuery]);
 
     const filteredProjects = useMemo(() => {
         if (!searchTerm.trim()) {
@@ -52,12 +68,13 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
         });
     }, [projects, contacts, searchTerm]);
     
-
     const quotationProjects = filteredProjects.filter(p => p.status === 'Προσφορά');
     const onTrackProjects = filteredProjects.filter(p => p.status === 'Εντός Χρονοδιαγράμματος');
     const delayedProjects = filteredProjects.filter(p => p.status === 'Σε Καθυστέρηση');
     const completedProjects = filteredProjects.filter(p => p.status === 'Ολοκληρωμένο');
     const allNonCompletedProjects = [...quotationProjects, ...onTrackProjects, ...delayedProjects];
+
+    const allActiveProjects = [...onTrackProjects, ...delayedProjects];
 
 
     return (
@@ -92,12 +109,11 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </div>
             </div>
 
-            <Tabs defaultValue="all" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
                     <TabsTrigger value="all">Όλα ({allNonCompletedProjects.length})</TabsTrigger>
                     <TabsTrigger value="quotation">Προσφορές ({quotationProjects.length})</TabsTrigger>
-                    <TabsTrigger value="on_track">Εντός Χρονοδ. ({onTrackProjects.length})</TabsTrigger>
-                    <TabsTrigger value="delayed">Σε Καθυστέρηση ({delayedProjects.length})</TabsTrigger>
+                    <TabsTrigger value="on_track">Ενεργά ({allActiveProjects.length})</TabsTrigger>
                     <TabsTrigger value="completed">Ολοκληρωμένα ({completedProjects.length})</TabsTrigger>
                 </TabsList>
 
@@ -137,22 +153,13 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     ) : <EmptyStateFiltered title="Δεν βρέθηκαν προσφορές" description="Δεν υπάρχουν έργα σε φάση προσφοράς που να ταιριάζουν με την αναζήτησή σας." />}
                 </TabsContent>
                 <TabsContent value="on_track" className="mt-4">
-                    {onTrackProjects.length > 0 ? (
+                    {allActiveProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {onTrackProjects.map((project) => (
+                            {allActiveProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
-                    ) : <EmptyStateFiltered />}
-                </TabsContent>
-                <TabsContent value="delayed" className="mt-4">
-                     {delayedProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {delayedProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} contacts={contacts} />
-                            ))}
-                        </div>
-                    ) : <EmptyStateFiltered />}
+                    ) : <EmptyStateFiltered title="Δεν βρέθηκαν ενεργά έργα" description="Δεν υπάρχουν ενεργά έργα (εντός ή εκτός χρονοδιαγράμματος) που να ταιριάζουν με την αναζήτησή σας."/>}
                 </TabsContent>
                 <TabsContent value="completed" className="mt-4">
                     {completedProjects.length > 0 ? (
@@ -161,9 +168,17 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
-                    ) : <EmptyStateFiltered />}
+                    ) : <EmptyStateFiltered title="Δεν βρέθηκαν ολοκληρωμένα έργα" description="Δεν υπάρχουν ολοκληρωμένα έργα που να ταιριάζουν με την αναζήτησή σας." />}
                 </TabsContent>
             </Tabs>
         </main>
+    )
+}
+
+export function ProjectsClientPage(props: ProjectsPageProps) {
+    return (
+        <Suspense fallback={<div>Loading projects...</div>}>
+            <ProjectsClientContent {...props} />
+        </Suspense>
     )
 }

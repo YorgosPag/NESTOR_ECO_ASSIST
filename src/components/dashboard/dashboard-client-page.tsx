@@ -84,48 +84,54 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                 </Button>
             </div>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Ενεργά Έργα
-                        </CardTitle>
-                        <Activity className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{activeProjects.length}</div>
-                        <p className="text-xs text-muted-foreground">
-                            {onTrackProjects} εντός, {delayedProjects} εκτός
-                        </p>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                           Προσφορές
-                        </CardTitle>
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{quotationProjects}</div>
-                        <p className="text-xs text-muted-foreground">
-                           Εκκρεμεί ενεργ/ση
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                           Ολοκληρωμένα
-                        </CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{completedProjects}</div>
-                        <p className="text-xs text-muted-foreground">
-                           Έργα
-                        </p>
-                    </CardContent>
-                </Card>
+                <Link href="/projects?status=active">
+                    <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                                Ενεργά Έργα
+                            </CardTitle>
+                            <Activity className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{activeProjects.length}</div>
+                            <p className="text-xs text-muted-foreground">
+                                {onTrackProjects} εντός, {delayedProjects} εκτός
+                            </p>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/projects?status=quotation">
+                    <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                            Προσφορές
+                            </CardTitle>
+                            <FileText className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{quotationProjects}</div>
+                            <p className="text-xs text-muted-foreground">
+                            Εκκρεμεί ενεργ/ση
+                            </p>
+                        </CardContent>
+                    </Card>
+                </Link>
+                <Link href="/projects?status=completed">
+                    <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">
+                            Ολοκληρωμένα
+                            </CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{completedProjects}</div>
+                            <p className="text-xs text-muted-foreground">
+                            Έργα
+                            </p>
+                        </CardContent>
+                    </Card>
+                </Link>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Προθεσμίες</CardTitle>
