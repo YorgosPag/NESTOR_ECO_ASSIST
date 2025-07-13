@@ -1,4 +1,4 @@
-import type { Contact, ContactRole } from "@/types";
+import type { Contact } from "@/types";
 
 const contacts: Contact[] = [
     { 
@@ -94,16 +94,15 @@ export async function addContact(db: any, contactData: Omit<Contact, 'id'>): Pro
         id: `contact-${Date.now()}`,
         avatarUrl: `https://placehold.co/40x40.png?text=${contactData.firstName.charAt(0)}${contactData.lastName.charAt(0)}`,
         ...contactData,
-        role: contactData.role as ContactRole,
     };
     contacts.unshift(newContact);
     return Promise.resolve(newContact);
 }
 
-export async function updateContact(db: any, updatedContact: Contact): Promise<boolean> {
-    const index = contacts.findIndex(c => c.id === updatedContact.id);
+export async function updateContact(db: any, contactId: string, updatedData: Omit<Contact, 'id'>): Promise<boolean> {
+    const index = contacts.findIndex(c => c.id === contactId);
     if (index !== -1) {
-        contacts[index] = { ...contacts[index], ...updatedContact };
+        contacts[index] = { ...contacts[index], ...updatedData };
         return Promise.resolve(true);
     }
     return Promise.resolve(false);

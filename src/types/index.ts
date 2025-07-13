@@ -101,6 +101,21 @@ export type Project = {
       addressCity?: string;
       addressPrefecture?: string;
       notes?: string;
+      fatherName?: string;
+      motherName?: string;
+      dateOfBirth?: string;
+      placeOfBirth?: string;
+      gender?: string;
+      nationality?: string;
+      vatNumber?: string;
+      idNumber?: string;
+      idIssueDate?: string;
+      idIssuingAuthority?: string;
+      usernameTaxis?: string;
+      passwordTaxis?: string;
+      facebookUrl?: string;
+      instagramUrl?: string;
+      tiktokUrl?: string;
   }
 
   export type CustomList = {

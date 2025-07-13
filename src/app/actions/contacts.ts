@@ -2,23 +2,50 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { getAdminDb } from "@/lib/firebase-admin";
-import { 
-    addContact, 
-    updateContact,
-    deleteContact
-} from '@/lib/contacts-data';
+import { addContact, updateContact, deleteContact } from '@/lib/contacts-data';
 import type { Contact } from '@/types';
+import { getAdminDb } from "@/lib/firebase-admin";
 
 const ContactSchema = z.object({
   id: z.string().optional(),
   firstName: z.string().min(2, "Το όνομα πρέπει να έχει τουλάχιστον 2 χαρακτήρες."),
   lastName: z.string().min(2, "Το επώνυμο πρέπει να έχει τουλάχιστον 2 χαρακτήρες."),
   email: z.string().email("Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.").optional().or(z.literal('')),
+  
   mobilePhone: z.string().regex(/^\d{10}$/, "Το κινητό τηλέφωνο πρέπει να αποτελείται από ακριβώς 10 ψηφία.").optional().or(z.literal('')),
+  landlinePhone: z.string().regex(/^\d{10}$/, "Το σταθερό τηλέφωνο πρέπει να αποτελείται από ακριβώς 10 ψηφία.").optional().or(z.literal('')),
+
+  addressStreet: z.string().optional(),
+  addressNumber: z.string().optional(),
+  addressArea: z.string().optional(),
+  addressPostalCode: z.string().regex(/^\d{5}$/, "Ο Τ.Κ. πρέπει να αποτελείται από ακριβώς 5 ψηφία.").optional().or(z.literal('')),
+  addressCity: z.string().optional(),
+  addressPrefecture: z.string().optional(),
+
   role: z.string().min(1, "Παρακαλώ επιλέξτε έναν ρόλο."),
   specialty: z.string().optional(),
   company: z.string().optional(),
+  avatarUrl: z.string().optional(),
+  notes: z.string().optional(),
+  
+  fatherName: z.string().optional(),
+  motherName: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  placeOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  nationality: z.string().optional(),
+
+  vatNumber: z.string().regex(/^\d{9}$/, "Το ΑΦΜ πρέπει να αποτελείται από ακριβώς 9 ψηφία.").optional().or(z.literal('')),
+  idNumber: z.string().optional(),
+  idIssueDate: z.string().optional(),
+  idIssuingAuthority: z.string().optional(),
+
+  usernameTaxis: z.string().optional(),
+  passwordTaxis: z.string().optional(),
+
+  facebookUrl: z.string().url("Παρακαλώ εισάγετε ένα έγκυρο URL.").optional().or(z.literal('')),
+  instagramUrl: z.string().url("Παρακαλώ εισάγετε ένα έγκυρο URL.").optional().or(z.literal('')),
+  tiktokUrl: z.string().url("Παρακαλώ εισάγετε ένα έγκυρο URL.").optional().or(z.literal('')),
 });
 
 export async function createContactAction(prevState: any, formData: FormData) {
@@ -43,10 +70,12 @@ export async function createContactAction(prevState: any, formData: FormData) {
   return { success: true, message: 'Η επαφή δημιουργήθηκε με επιτυχία.' };
 }
 
+const UpdateContactSchema = ContactSchema.extend({
+  id: z.string().min(1),
+});
+
 export async function updateContactAction(prevState: any, formData: FormData) {
-    const validatedFields = ContactSchema.extend({
-        id: z.string().min(1),
-    }).safeParse(Object.fromEntries(formData.entries()));
+    const validatedFields = UpdateContactSchema.safeParse(Object.fromEntries(formData.entries()));
 
     if (!validatedFields.success) {
         return {
@@ -56,11 +85,10 @@ export async function updateContactAction(prevState: any, formData: FormData) {
         };
     }
 
-    const { id, ...contactData } = validatedFields.data;
-
     try {
+        const { id, ...contactData } = validatedFields.data;
         const db = getAdminDb();
-        await updateContact(db, { id, ...contactData } as Contact);
+        await updateContact(db, id, contactData as Omit<Contact, 'id'>);
     } catch (error: any) {
         console.error("🔥 ERROR in updateContactAction:", error);
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
