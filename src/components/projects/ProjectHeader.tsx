@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { Project, Contact } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { Calendar, CheckCircle, Clock, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
 import { calculateClientProjectMetrics } from '@/lib/client-utils';
 import { Skeleton } from '../ui/skeleton';
 

@@ -1,7 +1,7 @@
 export type Project = {
     id: string;
     name: string;
-    status: "On Track" | "At Risk" | "Completed" | "On Hold";
+    status: "On Track" | "Completed" | "Quotation" | "Delayed";
     progress: number;
     ownerContactId: string;
     applicationNumber?: string;

@@ -43,9 +43,9 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
         ]);
     }, []);
 
-    const activeProjects = projects.filter(p => p.status === 'On Track' || p.status === 'At Risk');
+    const activeProjects = projects.filter(p => p.status === 'On Track' || p.status === 'Delayed');
     const onTrackProjects = projects.filter(p => p.status === 'On Track').length;
-    const atRiskProjects = projects.filter(p => p.status === 'At Risk').length;
+    const delayedProjects = projects.filter(p => p.status === 'Delayed').length;
     const completedProjects = projects.filter(p => p.status === 'Completed').length;
     const recentActiveProjects = activeProjects.slice(0, 3);
 
@@ -60,7 +60,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
             assigneeContactId: s.assigneeContactId,
         }))
     )
-    .filter(stage => new Date(stage.deadline) >= new Date())
+    .filter(stage => stage.deadline && new Date(stage.deadline) >= new Date())
     .sort((a,b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
     .slice(0, 5);
 
@@ -93,7 +93,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     <CardContent>
                         <div className="text-2xl font-bold">{activeProjects.length}</div>
                         <p className="text-xs text-muted-foreground">
-                            {onTrackProjects} on track, {atRiskProjects} at risk
+                            {onTrackProjects} on track, {delayedProjects} delayed
                         </p>
                     </CardContent>
                 </Card>
