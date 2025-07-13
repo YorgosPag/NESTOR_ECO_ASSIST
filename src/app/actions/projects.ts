@@ -1,4 +1,3 @@
-
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -112,8 +111,17 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
 
     try {
         const db = getAdminDb();
+        const project = await getProjectById(db, projectId);
+        if (!project) {
+            throw new Error("Project not found");
+        }
         
-        await updateProjectData(db, projectId, updateData );
+        const updatedProject = {
+            ...project,
+            ...updateData,
+        };
+        
+        await updateProjectData(db, projectId, updatedProject );
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateProjectAction:", error);
