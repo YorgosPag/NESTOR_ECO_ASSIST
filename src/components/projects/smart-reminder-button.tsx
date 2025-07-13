@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { generateSmartReminder } from '@/ai/flows/smart-reminders';
+import { getSmartReminder } from '@/actions/ai';
 import type { Project } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +24,7 @@ export function SmartReminderButton({ project }: { project: Project }) {
         return;
       }
       
-      const result = await generateSmartReminder({
+      const result = await getSmartReminder({
         taskName: upcomingStage.name,
         deadline: upcomingStage.deadline,
         projectDetails: `Project: ${project.name}. Current progress is ${project.progress}%.`,

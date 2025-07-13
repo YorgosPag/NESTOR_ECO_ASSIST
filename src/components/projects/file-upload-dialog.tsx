@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { documentTagging } from '@/ai/flows/document-tagging';
+import { getDocumentTags } from '@/actions/ai';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -36,7 +36,7 @@ export function FileUploadDialog() {
         setIsLoading(true);
         try {
             const content = await file.text();
-            const result = await documentTagging({ documentContent: content });
+            const result = await getDocumentTags({ documentContent: content });
             setSuggestedTags(result.suggestedTags);
         } catch (error) {
             console.error('Error getting tags:', error);
