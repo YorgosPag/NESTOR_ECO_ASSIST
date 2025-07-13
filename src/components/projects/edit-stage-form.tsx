@@ -2,7 +2,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateStageAction } from '@/app/actions/stages';
+import { updateStageAction } from '@/app/actions/projects';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import type { Contact, Stage } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Textarea } from '../ui/textarea';
 
 const initialState = {
   message: null,
@@ -64,26 +65,33 @@ export function EditStageForm({ stage, projectId, contacts, setOpen }: EditStage
                 {state.errors?.title && <p className="text-sm font-medium text-destructive mt-1">{state.errors.title[0]}</p>}
             </div>
 
+             <div className="space-y-2">
+                <Label htmlFor="deadline">Προθεσμία</Label>
+                <Input id="deadline" name="deadline" type="date" defaultValue={formattedDeadline} required />
+                 {state.errors?.deadline && <p className="text-sm font-medium text-destructive mt-1">{state.errors.deadline[0]}</p>}
+            </div>
+
             <div className="space-y-2">
-                <Label htmlFor="assigneeContactId">Υπεύθυνος (Προαιρετικό)</Label>
-                <Select name="assigneeContactId" defaultValue={stage.assigneeContactId}>
+                <Label htmlFor="assigneeContactId">Ανάθεση σε</Label>
+                <Select name="assigneeContactId" defaultValue={stage.assigneeContactId || 'none'}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Επιλέξτε υπεύθυνο" />
+                        <SelectValue placeholder="Επιλέξτε ανάδοχο..." />
                     </SelectTrigger>
                     <SelectContent>
+                        <SelectItem value="none">Καμία ανάθεση</SelectItem>
                         {contacts.map(contact => (
                             <SelectItem key={contact.id} value={contact.id}>
-                                {contact.firstName} {contact.lastName}
+                                {contact.firstName} {contact.lastName} ({contact.role})
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
             </div>
-            
+
             <div className="space-y-2">
-                <Label htmlFor="deadline">Προθεσμία</Label>
-                <Input id="deadline" name="deadline" type="date" defaultValue={formattedDeadline} required />
-                {state.errors?.deadline && <p className="text-sm font-medium text-destructive mt-1">{state.errors.deadline[0]}</p>}
+                <Label htmlFor="notes">Σημειώσεις</Label>
+                <Textarea id="notes" name="notes" defaultValue={stage.notes} placeholder="Προσθέστε σημειώσεις..." rows={3} />
+                 {state.errors?.notes && <p className="text-sm font-medium text-destructive mt-1">{state.errors.notes[0]}</p>}
             </div>
 
             <SubmitButton />

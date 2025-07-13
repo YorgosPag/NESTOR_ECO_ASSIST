@@ -47,6 +47,7 @@ export type Project = {
     cost?: number;
     price?: number;
     vat?: number;
+    notes?: string;
   };
   
   export type File = {
