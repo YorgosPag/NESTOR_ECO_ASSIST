@@ -31,7 +31,7 @@ export type Project = {
   export type Stage = {
     id: string;
     title: string;
-    files: File[];
+    files?: File[];
     deadline: string;
     assigneeContactId?: string;
     status: "Completed" | "In Progress" | "Not Started" | "Delayed";

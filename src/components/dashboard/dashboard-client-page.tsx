@@ -51,14 +51,14 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
 
     const upcomingDeadlines: Deadline[] = activeProjects
     .flatMap((p: Project) => 
-        p.stages?.map((s: Stage) => ({
+        (p.interventions || []).flatMap(i => i.stages || []).map((s: Stage) => ({
             projectId: p.id,
             projectTitle: p.name,
             stageId: s.id,
-            stageTitle: s.name,
+            stageTitle: s.title,
             deadline: s.deadline,
             assigneeContactId: s.assigneeContactId,
-        })) || []
+        }))
     )
     .filter(stage => new Date(stage.deadline) >= new Date())
     .sort((a,b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
@@ -76,7 +76,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     <p className="text-muted-foreground">An overview of your projects.</p>
                 </div>
                 <Button asChild>
-                    <Link href="/projects/new">
+                    <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Create Project
                     </Link>

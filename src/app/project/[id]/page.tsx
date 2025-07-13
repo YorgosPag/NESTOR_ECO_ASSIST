@@ -1,3 +1,4 @@
+
 import { getProjectById } from "@/lib/projects-data";
 import { notFound } from "next/navigation";
 import { ProjectDetails } from "@/components/projects/project-details";

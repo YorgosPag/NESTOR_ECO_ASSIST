@@ -40,9 +40,9 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
       ).join('\n');
 
       const documentContent = activeProjects.flatMap(p => 
-        p.stages.flatMap(s => 
-          s.files.map(f => `File: ${f.name} in stage ${s.name} of project ${p.name}`)
-        )
+        (p.interventions || []).flatMap(i => (i.stages || []).flatMap(s => 
+          (s.files || []).map(f => `File: ${f.name} in stage ${s.title} of project ${p.name}`)
+        ))
       ).join('\n');
 
       const result = await generateSmartReminders({
