@@ -10,7 +10,6 @@ export type Project = {
     endDate: string;
     deadline?: string;
     description: string;
-    stages: Stage[];
     interventions?: ProjectIntervention[];
     alerts?: number;
     auditLog?: AuditLog[];

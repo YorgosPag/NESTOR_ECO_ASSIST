@@ -70,7 +70,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                     <Button asChild>
-                    <Link href="/projects/new">
+                    <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Create Project/Quotation
                     </Link>
@@ -108,7 +108,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                             </p>
                             <div className="mt-6 flex gap-4">
                                 <Button asChild>
-                                    <Link href="/projects/new">
+                                    <Link href="/project/new">
                                         <PlusCircle className="mr-2 h-4 w-4" />
                                         Create Project/Quotation
                                     </Link>

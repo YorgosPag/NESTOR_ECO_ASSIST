@@ -2,10 +2,19 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-const FormSchema = z.object({
+const CreateFormSchema = z.object({
+  name: z.string().min(1, { message: 'Project name is required.' }),
+  description: z.string().min(1, { message: 'Description is required.' }),
+  applicationNumber: z.string().optional(),
+  ownerContactId: z.string().min(1, { message: 'Please select an owner.' }),
+  deadline: z.string().optional(),
+});
+
+const UpdateFormSchema = z.object({
   id: z.string(),
-  title: z.string().min(1, { message: 'Project title is required.' }),
+  name: z.string().min(1, { message: 'Project name is required.' }),
   applicationNumber: z.string().optional(),
   ownerContactId: z.string().min(1, { message: 'Please select an owner.' }),
   deadline: z.string().optional(),
@@ -18,19 +27,47 @@ const DeleteSchema = z.object({
 
 export type State = {
   errors?: {
-    title?: string[];
+    name?: string[];
+    description?: string[];
     ownerContactId?: string[];
   };
   message?: string | null;
   success?: boolean;
 };
 
+export async function createProjectAction(prevState: State, formData: FormData) {
+  const validatedFields = CreateFormSchema.safeParse({
+    name: formData.get('name'),
+    description: formData.get('description'),
+    applicationNumber: formData.get('applicationNumber'),
+    ownerContactId: formData.get('ownerContactId'),
+    deadline: formData.get('deadline'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Validation failed. Please check the form fields.',
+      success: false,
+    };
+  }
+
+  // In a real app, you would insert the data into your database.
+  console.log('Creating new project with data:', validatedFields.data);
+
+  revalidatePath('/projects');
+  // We will redirect in the component after a success toast.
+  // redirect('/projects');
+  
+  return { message: 'Project created successfully.', success: true };
+}
+
 
 export async function updateProjectAction(prevState: State, formData: FormData) {
 
-  const validatedFields = FormSchema.safeParse({
+  const validatedFields = UpdateFormSchema.safeParse({
     id: formData.get('id'),
-    title: formData.get('title'),
+    name: formData.get('name'),
     applicationNumber: formData.get('applicationNumber'),
     ownerContactId: formData.get('ownerContactId'),
     deadline: formData.get('deadline'),
@@ -45,12 +82,12 @@ export async function updateProjectAction(prevState: State, formData: FormData) 
   }
   
   // In a real app, you would update the data in your database.
-  // For this example, we'll just log it and revalidate the cache.
   console.log('Updating project with data:', validatedFields.data);
 
 
   revalidatePath('/dashboard');
   revalidatePath('/projects');
+  revalidatePath(`/project/${validatedFields.data.id}`);
 
   return { message: 'Project updated successfully.', success: true };
 }
@@ -72,6 +109,9 @@ export async function deleteProjectAction(prevState: State, formData: FormData) 
 
     revalidatePath('/dashboard');
     revalidatePath('/projects');
+    // After deletion, we should redirect to the projects list.
+    redirect('/projects');
 
+    // This return is for type consistency, but redirect will happen first.
     return { message: 'Project deleted successfully.', success: true };
 }
