@@ -51,11 +51,11 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
     }, [projects, searchTerm]);
     
 
-    const quotationProjects = filteredProjects.filter(p => p.status === 'On Hold');
+    const onHoldProjects = filteredProjects.filter(p => p.status === 'On Hold');
     const onTrackProjects = filteredProjects.filter(p => p.status === 'On Track');
-    const delayedProjects = filteredProjects.filter(p => p.status === 'At Risk');
+    const atRiskProjects = filteredProjects.filter(p => p.status === 'At Risk');
     const completedProjects = filteredProjects.filter(p => p.status === 'Completed');
-    const allNonCompletedProjects = [...quotationProjects, ...onTrackProjects, ...delayedProjects];
+    const allNonCompletedProjects = [...onHoldProjects, ...onTrackProjects, ...atRiskProjects];
 
 
     return (
@@ -93,9 +93,9 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
             <Tabs defaultValue="all">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                     <TabsTrigger value="all">All ({allNonCompletedProjects.length})</TabsTrigger>
-                    <TabsTrigger value="quotation">Quotations ({quotationProjects.length})</TabsTrigger>
+                    <TabsTrigger value="quotation">Quotations ({onHoldProjects.length})</TabsTrigger>
                     <TabsTrigger value="on_track">On Track ({onTrackProjects.length})</TabsTrigger>
-                    <TabsTrigger value="delayed">Delayed ({delayedProjects.length})</TabsTrigger>
+                    <TabsTrigger value="at_risk">At Risk ({atRiskProjects.length})</TabsTrigger>
                     <TabsTrigger value="completed">Completed ({completedProjects.length})</TabsTrigger>
                 </TabsList>
 
@@ -126,9 +126,9 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     )}
                 </TabsContent>
                 <TabsContent value="quotation" className="mt-4">
-                    {quotationProjects.length > 0 ? (
+                    {onHoldProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {quotationProjects.map((project) => (
+                            {onHoldProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} />
                             ))}
                         </div>
@@ -143,10 +143,10 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                         </div>
                     ) : <EmptyStateFiltered />}
                 </TabsContent>
-                <TabsContent value="delayed" className="mt-4">
-                     {delayedProjects.length > 0 ? (
+                <TabsContent value="at_risk" className="mt-4">
+                     {atRiskProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {delayedProjects.map((project) => (
+                            {atRiskProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} />
                             ))}
                         </div>

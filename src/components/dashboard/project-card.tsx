@@ -13,9 +13,20 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/types";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel
+} from "@/components/ui/dropdown-menu";
 import { calculateClientProjectMetrics } from '@/lib/client-utils';
 import { Skeleton } from "../ui/skeleton";
+import { EditProjectDialog } from "../projects/edit-project-dialog";
+import { DeleteProjectDialog } from "../projects/delete-project-dialog";
+import { contacts } from "@/lib/data";
 
 interface ProjectCardProps {
   project: Project;
@@ -52,12 +63,38 @@ export function ProjectCard({ project: serverProject }: ProjectCardProps) {
                     </Link>
                 </CardTitle>
             </div>
-            {isMounted && statusVariant ? (
-                <Badge variant={statusVariant}>{displayProject.status}</Badge>
-            ) : <Skeleton className="h-5 w-20 rounded-full" />}
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
+                        <MoreVertical className="h-4 w-4"/>
+                        <span className="sr-only">Project Actions</span>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Project Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator/>
+                    <EditProjectDialog project={project} contacts={contacts}>
+                         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                        </DropdownMenuItem>
+                    </EditProjectDialog>
+                     <DeleteProjectDialog project={project}>
+                         <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                        </DropdownMenuItem>
+                    </DeleteProjectDialog>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 flex-grow">
+        <div>
+           {isMounted && statusVariant ? (
+                <Badge variant={statusVariant}>{displayProject.status}</Badge>
+            ) : <Skeleton className="h-5 w-20 rounded-full" />}
+        </div>
         <div>
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
             <span>Progress</span>

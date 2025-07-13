@@ -11,6 +11,11 @@ const FormSchema = z.object({
   deadline: z.string().optional(),
 });
 
+const DeleteSchema = z.object({
+  id: z.string(),
+});
+
+
 export type State = {
   errors?: {
     title?: string[];
@@ -48,4 +53,25 @@ export async function updateProjectAction(prevState: State, formData: FormData) 
   revalidatePath('/projects');
 
   return { message: 'Project updated successfully.', success: true };
+}
+
+export async function deleteProjectAction(prevState: State, formData: FormData) {
+    const validatedFields = DeleteSchema.safeParse({
+        id: formData.get('id'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            message: 'Invalid project ID.',
+            success: false,
+        };
+    }
+    
+    // In a real app, you would delete the data from your database.
+    console.log('Deleting project with ID:', validatedFields.data.id);
+
+    revalidatePath('/dashboard');
+    revalidatePath('/projects');
+
+    return { message: 'Project deleted successfully.', success: true };
 }
