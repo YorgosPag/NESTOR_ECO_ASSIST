@@ -3,6 +3,7 @@ import type { CustomList, CustomListItem } from "@/types";
 const customLists: CustomList[] = [
     { id: 'list-1', name: 'Τίτλοι Παρεμβάσεων', key: 'INTERVENTION_TITLES' },
     { id: 'list-2', name: 'Ρόλοι Επαφών', key: 'CONTACT_ROLES' },
+    { id: 'list-3', name: 'Κατηγορίες Παρεμβάσεων', key: 'INTERVENTION_CATEGORIES' },
 ];
 const customListItems: CustomListItem[] = [
     // Intervention Titles
@@ -20,6 +21,12 @@ const customListItems: CustomListItem[] = [
     { id: 'item-10', listId: 'list-2', name: 'Διαχειριστής' },
     { id: 'item-11', listId: 'list-2', name: 'Συνεργάτης' },
     { id: 'item-12', listId: 'list-2', name: 'Προμηθευτής' },
+
+    // Intervention Categories
+    { id: 'item-13', listId: 'list-3', name: 'Studies' },
+    { id: 'item-14', listId: 'list-3', name: 'Surveys' },
+    { id: 'item-15', listId: 'list-3', name: 'Community' },
+    { id: 'item-16', listId: 'list-3', name: 'Monitoring' },
 ];
 
 export async function getCustomLists(db?: any) {

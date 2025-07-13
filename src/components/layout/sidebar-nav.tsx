@@ -13,7 +13,7 @@ import {
 import {
   LayoutGrid,
   FolderKanban,
-  Settings,
+  Shield,
   BookUser,
 } from "lucide-react";
 
@@ -114,7 +114,7 @@ export function SidebarNav() {
             <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin">
                     <Link href="/admin">
-                        <Settings />
+                        <Shield />
                         <span>Admin</span>
                     </Link>
                 </SidebarMenuButton>

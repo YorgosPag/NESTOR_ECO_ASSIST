@@ -1,10 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { PlusCircle, Shield } from "lucide-react";
+import { CreateInterventionDialog } from "./create-intervention-dialog";
 import type { MasterIntervention, CustomList, CustomListItem } from "@/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MasterInterventionsTable } from "./master-interventions-table";
-import { CustomListsManager } from "./custom-lists-manager";
-import { Settings, List, Hammer } from "lucide-react";
+import { InterventionsTable } from "./interventions-table";
+import { columns } from "./intervention-columns";
+import { Card, CardContent } from "../ui/card";
 
 interface AdminClientPageProps {
     masterInterventions: MasterIntervention[];
@@ -15,31 +17,26 @@ interface AdminClientPageProps {
 export function AdminClientPage({ masterInterventions, customLists, customListItems }: AdminClientPageProps) {
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                    <Settings className="h-6 w-6" />
-                    Πίνακας Ελέγχου Διαχειριστή
-                </h1>
-                <p className="text-muted-foreground">Κεντρική διαχείριση λιστών και παραμέτρων της εφαρμογής.</p>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-2">
+                        <Shield className="h-6 w-6" />
+                        Κατάλογος Παρεμβάσεων
+                    </h1>
+                    <p className="text-muted-foreground">Κεντρική διαχείριση όλων των master παρεμβάσεων και των επιλογών τους.</p>
+                </div>
+                 <CreateInterventionDialog customLists={customLists} customListItems={customListItems}>
+                    <Button>
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Νέα Master Παρέμβαση
+                    </Button>
+                </CreateInterventionDialog>
             </div>
-            <Tabs defaultValue="custom-lists" className="w-full">
-                <TabsList>
-                    <TabsTrigger value="custom-lists">
-                        <List className="mr-2 h-4 w-4" />
-                        Προσαρμοσμένες Λίστες
-                    </TabsTrigger>
-                    <TabsTrigger value="master-interventions">
-                         <Hammer className="mr-2 h-4 w-4" />
-                        Τύποι Παρεμβάσεων
-                    </TabsTrigger>
-                </TabsList>
-                <TabsContent value="custom-lists" className="mt-4">
-                   <CustomListsManager customLists={customLists} allItems={customListItems} />
-                </TabsContent>
-                <TabsContent value="master-interventions" className="mt-4">
-                    <MasterInterventionsTable interventions={masterInterventions} />
-                </TabsContent>
-            </Tabs>
+            <Card>
+                <CardContent className="pt-6">
+                    <InterventionsTable columns={columns({ customLists, customListItems })} data={masterInterventions} />
+                </CardContent>
+            </Card>
         </div>
     );
 }

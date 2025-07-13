@@ -31,7 +31,8 @@ export type Project = {
   export type MasterIntervention = {
     id: string;
     name: string;
-    description: string;
+    description?: string;
+    category: string;
   }
   
   export type StageStatus = "Completed" | "In Progress" | "Not Started" | "Delayed" | "Failed";
