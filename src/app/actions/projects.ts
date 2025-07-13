@@ -185,8 +185,27 @@ export async function updateStageStatusAction(formData: FormData) {
 
     const { projectId, stageId, status } = validatedFields.data;
     
-    // In a real app, you'd find the project, then the intervention, then the stage and update its status.
-    console.log(`Updating stage ${stageId} in project ${projectId} to status: ${status}`);
+    const db = getAdminDb();
+    try {
+        const project = await getProjectById(db, projectId);
+        if (project) {
+            let stageFound = false;
+            for (const intervention of project.interventions) {
+                const stage = intervention.stages.find(s => s.id === stageId);
+                if (stage) {
+                    stage.status = status;
+                    stage.lastUpdated = new Date().toISOString();
+                    stageFound = true;
+                    break;
+                }
+            }
+            if (stageFound) {
+                await updateProject(db, project);
+            }
+        }
+    } catch (error) {
+        console.error("Database error while updating stage status", error);
+    }
     
     revalidatePath(`/project/${projectId}`);
 }
@@ -337,7 +356,6 @@ export async function updateStageAction(prevState: UpdateStageState, formData: F
         if (stageIndex !== -1) {
             stageToUpdate = intervention.stages[stageIndex];
             
-            // Preserve existing properties while updating
             intervention.stages[stageIndex] = {
                 ...stageToUpdate,
                 title,
