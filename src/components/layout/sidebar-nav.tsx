@@ -112,10 +112,10 @@ export function SidebarNav() {
       <SidebarFooter>
          <SidebarMenu>
             <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/settings")} tooltip="Settings">
-                    <Link href="/settings">
+                <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin">
+                    <Link href="/admin">
                         <Settings />
-                        <span>Settings</span>
+                        <span>Admin</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>
