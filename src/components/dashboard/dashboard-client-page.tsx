@@ -9,6 +9,7 @@ import { OverviewChart } from '@/components/dashboard/overview-chart';
 import { UpcomingDeadlines } from '@/components/dashboard/upcoming-deadlines';
 import type { Project, Contact, Stage } from "@/types";
 import { SmartReminders } from './smart-reminders';
+import { ProjectCard } from './project-card';
 
 interface DashboardClientPageProps {
     projects: Project[];
@@ -46,6 +47,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
     const onTrackProjects = projects.filter(p => p.status === 'On Track').length;
     const atRiskProjects = projects.filter(p => p.status === 'At Risk').length;
     const completedProjects = projects.filter(p => p.status === 'Completed').length;
+    const recentActiveProjects = activeProjects.slice(0, 3);
 
     const upcomingDeadlines: Deadline[] = activeProjects
     .flatMap((p: Project) => 
@@ -128,6 +130,31 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     <SmartReminders projects={projects} />
                 </div>
                 <UpcomingDeadlines deadlines={upcomingDeadlines} contacts={contacts} />
+            </div>
+
+            <div className="space-y-4">
+                 <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight">Recent Projects</h2>
+                        <p className="text-muted-foreground">A look at your most recent active projects.</p>
+                    </div>
+                     <Button asChild variant="outline">
+                        <Link href="/projects">
+                           View All Projects
+                        </Link>
+                    </Button>
+                </div>
+                {recentActiveProjects.length > 0 ? (
+                    <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+                        {recentActiveProjects.map(project => (
+                            <ProjectCard key={project.id} project={project} contacts={contacts} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center text-muted-foreground py-8">
+                        No active projects to display.
+                    </div>
+                )}
             </div>
         </main>
     );
