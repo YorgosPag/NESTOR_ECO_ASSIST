@@ -125,7 +125,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
                 <CardHeader>
                     <CardTitle>Ιστορικό Ενεργειών Έργου</CardTitle>
                     <CardDescription>Ένα πλήρες ιστορικό όλων των ενεργειών σε αυτό το έργο.</CardDescription>
-                </Header>
+                  </CardHeader>
                 <CardContent>
                     <AuditLogDisplay auditLogs={serverProject.auditLog || []} />
                 </CardContent>

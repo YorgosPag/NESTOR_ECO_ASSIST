@@ -46,6 +46,7 @@ export function StageCard({ stage, project, interventionName, contacts }: StageC
     "In Progress": "default",
     "Completed": "secondary",
     "Delayed": "destructive",
+    "Failed": "destructive"
   }[stage.status] as "default" | "destructive" | "secondary" | "outline" | undefined ?? "outline";
 
   const deadlineDate = new Date(stage.deadline);

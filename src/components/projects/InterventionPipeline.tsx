@@ -40,12 +40,14 @@ export function InterventionPipeline({ stages, project, allProjectInterventions,
   const pendingItems = stages.filter((s) => s.status === 'Not Started');
   const inProgressItems = stages.filter((s) => s.status === 'In Progress' || s.status === 'Delayed');
   const completedItems = stages.filter((s) => s.status === 'Completed');
+  const failedItems = stages.filter((s) => s.status === 'Failed');
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <PipelineColumn title="Σε Εκκρεμότητα" stages={pendingItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId} />
       <PipelineColumn title="Σε Εξέλιξη" stages={inProgressItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
       <PipelineColumn title="Ολοκληρωμένα" stages={completedItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
+      <PipelineColumn title="Απέτυχαν" stages={failedItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
     </div>
   );
 }
