@@ -18,11 +18,12 @@ interface EditStageDialogProps {
     stage: Stage;
     interventionName: string;
     projectId: string;
+    interventionMasterId: string;
     contacts: Contact[];
     children: ReactNode;
 }
 
-export function EditStageDialog({ stage, interventionName, projectId, contacts, children }: EditStageDialogProps) {
+export function EditStageDialog({ stage, interventionName, projectId, interventionMasterId, contacts, children }: EditStageDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -46,7 +47,13 @@ export function EditStageDialog({ stage, interventionName, projectId, contacts, 
                 </AlertDescription>
             </Alert>
         )}
-        <EditStageForm stage={stage} projectId={projectId} contacts={contacts} setOpen={setOpen} />
+        <EditStageForm 
+          stage={stage} 
+          projectId={projectId} 
+          interventionMasterId={interventionMasterId}
+          contacts={contacts} 
+          setOpen={setOpen} 
+        />
       </DialogContent>
     </Dialog>
   );

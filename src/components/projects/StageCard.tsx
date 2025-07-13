@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditStageDialog } from "./edit-stage-dialog";
 import { DeleteStageDialog } from "./delete-stage-dialog";
-import { Calendar, Clock, MoreVertical, Pencil, Trash2, ArrowUp, ArrowDown, Play, CheckCircle, XCircle, Undo2, User } from "lucide-react";
+import { Calendar, Clock, MoreVertical, Pencil, Trash2, ArrowUp, ArrowDown, Play, CheckCircle, XCircle, Undo2, User, AlertCircle } from "lucide-react";
 import { format, differenceInDays, isPast } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { moveStageAction, updateStageStatusAction } from "@/app/actions/projects";
@@ -54,13 +54,18 @@ export function StageCard({ stage, project, interventionName, contacts, interven
     'In Progress': { variant: "default", text: "Σε Εξέλιξη" },
     'Completed': { variant: "secondary", text: "Ολοκληρωμένο" },
     'Delayed': { variant: "destructive", text: "Σε Καθυστέρηση" },
-    'Failed': { variant: "destructive", text: "Απέτυχε" },
+    'Failed': { variant: "destructive", text: "Απέτυχε", icon: <XCircle className="h-4 w-4" /> },
   } as const;
 
-  const currentStatus = stage?.status ? statusConfig[stage.status] : { variant: "outline", text: "Άγνωστο" };
-  
+  let currentStageStatus = stage.status;
   const deadlineDate = stage?.deadline ? new Date(stage.deadline) : null;
   const isOverdue = isClient && deadlineDate ? isPast(deadlineDate) && stage.status !== 'Completed' : false;
+
+  if(isOverdue && stage.status === 'In Progress') {
+    currentStageStatus = 'Delayed';
+  }
+
+  const currentStatus = statusConfig[currentStageStatus];
   const daysUntilDeadline = isClient && deadlineDate ? differenceInDays(deadlineDate, new Date()) : 0;
   const isApproaching = isClient && deadlineDate ? daysUntilDeadline >= 0 && daysUntilDeadline <= 7 && stage.status !== 'Completed' : false;
 
@@ -149,18 +154,24 @@ export function StageCard({ stage, project, interventionName, contacts, interven
                 </DropdownMenuItem>
               </form>
               <DropdownMenuSeparator />
-              <EditStageDialog stage={stage} projectId={project.id} interventionName={interventionName} contacts={contacts}>
-                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <EditStageDialog 
+                stage={stage} 
+                projectId={project.id} 
+                interventionName={interventionName}
+                interventionMasterId={interventionMasterId} 
+                contacts={contacts}
+              >
+                 <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                     <Pencil className="mr-2 h-4 w-4" />
                     <span>Επεξεργασία Σταδίου</span>
-                </DropdownMenuItem>
+                </div>
               </EditStageDialog>
-              <DeleteStageDialog stage={stage} projectId={project.id}>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10 w-full">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Διαγραφή Σταδίου</span>
-                </DropdownMenuItem>
-              </DeleteStageDialog>
+               <DeleteStageDialog stage={stage} projectId={project.id}>
+                    <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-destructive focus:text-destructive w-full">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Διαγραφή Σταδίου</span>
+                    </div>
+                </DeleteStageDialog>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

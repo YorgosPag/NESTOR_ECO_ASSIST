@@ -57,13 +57,17 @@ export type Project = {
     uploadedAt: string;
     tags: string[];
   };
+
+  export type User = {
+    id: string;
+    name: string;
+    email: string;
+    avatar?: string;
+  }
   
   export type AuditLog = {
     id: string;
-    user: {
-        name: string;
-        avatar?: string;
-    };
+    user: User;
     action: string;
     timestamp: string;
     details: string;

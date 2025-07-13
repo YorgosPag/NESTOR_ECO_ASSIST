@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { addInterventionAction } from '@/app/actions/interventions';
+import { addInterventionAction } from '@/app/actions/projects';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';

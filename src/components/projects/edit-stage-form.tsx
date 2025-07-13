@@ -30,11 +30,12 @@ function SubmitButton() {
 interface EditStageFormProps {
     stage: Stage;
     projectId: string;
+    interventionMasterId: string;
     contacts: Contact[];
     setOpen: (open: boolean) => void;
 }
 
-export function EditStageForm({ stage, projectId, contacts, setOpen }: EditStageFormProps) {
+export function EditStageForm({ stage, projectId, interventionMasterId, contacts, setOpen }: EditStageFormProps) {
     const [state, formAction] = useActionState(updateStageAction, initialState);
     const { toast } = useToast();
 
@@ -58,6 +59,7 @@ export function EditStageForm({ stage, projectId, contacts, setOpen }: EditStage
         <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="projectId" value={projectId} />
             <input type="hidden" name="stageId" value={stage.id} />
+            <input type="hidden" name="interventionMasterId" value={interventionMasterId} />
 
             <div className="space-y-2">
                 <Label htmlFor="title">Τίτλος Σταδίου</Label>

@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { deleteInterventionAction } from '@/app/actions/interventions';
+import { deleteInterventionAction } from '@/app/actions/projects';
 import type { Project, ProjectIntervention } from '@/types';
 
 const initialState = {
@@ -50,7 +50,7 @@ export function DeleteInterventionDialog({ project, intervention, children }: De
 
 
   useEffect(() => {
-    if (!open) return; // Only process state changes when the dialog is open
+    if (!open) return; 
 
     if (state?.success === true) {
       toast({ title: 'Επιτυχία!', description: state.message });

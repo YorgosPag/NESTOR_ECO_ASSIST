@@ -52,10 +52,10 @@ export function CreateProjectForm({ contacts }: { contacts: Contact[] }) {
   return (
     <form action={formAction} className="space-y-4 pt-4">
       <div className="space-y-2">
-        <Label htmlFor="title">Τίτλος Έργου</Label>
-        <Input id="title" name="title" placeholder="π.χ., Ανακαίνιση κατοικίας Παπαδόπουλου" required aria-describedby="title-error" />
-        <div id="title-error" aria-live="polite" aria-atomic="true">
-          {state.errors?.title && <p className="text-sm font-medium text-destructive">{state.errors.title[0]}</p>}
+        <Label htmlFor="name">Τίτλος Έργου</Label>
+        <Input id="name" name="name" placeholder="π.χ., Ανακαίνιση κατοικίας Παπαδόπουλου" required aria-describedby="name-error" />
+        <div id="name-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name[0]}</p>}
         </div>
       </div>
        <div className="space-y-2">

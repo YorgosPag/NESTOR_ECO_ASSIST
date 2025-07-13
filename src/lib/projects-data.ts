@@ -34,8 +34,8 @@ const projects: Project[] = [
         ]}
     ],
     auditLog: [
-        { id: 'log-p1-1', user: { name: 'Elena Vasquez', avatar: 'https://placehold.co/32x32.png' }, action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf' },
-        { id: 'log-p1-2', user: { name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Scoping for Environmental Impact Assessment' },
+        { id: 'log-p1-1', user: { id: 'user-1', name: 'Elena Vasquez', avatar: 'https://placehold.co/32x32.png' }, action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf' },
+        { id: 'log-p1-2', user: { id: 'user-3', name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Scoping for Environmental Impact Assessment' },
     ]
   },
   {
@@ -52,7 +52,7 @@ const projects: Project[] = [
     description: "Efforts to restore coral populations through innovative cultivation and transplantation techniques.",
     interventions: [],
     auditLog: [
-        { id: 'log-p2-1', user: { name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed project status to At Risk' },
+        { id: 'log-p2-1', user: { id: 'user-3', name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed project status to At Risk' },
     ]
   },
   {
@@ -105,18 +105,22 @@ const projects: Project[] = [
   },
 ];
 
-// Mock function to simulate fetching projects
 export async function getAllProjects(db?: any) {
-    // In a real app, this data would come from a database.
-    // We are simulating that by returning a deep copy.
     return Promise.resolve(JSON.parse(JSON.stringify(projects)));
 }
 
-// Mock function to simulate fetching a single project by ID
 export async function getProjectById(db: any, id: string) {
     const project = projects.find(p => p.id === id);
-    // Return a deep copy to avoid mutations affecting the "database"
     return Promise.resolve(project ? JSON.parse(JSON.stringify(project)) : undefined);
+}
+
+export async function addProject(db: any, newProjectData: Omit<Project, 'id'>) {
+    const newProject: Project = {
+        id: `proj-${Date.now()}`,
+        ...newProjectData,
+    };
+    projects.unshift(newProject);
+    return Promise.resolve(newProject);
 }
 
 export async function updateProject(db: any, updatedProject: Project) {
@@ -126,4 +130,26 @@ export async function updateProject(db: any, updatedProject: Project) {
         return Promise.resolve(true);
     }
     return Promise.resolve(false);
+}
+
+export async function deleteProject(db: any, projectId: string) {
+    const projectIndex = projects.findIndex(p => p.id === projectId);
+    if (projectIndex !== -1) {
+        projects.splice(projectIndex, 1);
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
+}
+
+export async function findInterventionAndStage(db: any, projectId: string, stageId: string) {
+    const project = await getProjectById(db, projectId);
+    if (!project) return null;
+
+    for (const intervention of project.interventions) {
+        const stage = intervention.stages.find(s => s.id === stageId);
+        if (stage) {
+            return { project, intervention, stage };
+        }
+    }
+    return null;
 }
