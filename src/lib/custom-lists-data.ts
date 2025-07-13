@@ -1,38 +1,94 @@
 import type { CustomList, CustomListItem } from "@/types";
 
-const customLists: CustomList[] = [
+let customLists: CustomList[] = [
     { id: 'list-1', name: 'Τίτλοι Παρεμβάσεων', key: 'INTERVENTION_TITLES' },
     { id: 'list-2', name: 'Ρόλοι Επαφών', key: 'CONTACT_ROLES' },
     { id: 'list-3', name: 'Κατηγορίες Παρεμβάσεων', key: 'INTERVENTION_CATEGORIES' },
+    { id: 'list-4', name: 'Κατηγορίες Δαπάνης', key: 'EXPENSE_CATEGORIES' },
 ];
-const customListItems: CustomListItem[] = [
+let customListItems: CustomListItem[] = [
     // Intervention Titles
-    { id: 'item-1', listId: 'list-1', name: 'Μελέτη Περιβαλλοντικών Επιπτώσεων' },
-    { id: 'item-2', listId: 'list-1', name: 'Τοπογραφική Αποτύπωση' },
-    { id: 'item-3', listId: 'list-1', name: 'Διαβούλευση με την Κοινότητα' },
-    { id: 'item-4', listId: 'list-1', name: 'Έλεγχος Ποιότητας Υδάτων' },
-    { id: 'item-5', listId: 'list-1', name: 'Ανάλυση Εδάφους' },
-    { id: 'item-6', listId: 'list-1', name: 'Παρακολούθηση Ποιότητας Αέρα' },
+    { id: 'item-1', listId: 'list-1', name: 'Μελέτη Περιβαλλοντικών Επιπτώσεων', key: 'MPE' },
+    { id: 'item-2', listId: 'list-1', name: 'Τοπογραφική Αποτύπωση', key: 'TOPO' },
+    { id: 'item-3', listId: 'list-1', name: 'Διαβούλευση με την Κοινότητα', key: 'CONSULT' },
+    { id: 'item-4', listId: 'list-1', name: 'Έλεγχος Ποιότητας Υδάτων', key: 'WATER' },
+    { id: 'item-5', listId: 'list-1', name: 'Ανάλυση Εδάφους', key: 'SOIL' },
+    { id: 'item-6', listId: 'list-1', name: 'Παρακολούθηση Ποιότητας Αέρα', key: 'AIR' },
 
     // Contact Roles
-    { id: 'item-7', listId: 'list-2', name: 'Πελάτης' },
-    { id: 'item-8', listId: 'list-2', name: 'Ομάδα' },
-    { id: 'item-9', listId: 'list-2', name: 'Ενδιαφερόμενος' },
-    { id: 'item-10', listId: 'list-2', name: 'Διαχειριστής' },
-    { id: 'item-11', listId: 'list-2', name: 'Συνεργάτης' },
-    { id: 'item-12', listId: 'list-2', name: 'Προμηθευτής' },
+    { id: 'item-7', listId: 'list-2', name: 'Πελάτης', key: 'CLIENT' },
+    { id: 'item-8', listId: 'list-2', name: 'Ομάδα', key: 'TEAM' },
+    { id: 'item-9', listId: 'list-2', name: 'Ενδιαφερόμενος', key: 'STAKEHOLDER' },
+    { id: 'item-10', listId: 'list-2', name: 'Διαχειριστής', key: 'ADMIN' },
+    { id: 'item-11', listId: 'list-2', name: 'Συνεργάτης', key: 'PARTNER' },
+    { id: 'item-12', listId: 'list-2', name: 'Προμηθευτής', key: 'VENDOR' },
 
     // Intervention Categories
-    { id: 'item-13', listId: 'list-3', name: 'Μελέτες' },
-    { id: 'item-14', listId: 'list-3', name: 'Αποτυπώσεις' },
-    { id: 'item-15', listId: 'list-3', name: 'Κοινότητα' },
-    { id: 'item-16', listId: 'list-3', name: 'Παρακολούθηση' },
+    { id: 'item-13', listId: 'list-3', name: 'Μελέτες', key: 'STUDIES' },
+    { id: 'item-14', listId: 'list-3', name: 'Αποτυπώσεις', key: 'SURVEYS' },
+    { id: 'item-15', listId: 'list-3', name: 'Κοινότητα', key: 'COMMUNITY' },
+    { id: 'item-16', listId: 'list-3', name: 'Παρακολούθηση', key: 'MONITORING' },
+    
+    // Expense Categories
+    { id: 'item-17', listId: 'list-4', name: 'Ενέργεια', key: 'ENERGY' },
+    { id: 'item-18', listId: 'list-4', name: 'Ύδρευση', key: 'WATER_SUPPLY' },
+    { id: 'item-19', listId: 'list-4', name: 'Αποχέτευση', key: 'SEWAGE' },
 ];
 
 export async function getCustomLists(db?: any) {
-    return Promise.resolve(customLists);
+    return Promise.resolve(JSON.parse(JSON.stringify(customLists)));
+}
+
+export async function addCustomList(db: any, listData: Omit<CustomList, 'id'>) {
+    const newList: CustomList = { id: `list-${Date.now()}`, ...listData };
+    customLists.push(newList);
+    return Promise.resolve(true);
+}
+
+export async function updateCustomList(db: any, updatedList: CustomList) {
+    const index = customLists.findIndex(l => l.id === updatedList.id);
+    if (index !== -1) {
+        customLists[index] = { ...customLists[index], ...updatedList };
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
+}
+
+export async function deleteCustomList(db: any, listId: string) {
+    const index = customLists.findIndex(l => l.id === listId);
+    if (index !== -1) {
+        customLists.splice(index, 1);
+        // Also delete associated items
+        customListItems = customListItems.filter(item => item.listId !== listId);
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
 }
 
 export async function getAllCustomListItems(db?: any) {
-    return Promise.resolve(customListItems);
+    return Promise.resolve(JSON.parse(JSON.stringify(customListItems)));
+}
+
+export async function addCustomListItem(db: any, itemData: Omit<CustomListItem, 'id'>) {
+    const newItem: CustomListItem = { id: `item-${Date.now()}`, ...itemData };
+    customListItems.push(newItem);
+    return Promise.resolve(true);
+}
+
+export async function updateCustomListItem(db: any, updatedItem: CustomListItem) {
+    const index = customListItems.findIndex(i => i.id === updatedItem.id);
+    if (index !== -1) {
+        customListItems[index] = { ...customListItems[index], ...updatedItem };
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
+}
+
+export async function deleteCustomListItem(db: any, itemId: string) {
+    const index = customListItems.findIndex(i => i.id === itemId);
+    if (index !== -1) {
+        customListItems.splice(index, 1);
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
 }

@@ -109,5 +109,6 @@ export type Project = {
     id: string;
     listId: string;
     name: string;
+    key?: string;
   }
   
