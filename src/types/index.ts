@@ -80,9 +80,17 @@ export type Project = {
       email: string;
       avatarUrl?: string;
       role: 'Πελάτης' | 'Ομάδα' | 'Ενδιαφερόμενος' | 'Διαχειριστής';
+      company?: string;
+      specialty?: string;
+      mobilePhone?: string;
+      landlinePhone?: string;
       addressStreet?: string;
       addressNumber?: string;
+      addressArea?: string;
+      addressPostalCode?: string;
       addressCity?: string;
+      addressPrefecture?: string;
+      notes?: string;
   }
 
   export type CustomList = {

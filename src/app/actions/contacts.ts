@@ -19,6 +19,17 @@ const ContactSchema = z.object({
     role: z.enum(['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'], {
         errorMap: () => ({ message: "Παρακαλώ επιλέξτε έναν έγκυρο ρόλο." }),
     }),
+    company: z.string().optional(),
+    specialty: z.string().optional(),
+    mobilePhone: z.string().optional(),
+    landlinePhone: z.string().optional(),
+    addressStreet: z.string().optional(),
+    addressNumber: z.string().optional(),
+    addressArea: z.string().optional(),
+    addressPostalCode: z.string().optional(),
+    addressCity: z.string().optional(),
+    addressPrefecture: z.string().optional(),
+    notes: z.string().optional(),
 });
 
 export async function createContactAction(prevState: any, formData: FormData) {
