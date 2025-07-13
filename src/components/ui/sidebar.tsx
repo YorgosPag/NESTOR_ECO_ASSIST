@@ -333,7 +333,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("mt-auto flex flex-col gap-2 p-2", className)}
+      className={cn("mt-auto flex flex-col gap-2", className)}
       {...props}
     />
   )
@@ -426,6 +426,55 @@ const SidebarMenuButton = React.forwardRef<
 )
 SidebarMenuButton.displayName = "SidebarMenuButton"
 
+const SidebarGroup = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      data-sidebar="group"
+      className={cn("flex flex-col gap-1", className)}
+      {...props}
+    />
+  )
+})
+SidebarGroup.displayName = "SidebarGroup"
+
+const SidebarGroupLabel = React.forwardRef<
+  HTMLSpanElement,
+  React.ComponentProps<"span">
+>(({ className, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      data-sidebar="group-label"
+      className={cn(
+        "p-2 text-xs font-medium uppercase text-sidebar-foreground/60",
+        "group-data-[collapsible=icon]:hidden",
+        className
+      )}
+      {...props}
+    />
+  )
+})
+SidebarGroupLabel.displayName = "SidebarGroupLabel"
+
+const SidebarGroupContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      data-sidebar="group-content"
+      className={cn("flex flex-col", className)}
+      {...props}
+    />
+  )
+})
+SidebarGroupContent.displayName = "SidebarGroupContent"
+
 export {
   Sidebar,
   SidebarHeader,
@@ -436,4 +485,7 @@ export {
   SidebarMenuButton,
   SidebarTrigger,
   SidebarInset,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
 }

@@ -9,12 +9,17 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import {
   LayoutGrid,
   FolderKanban,
   Shield,
   BookUser,
+  Settings,
+  LogOut,
 } from "lucide-react";
 
 const EcoFlowLogo = () => (
@@ -75,11 +80,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/dashboard")}
-              tooltip="Dashboard"
+              tooltip="Πίνακας Ελέγχου"
             >
               <Link href="/dashboard">
                 <LayoutGrid />
-                <span>Dashboard</span>
+                <span>Πίνακας Ελέγχου</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -87,11 +92,11 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/projects")}
-              tooltip="Projects"
+              tooltip="Λίστα Έργων"
             >
               <Link href="/projects">
                 <FolderKanban />
-                <span>Projects</span>
+                <span>Λίστα Έργων</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -99,27 +104,46 @@ export function SidebarNav() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/contacts")}
-              tooltip="Contacts"
+              tooltip="Λίστα Επαφών"
             >
               <Link href="/contacts">
                 <BookUser />
-                <span>Contacts</span>
+                <span>Λίστα Επαφών</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-         <SidebarMenu>
-            <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin">
-                    <Link href="/admin">
-                        <Shield />
-                        <span>Admin</span>
-                    </Link>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-        </SidebarMenu>
+         <SidebarGroup>
+           <SidebarGroupLabel>Διαχείριση</SidebarGroupLabel>
+           <SidebarGroupContent>
+              <SidebarMenu>
+                 <SidebarMenuItem>
+                     <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Κατάλογος Παρεμβάσεων">
+                        <Link href="/admin">
+                            <Shield />
+                            <span>Κατάλογος Παρεμβάσεων</span>
+                        </Link>
+                     </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                     <SidebarMenuButton asChild isActive={isActive("/settings")} tooltip="Ρυθμίσεις">
+                        <Link href="/settings">
+                            <Settings />
+                            <span>Ρυθμίσεις</span>
+                        </Link>
+                     </SidebarMenuButton>
+                  </SidebarMenuItem>
+                   <SidebarMenuItem>
+                     <SidebarMenuButton tooltip="Αποσύνδεση">
+                        <LogOut />
+                        <span>Αποσύνδεση</span>
+                     </SidebarMenuButton>
+                  </SidebarMenuItem>
+              </SidebarMenu>
+           </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarFooter>
     </>
   );
