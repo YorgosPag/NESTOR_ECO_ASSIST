@@ -23,6 +23,8 @@ export type Project = {
     status: "On Track" | "At Risk" | "Completed" | "On Hold";
     progress: number;
     stages: Stage[];
+    interventionCategory?: string; // Optional for now
+    interventionSubcategory?: string; // Optional for now
   }
 
   export type MasterIntervention = {
