@@ -20,9 +20,9 @@ export type Project = {
     name?: string;
     masterInterventionId: string;
     projectId: string;
-    cost?: number;
-    price?: number;
-    vat?: number;
+    costOfMaterials?: number;
+    costOfLabor?: number;
+    totalCost?: number; // This is the budget/revenue for the intervention
     stages: Stage[];
     interventionCategory?: string;
     interventionSubcategory?: string;
