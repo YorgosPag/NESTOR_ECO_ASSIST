@@ -20,7 +20,7 @@ interface AddInterventionDialogProps {
     masterInterventions: MasterIntervention[];
 }
 
-export function AddInterventionDialog({ projectId, children, customLists, customListItems, masterInterventions }: AddInterventionDialogProps) {
+export function AddInterventionDialog({ projectId, children, customLists, customListItems }: AddInterventionDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,7 +34,8 @@ export function AddInterventionDialog({ projectId, children, customLists, custom
         <AddInterventionForm 
             projectId={projectId} 
             setOpen={setOpen} 
-            masterInterventions={masterInterventions} 
+            customLists={customLists}
+            customListItems={customListItems}
         />
       </DialogContent>
     </Dialog>
