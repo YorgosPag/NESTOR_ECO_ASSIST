@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -13,19 +14,31 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Project } from "@/types";
 import { ArrowUpRight } from "lucide-react";
+import { calculateClientProjectMetrics } from '@/lib/client-utils';
+import { Skeleton } from "../ui/skeleton";
 
 interface ProjectCardProps {
   project: Project;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project: serverProject }: ProjectCardProps) {
+  const [project, setProject] = useState(serverProject);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setProject(calculateClientProjectMetrics(serverProject));
+    setIsMounted(true);
+  }, [serverProject]);
+
+
+  const displayProject = isMounted ? project : serverProject;
 
   const statusVariant = {
     'On Track': 'default',
     'At Risk': 'destructive',
     'Completed': 'secondary',
     'On Hold': 'outline',
-  }[project.status] as "default" | "destructive" | "secondary" | "outline" | undefined;
+  }[displayProject.status] as "default" | "destructive" | "secondary" | "outline" | undefined;
 
   return (
     <Card className="flex flex-col">
@@ -39,16 +52,22 @@ export function ProjectCard({ project }: ProjectCardProps) {
                     </Link>
                 </CardTitle>
             </div>
-            {statusVariant && <Badge variant={statusVariant}>{project.status}</Badge>}
+            {isMounted && statusVariant ? (
+                <Badge variant={statusVariant}>{displayProject.status}</Badge>
+            ) : <Skeleton className="h-5 w-20 rounded-full" />}
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 flex-grow">
         <div>
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
             <span>Progress</span>
-            <span>{project.progress}%</span>
+            {isMounted ? (
+                <span>{displayProject.progress}%</span>
+            ): <Skeleton className="h-4 w-8" />}
           </div>
-          <Progress value={project.progress} aria-label={`${project.progress}% complete`} />
+          {isMounted ? (
+             <Progress value={displayProject.progress} aria-label={`${displayProject.progress}% complete`} />
+          ) : <Skeleton className="h-4 w-full" /> }
         </div>
       </CardContent>
       <CardFooter>

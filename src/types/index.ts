@@ -8,6 +8,7 @@ export type Project = {
     endDate: string;
     description: string;
     stages: Stage[];
+    alerts?: number;
   };
   
   export type Stage = {
