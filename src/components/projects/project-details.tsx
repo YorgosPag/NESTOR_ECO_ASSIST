@@ -105,7 +105,6 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
                           key={intervention.id}
                           project={serverProject}
                           intervention={intervention}
-                          masterInterventions={masterInterventions}
                           allProjectInterventions={serverProject.interventions as ProjectIntervention[]}
                           contacts={contacts}
                           customLists={customLists}
