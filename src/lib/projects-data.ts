@@ -14,18 +14,18 @@ const projects: Project[] = [
     deadline: "2025-01-15",
     description: "A large-scale project to reforest 10,000 hectares of the Amazon rainforest.",
     stages: [
-      { id: 'stage-1', name: "Initiation", files: [{ id: 'file-1', name: 'Project Charter.pdf', size: '1.2MB', uploadedAt: '2023-01-20', tags: ['charter', 'planning'] }], deadline: "2024-08-15T00:00:00Z", assigneeContactId: 'contact-1', status: "Completed", progress: 100 },
-      { id: 'stage-2', name: "Planning", files: [{ id: 'file-2', name: 'Detailed Budget.xlsx', size: '800KB', uploadedAt: '2023-03-10', tags: ['finance', 'budget'] }], deadline: "2024-09-01T00:00:00Z", assigneeContactId: 'contact-2', status: "In Progress", progress: 50 },
-      { id: 'stage-3', name: "Execution", files: [], deadline: "2025-01-01T00:00:00Z", status: "Not Started", progress: 0 },
+      { id: 'stage-1', title: "Initiation", files: [{ id: 'file-1', name: 'Project Charter.pdf', size: '1.2MB', uploadedAt: '2023-01-20', tags: ['charter', 'planning'] }], deadline: "2024-08-15T00:00:00Z", assigneeContactId: 'contact-1', status: "Completed", progress: 100, lastUpdated: '2023-01-20' },
+      { id: 'stage-2', title: "Planning", files: [{ id: 'file-2', name: 'Detailed Budget.xlsx', size: '800KB', uploadedAt: '2023-03-10', tags: ['finance', 'budget'] }], deadline: "2024-09-01T00:00:00Z", assigneeContactId: 'contact-2', status: "In Progress", progress: 50, lastUpdated: '2023-03-10' },
+      { id: 'stage-3', title: "Execution", files: [], deadline: "2025-01-01T00:00:00Z", status: "Not Started", progress: 0, lastUpdated: '2023-03-10' },
     ],
     interventions: [
         { id: 'inter-1', masterInterventionId: 'master-int-1', projectId: 'proj-001', status: "On Track", progress: 80, interventionCategory: 'Environmental Impact Assessment', interventionSubcategory: 'A formal process to predict the environmental consequences of a project.', stages: [
-            { id: 'p1-int1-s1', name: "Scoping", files: [], deadline: "2024-08-01T00:00:00Z", status: "Completed", progress: 100 },
-            { id: 'p1-int1-s2', name: "Baseline Study", files: [], deadline: "2024-08-15T00:00:00Z", status: "In Progress", progress: 60 },
-            { id: 'p1-int1-s3', name: "Impact Prediction", files: [], deadline: "2024-09-01T00:00:00Z", status: "Not Started", progress: 0 },
+            { id: 'p1-int1-s1', title: "Scoping", files: [], deadline: "2024-08-01T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2024-08-01' },
+            { id: 'p1-int1-s2', title: "Baseline Study", files: [], deadline: "2024-08-15T00:00:00Z", status: "In Progress", progress: 60, lastUpdated: '2024-08-10' },
+            { id: 'p1-int1-s3', title: "Impact Prediction", files: [], deadline: "2024-09-01T00:00:00Z", status: "Not Started", progress: 0, lastUpdated: '2024-08-10' },
         ]},
         { id: 'inter-2', masterInterventionId: 'master-int-2', projectId: 'proj-001', status: "Completed", progress: 100, interventionCategory: 'Site Survey', interventionSubcategory: 'A detailed inspection and measurement of a land area.', stages: [
-            { id: 'p1-int2-s1', name: "Topographical Survey", files: [], deadline: "2024-07-20T00:00:00Z", status: "Completed", progress: 100 },
+            { id: 'p1-int2-s1', title: "Topographical Survey", files: [], deadline: "2024-07-20T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2024-07-20' },
         ]}
     ],
     auditLog: [
@@ -46,8 +46,8 @@ const projects: Project[] = [
     deadline: "2026-06-01",
     description: "Efforts to restore coral populations through innovative cultivation and transplantation techniques.",
      stages: [
-      { id: 'stage-1', name: "Initiation", files: [], deadline: "2024-07-30T00:00:00Z", assigneeContactId: 'contact-3', status: "Completed", progress: 100 },
-      { id: 'stage-2', name: "Planning", files: [], deadline: "2024-08-20T00:00:00Z", assigneeContactId: 'contact-1', status: "Delayed", progress: 20 },
+      { id: 'stage-1', title: "Initiation", files: [], deadline: "2024-07-30T00:00:00Z", assigneeContactId: 'contact-3', status: "Completed", progress: 100, lastUpdated: '2024-07-30' },
+      { id: 'stage-2', title: "Planning", files: [], deadline: "2024-08-20T00:00:00Z", assigneeContactId: 'contact-1', status: "Delayed", progress: 20, lastUpdated: '2024-08-18' },
     ],
     interventions: [],
     auditLog: [
@@ -67,11 +67,11 @@ const projects: Project[] = [
     deadline: "2023-09-01",
     description: "A one-year study monitoring the rate of ice melt in the Arctic circle.",
      stages: [
-      { id: 'stage-1', name: "Initiation", files: [], deadline: "2022-09-15T00:00:00Z", status: "Completed", progress: 100 },
-      { id: 'stage-2', name: "Planning", files: [], deadline: "2022-10-01T00:00:00Z", status: "Completed", progress: 100 },
-      { id: 'stage-3', name: "Execution", files: [], deadline: "2023-08-01T00:00:00Z", status: "Completed", progress: 100 },
-      { id: 'stage-4', name: "Monitoring", files: [], deadline: "2023-08-20T00:00:00Z", status: "Completed", progress: 100 },
-      { id: 'stage-5', name: "Closure", files: [{id: 'file-3', name: 'Final Report.docx', size: '5.5MB', uploadedAt: '2023-08-28', tags: ['report', 'conclusion', 'research']}], deadline: "2023-09-01T00:00:00Z", status: "Completed", progress: 100 },
+      { id: 'stage-1', title: "Initiation", files: [], deadline: "2022-09-15T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2022-09-15' },
+      { id: 'stage-2', title: "Planning", files: [], deadline: "2022-10-01T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2022-10-01' },
+      { id: 'stage-3', title: "Execution", files: [], deadline: "2023-08-01T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2023-08-01' },
+      { id: 'stage-4', title: "Monitoring", files: [], deadline: "2023-08-20T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2023-08-20' },
+      { id: 'stage-5', title: "Closure", files: [{id: 'file-3', name: 'Final Report.docx', size: '5.5MB', uploadedAt: '2023-08-28', tags: ['report', 'conclusion', 'research']}], deadline: "2023-09-01T00:00:00Z", status: "Completed", progress: 100, lastUpdated: '2023-09-01' },
     ],
     interventions: [],
     auditLog: []
@@ -89,7 +89,7 @@ const projects: Project[] = [
     deadline: "2029-02-20",
     description: "A long-term initiative to explore methods for creating sustainable green areas in the Sahara.",
      stages: [
-      { id: 'stage-1', name: "Initiation", files: [], deadline: "2024-09-10T00:00:00Z", assigneeContactId: 'contact-2', status: "In Progress", progress: 15 },
+      { id: 'stage-1', title: "Initiation", files: [], deadline: "2024-09-10T00:00:00Z", assigneeContactId: 'contact-2', status: "In Progress", progress: 15, lastUpdated: '2024-08-15' },
     ],
     interventions: [],
     auditLog: []

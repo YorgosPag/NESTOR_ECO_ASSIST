@@ -23,8 +23,8 @@ export type Project = {
     status: "On Track" | "At Risk" | "Completed" | "On Hold";
     progress: number;
     stages: Stage[];
-    interventionCategory?: string; // Optional for now
-    interventionSubcategory?: string; // Optional for now
+    interventionCategory?: string; 
+    interventionSubcategory?: string; 
   }
 
   export type MasterIntervention = {
@@ -35,12 +35,13 @@ export type Project = {
   
   export type Stage = {
     id: string;
-    name: string;
+    title: string;
     files: File[];
     deadline: string;
     assigneeContactId?: string;
     status: "Completed" | "In Progress" | "Not Started" | "Delayed";
     progress: number;
+    lastUpdated?: string;
   };
   
   export type File = {
