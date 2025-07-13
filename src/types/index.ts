@@ -64,6 +64,9 @@ export type Project = {
       email: string;
       avatarUrl?: string;
       role: 'Client' | 'Team' | 'Stakeholder';
+      addressStreet?: string;
+      addressNumber?: string;
+      addressCity?: string;
   }
 
   export type CustomList = {
@@ -77,4 +80,3 @@ export type Project = {
     value: string;
   }
   
-
