@@ -3,9 +3,12 @@ export type Project = {
     name: string;
     status: "On Track" | "At Risk" | "Completed" | "On Hold";
     progress: number;
-    manager: string;
+    manager: string; // This is now a contact ID
+    applicationNumber?: string;
+    budget?: number;
     startDate: string;
     endDate: string;
+    deadline?: string;
     description: string;
     stages: Stage[];
     alerts?: number;
@@ -43,5 +46,6 @@ export type Project = {
       lastName: string;
       email: string;
       avatarUrl?: string;
+      role: 'Client' | 'Team' | 'Stakeholder';
   }
   
