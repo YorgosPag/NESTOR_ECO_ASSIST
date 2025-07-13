@@ -17,6 +17,7 @@ export type Project = {
 
   export type ProjectIntervention = {
     id: string;
+    name?: string;
     masterInterventionId: string;
     projectId: string;
     cost?: number;

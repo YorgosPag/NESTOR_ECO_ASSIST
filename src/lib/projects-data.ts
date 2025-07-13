@@ -98,7 +98,7 @@ const projects: Project[] = [
 ];
 
 // Mock function to simulate fetching projects
-export async function getProjects(db?: any) {
+export async function getAllProjects(db?: any) {
     // In a real app, this data would come from a database.
     // We are simulating that by returning a deep copy.
     return Promise.resolve(JSON.parse(JSON.stringify(projects)));

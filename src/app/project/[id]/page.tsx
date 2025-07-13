@@ -1,11 +1,12 @@
 
-import { getProjectById } from "@/lib/projects-data";
+import { getProjectById, getAllProjects } from "@/lib/projects-data";
 import { notFound } from "next/navigation";
 import { ProjectDetails } from "@/components/projects/project-details";
 import { getMasterInterventions } from "@/lib/interventions-data";
 import { getContacts } from "@/lib/contacts-data";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { getCustomLists, getAllCustomListItems } from "@/lib/custom-lists-data";
+import type { Project } from "@/types";
 
 export const dynamic = 'force-dynamic';
 
@@ -30,4 +31,17 @@ export default async function ProjectPage({ params }: { params: { id: string } }
         customLists={customLists} 
         customListItems={customListItems}
     />;
+}
+
+export async function generateStaticParams() {
+  try {
+    const db = getAdminDb();
+    const projects: Project[] = await getAllProjects(db);
+    return projects.map((project) => ({
+      id: project.id,
+    }));
+  } catch (error) {
+    console.error("Failed to generate static params for projects due to DB connection issue:", error);
+    return [];
+  }
 }

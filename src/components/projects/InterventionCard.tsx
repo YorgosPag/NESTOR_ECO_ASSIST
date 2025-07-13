@@ -24,14 +24,16 @@ interface InterventionCardProps {
 export function InterventionCard({ project, intervention, allProjectInterventions, masterInterventions, contacts, owner, customLists, customListItems }: InterventionCardProps) {
 
     const masterIntervention = masterInterventions.find(mi => mi.id === intervention.masterInterventionId);
+    const interventionName = masterIntervention?.name || intervention.name || 'Unknown Intervention';
+    const interventionDescription = masterIntervention?.description;
 
     return (
         <AccordionItem value={intervention.id} className="border-b-0">
             <Card>
                 <AccordionTrigger className="p-4 bg-muted/50 hover:bg-muted/80">
                     <div className="flex-1 text-left">
-                        <h3 className="text-lg font-semibold">{masterIntervention?.name || 'Unknown Intervention'}</h3>
-                        <p className="text-sm text-muted-foreground">{masterIntervention?.description}</p>
+                        <h3 className="text-lg font-semibold">{interventionName}</h3>
+                        <p className="text-sm text-muted-foreground">{interventionDescription}</p>
                     </div>
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                         <DeleteInterventionDialog project={project} intervention={intervention}>
@@ -49,14 +51,14 @@ export function InterventionCard({ project, intervention, allProjectIntervention
                           stages={intervention.stages} 
                           project={project}
                           allProjectInterventions={allProjectInterventions}
-                          interventionName={masterIntervention?.name || 'Intervention'}
+                          interventionName={interventionName}
                           contacts={contacts} 
                           owner={owner} 
                           interventionMasterId={intervention.masterInterventionId} 
                       />
                     </div>
                     <div className="flex justify-start pt-4 border-t">
-                        <AddStageDialog projectId={project.id} interventionMasterId={intervention.masterInterventionId} interventionName={masterIntervention?.name || 'Intervention'} contacts={contacts}>
+                        <AddStageDialog projectId={project.id} interventionMasterId={intervention.masterInterventionId} interventionName={interventionName} contacts={contacts}>
                             <Button variant="outline" size="sm">
                                 <PlusCircle className="mr-2 h-4 w-4" />
                                 Προσθήκη Νέου Σταδίου
