@@ -21,6 +21,7 @@ import {
   Settings,
   LogOut,
   ListChecks,
+  ShoppingCart,
 } from "lucide-react";
 
 const EcoFlowLogo = () => (
@@ -133,6 +134,14 @@ export function SidebarNav() {
                         <Link href="/admin/custom-lists">
                             <ListChecks />
                             <span>Προσαρμοσμένες Λίστες</span>
+                        </Link>
+                     </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                     <SidebarMenuButton asChild isActive={isActive("/offers")} tooltip="Προσφορές Προμηθευτών">
+                        <Link href="/offers/new">
+                            <ShoppingCart />
+                            <span>Προσφορές Προμηθ.</span>
                         </Link>
                      </SidebarMenuButton>
                   </SidebarMenuItem>

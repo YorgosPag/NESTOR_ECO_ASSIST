@@ -157,3 +157,22 @@ export type Project = {
       id: string;
       name: string;
   }
+
+  export type OfferItem = {
+    name: string;
+    unit: string;
+    quantity?: number;
+    unitPrice: number;
+  };
+
+  export type Offer = {
+    id: string;
+    supplierId: string;
+    supplierType: 'vendor'; // Could be expanded later
+    type: 'general' | 'perProject';
+    projectId?: string;
+    description: string;
+    fileUrl?: string;
+    items: OfferItem[];
+    createdAt: string;
+  };
