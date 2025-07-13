@@ -2,7 +2,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { addStageAction } from '@/app/actions/stages';
+import { addStageAction } from '@/app/actions/projects';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
