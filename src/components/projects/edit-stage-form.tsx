@@ -90,7 +90,7 @@ export function EditStageForm({ stage, projectId, contacts, setOpen }: EditStage
 
             <div className="space-y-2">
                 <Label htmlFor="notes">Σημειώσεις</Label>
-                <Textarea id="notes" name="notes" defaultValue={stage.notes} placeholder="Προσθέστε σημειώσεις..." rows={3} />
+                <Textarea id="notes" name="notes" defaultValue={stage.notes || ''} placeholder="Προσθέστε σημειώσεις..." rows={3} />
                  {state.errors?.notes && <p className="text-sm font-medium text-destructive mt-1">{state.errors.notes[0]}</p>}
             </div>
 
