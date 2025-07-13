@@ -4,7 +4,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  SidebarProvider,
   Sidebar,
   SidebarHeader,
   SidebarContent,
@@ -26,15 +25,15 @@ function SidebarLogo() {
   const { state } = useSidebar();
   return (
     <div className="flex items-center gap-2 p-2">
-      <Leaf className="size-8 text-primary" />
+      <Leaf className="size-8 text-sidebar-primary" />
       {state === 'expanded' && (
-        <h1 className="text-xl font-bold">Prasina</h1>
+        <h1 className="text-xl font-bold text-sidebar-foreground">Prasina</h1>
       )}
     </div>
   );
 }
 
-function AppLayoutContent({ children }: { children: React.ReactNode }) {
+export function AppLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     return (
@@ -114,13 +113,4 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             </SidebarInset>
         </>
     )
-}
-
-
-export function AppLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <AppLayoutContent>{children}</AppLayoutContent>
-    </SidebarProvider>
-  );
 }
