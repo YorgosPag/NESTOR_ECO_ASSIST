@@ -112,12 +112,8 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
 
     try {
         const db = getAdminDb();
-        const project = await getProjectById(db, projectId);
-        if (!project) {
-            throw new Error("Το έργο δεν βρέθηκε για ενημέρωση.");
-        }
         
-        await updateProjectData(db, projectId, { ...project, ...updateData });
+        await updateProjectData(db, projectId, updateData );
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateProjectAction:", error);
@@ -839,7 +835,7 @@ export async function deleteSubInterventionAction(prevState: any, formData: Form
     await updateProjectData(db, projectId, project);
 
   } catch (error: any) {
-    console.error("🔥 ERROR in deleteSubInterventionAction:", error);
+    console.error("🔥 ERROR in updateSubInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
   }
 
@@ -940,4 +936,4 @@ export async function moveSubInterventionAction(prevState: any, formData: FormDa
   revalidatePath(`/projects/${projectId}`);
   return { success: true, message: 'Η σειρά άλλαξε.' };
 }
-```/src/lib/projects-data.ts
+```
