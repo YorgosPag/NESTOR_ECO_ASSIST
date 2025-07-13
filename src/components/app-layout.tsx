@@ -17,8 +17,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { LayoutDashboard, History, Settings, Leaf } from 'lucide-react';
+import { LayoutDashboard, History, Leaf, FolderKanban } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 function SidebarLogo() {
@@ -27,7 +26,7 @@ function SidebarLogo() {
     <div className="flex items-center gap-2 p-2">
       <Leaf className="size-8 text-primary" />
       {state === 'expanded' && (
-        <h1 className="text-xl font-bold">Prasina</h1>
+        <h1 className="text-xl font-bold">EcoAssist</h1>
       )}
     </div>
   );
@@ -59,6 +58,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
+                isActive={pathname.startsWith('/projects')}
+                tooltip="Projects"
+              >
+                <Link href="/">
+                  <FolderKanban />
+                  <span>Projects</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
                 isActive={pathname.startsWith('/audit-trail')}
                 tooltip="Audit Trail"
               >
@@ -75,11 +86,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
            <div className="flex items-center gap-2 p-2">
              <Avatar className="size-9">
                <AvatarImage data-ai-hint="person" src="https://placehold.co/40x40" alt="User" />
-               <AvatarFallback>PA</AvatarFallback>
+               <AvatarFallback>EA</AvatarFallback>
              </Avatar>
              <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                <span className="text-sm font-semibold text-sidebar-foreground">Admin</span>
-                <span className="text-xs text-sidebar-foreground/70">admin@prasina.app</span>
+                <span className="text-sm font-semibold text-sidebar-foreground">EcoAdmin</span>
+                <span className="text-xs text-sidebar-foreground/70">admin@eco.assist</span>
              </div>
            </div>
         </SidebarFooter>
