@@ -19,14 +19,14 @@ type FileManagerProps = {
 };
 
 export function FileManager({ stage }: FileManagerProps) {
-  const files: ProjectFile[] = stage.files;
+  const files: ProjectFile[] = stage.files || [];
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-2">
             <Card>
                 <CardHeader>
-                <CardTitle>{stage.name} Files</CardTitle>
+                <CardTitle>{stage.title} Files</CardTitle>
                 <CardDescription>Documents and attachments for this stage.</CardDescription>
                 </CardHeader>
                 <CardContent>
