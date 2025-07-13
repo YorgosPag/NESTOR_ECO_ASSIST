@@ -53,16 +53,16 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
     }, [projects, contacts, searchTerm]);
     
 
-    const quotationProjects = filteredProjects.filter(p => p.status === 'Quotation');
-    const onTrackProjects = filteredProjects.filter(p => p.status === 'On Track');
-    const delayedProjects = filteredProjects.filter(p => p.status === 'Delayed');
-    const completedProjects = filteredProjects.filter(p => p.status === 'Completed');
+    const quotationProjects = filteredProjects.filter(p => p.status === 'Προσφορά');
+    const onTrackProjects = filteredProjects.filter(p => p.status === 'Εντός Χρονοδιαγράμματος');
+    const delayedProjects = filteredProjects.filter(p => p.status === 'Σε Καθυστέρηση');
+    const completedProjects = filteredProjects.filter(p => p.status === 'Ολοκληρωμένο');
     const allNonCompletedProjects = [...quotationProjects, ...onTrackProjects, ...delayedProjects];
 
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                         <FolderKanban className="h-6 w-6" />
@@ -70,8 +70,8 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     </h1>
                     <p className="text-muted-foreground">Προβάλετε και διαχειριστείτε όλες τις προσφορές, τα ενεργά και τα ολοκληρωμένα έργα.</p>
                 </div>
-                <div className="ml-auto flex items-center gap-2">
-                    <Button asChild>
+                <div className="flex items-center gap-2">
+                    <Button asChild className="w-full md:w-auto">
                     <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Δημιουργία Έργου/Προσφοράς
@@ -80,8 +80,8 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between py-4">
-                <div className="relative w-full max-w-sm">
+            <div className="flex items-center py-4">
+                <div className="relative w-full md:max-w-sm">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Αναζήτηση με έργο, αίτηση, ή ιδιοκτήτη..."
@@ -92,7 +92,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </div>
             </div>
 
-            <Tabs defaultValue="all">
+            <Tabs defaultValue="all" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
                     <TabsTrigger value="all">Όλα ({allNonCompletedProjects.length})</TabsTrigger>
                     <TabsTrigger value="quotation">Προσφορές ({quotationProjects.length})</TabsTrigger>
@@ -118,7 +118,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                             </div>
                         </div>
                     ) : allNonCompletedProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {allNonCompletedProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
@@ -129,7 +129,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </TabsContent>
                 <TabsContent value="quotation" className="mt-4">
                     {quotationProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {quotationProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
@@ -138,7 +138,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </TabsContent>
                 <TabsContent value="on_track" className="mt-4">
                     {onTrackProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {onTrackProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
@@ -147,7 +147,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </TabsContent>
                 <TabsContent value="delayed" className="mt-4">
                      {delayedProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {delayedProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
@@ -156,7 +156,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 </TabsContent>
                 <TabsContent value="completed" className="mt-4">
                     {completedProjects.length > 0 ? (
-                        <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {completedProjects.map((project) => (
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}

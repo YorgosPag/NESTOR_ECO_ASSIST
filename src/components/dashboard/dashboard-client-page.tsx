@@ -43,11 +43,11 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
         ]);
     }, []);
 
-    const activeProjects = projects.filter(p => p.status === 'On Track' || p.status === 'Delayed');
-    const onTrackProjects = projects.filter(p => p.status === 'On Track').length;
-    const quotationProjects = projects.filter(p => p.status === 'Quotation').length;
-    const delayedProjects = projects.filter(p => p.status === 'Delayed').length;
-    const completedProjects = projects.filter(p => p.status === 'Completed').length;
+    const activeProjects = projects.filter(p => p.status === 'Εντός Χρονοδιαγράμματος' || p.status === 'Σε Καθυστέρηση');
+    const onTrackProjects = projects.filter(p => p.status === 'Εντός Χρονοδιαγράμματος').length;
+    const quotationProjects = projects.filter(p => p.status === 'Προσφορά').length;
+    const delayedProjects = projects.filter(p => p.status === 'Σε Καθυστέρηση').length;
+    const completedProjects = projects.filter(p => p.status === 'Ολοκληρωμένο').length;
     const recentActiveProjects = activeProjects.slice(0, 3);
 
     const upcomingDeadlines: Deadline[] = activeProjects
@@ -68,7 +68,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                         <LayoutGrid className="h-6 w-6" />
@@ -76,14 +76,14 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     </h1>
                     <p className="text-muted-foreground">Μια συνολική εικόνα των έργων σας.</p>
                 </div>
-                <Button asChild>
+                <Button asChild className="w-full md:w-auto">
                     <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Δημιουργία Έργου
                     </Link>
                 </Button>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -94,7 +94,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     <CardContent>
                         <div className="text-2xl font-bold">{activeProjects.length}</div>
                         <p className="text-xs text-muted-foreground">
-                            {onTrackProjects} εντός χρονοδ., {delayedProjects} σε καθυστέρηση
+                            {onTrackProjects} εντός, {delayedProjects} εκτός
                         </p>
                     </CardContent>
                 </Card>
@@ -108,33 +108,33 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     <CardContent>
                         <div className="text-2xl font-bold">{quotationProjects}</div>
                         <p className="text-xs text-muted-foreground">
-                           Εκκρεμεί ενεργοποίηση
+                           Εκκρεμεί ενεργ/ση
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                           Ολοκληρωμένα Έργα
+                           Ολοκληρωμένα
                         </CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{completedProjects}</div>
                         <p className="text-xs text-muted-foreground">
-                           Ολοκληρώθηκαν με επιτυχία
+                           Έργα
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Προσεχείς Προθεσμίες</CardTitle>
+                        <CardTitle className="text-sm font-medium">Προθεσμίες</CardTitle>
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{upcomingDeadlines.length}</div>
                          <p className="text-xs text-muted-foreground">
-                            Σε όλα τα ενεργά έργα
+                            Εντός 7 ημερών
                         </p>
                     </CardContent>
                 </Card>
@@ -153,14 +153,14 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                         <h2 className="text-2xl font-bold tracking-tight">Πρόσφατα Έργα</h2>
                         <p className="text-muted-foreground">Μια ματιά στα πιο πρόσφατα ενεργά έργα σας.</p>
                     </div>
-                     <Button asChild variant="outline">
+                     <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex">
                         <Link href="/projects">
-                           Προβολή Όλων των Έργων
+                           Προβολή Όλων
                         </Link>
                     </Button>
                 </div>
                 {recentActiveProjects.length > 0 ? (
-                    <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-4 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                         {recentActiveProjects.map(project => (
                             <ProjectCard key={project.id} project={project} contacts={contacts} />
                         ))}

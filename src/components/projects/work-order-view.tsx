@@ -62,7 +62,7 @@ export function WorkOrderView({ project, contacts }: WorkOrderViewProps) {
 
         project.interventions.forEach(intervention => {
             bodyParts.push(`\n• ΠΑΡΕΜΒΑΣΗ: ${intervention.interventionSubcategory || intervention.interventionCategory}`);
-             const currentStage = intervention.stages.find(s => s.status !== 'Completed') || intervention.stages[intervention.stages.length - 1];
+             const currentStage = intervention.stages.find(s => s.status !== 'Ολοκληρωμένο') || intervention.stages[intervention.stages.length - 1];
              if (currentStage) {
                 bodyParts.push(`  - Τρέχον Στάδιο: ${currentStage.title}`);
              } else {
@@ -92,119 +92,117 @@ export function WorkOrderView({ project, contacts }: WorkOrderViewProps) {
 
     return (
         <main className="bg-background font-sans print:bg-white">
-            <div className="flex justify-between items-center mb-6 p-4 md:p-0 print:hidden">
-                <h1 className="text-h2">Προεπισκόπηση Αναφοράς</h1>
-                <div className="flex gap-2">
-                    <Button asChild variant="outline">
-                        <Link href={`/project/${project.id}`}>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Επιστροφή στο Έργο
-                        </Link>
-                    </Button>
-                    <Button onClick={handleEmail} disabled={!isClient}>
-                        <Mail className="mr-2 h-4 w-4" />
-                        Αποστολή με Email
-                    </Button>
-                    <Button onClick={() => window.print()} disabled={!isClient}>
-                        <Printer className="mr-2 h-4 w-4" />
-                        Εκτύπωση
-                    </Button>
+            <div className="container mx-auto p-4 md:p-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 print:hidden">
+                    <h1 className="text-xl md:text-2xl font-bold">Προεπισκόπηση Αναφοράς</h1>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <Button asChild variant="outline" className="flex-1 sm:flex-initial">
+                            <Link href={`/project/${project.id}`}>
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Πίσω
+                            </Link>
+                        </Button>
+                        <Button onClick={() => window.print()} disabled={!isClient} className="flex-1 sm:flex-initial">
+                            <Printer className="mr-2 h-4 w-4" />
+                            Εκτύπωση
+                        </Button>
+                    </div>
                 </div>
-            </div>
-            
-            <div className="max-w-4xl mx-auto p-8 border rounded-lg bg-card text-card-foreground print:border-none print:shadow-none print:p-0">
-                 <header className="flex justify-between items-start pb-6 border-b mb-6">
-                    <div>
-                        <h2 className="text-h1 text-primary">ΕΝΤΟΛΗ ΕΡΓΑΣΙΑΣ</h2>
-                        <p className="text-muted">Αναφορά για συνεργάτες</p>
-                    </div>
-                    <div className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                             <svg
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="text-primary"
-                            >
-                              <path
-                                d="M12 2L2 7L12 12L22 7L12 2Z"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M2 17L12 22L22 17"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M2 12L12 17L22 12"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            <span className="font-semibold">NESTOR eco</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">Ημερομηνία: {isClient ? format(new Date(), 'dd MMMM yyyy', { locale: el }) : '...'}</p>
-                    </div>
-                </header>
-
-                <section className="grid md:grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <h3 className="text-h3 border-b pb-2 mb-3">Στοιχεία Έργου</h3>
-                        <div className="space-y-1 text-p">
-                            <p><strong>Τίτλος:</strong> {project.name}</p>
-                            {project.applicationNumber && <p><strong>Αρ. Αίτησης:</strong> {project.applicationNumber}</p>}
-                            {project.deadline && (
-                                <p className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                                    <span><strong>Καταληκτική Ημερομηνία:</strong> {isClient ? format(new Date(project.deadline), 'dd/MM/yyyy') : '...'}</span>
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                    {owner && (
+                
+                <div className="max-w-4xl mx-auto p-4 sm:p-8 border rounded-lg bg-card text-card-foreground print:border-none print:shadow-none print:p-0">
+                     <header className="flex flex-col sm:flex-row justify-between items-start pb-6 border-b mb-6 gap-4">
                         <div>
-                            <h3 className="text-h3 border-b pb-2 mb-3">Στοιχεία Ιδιοκτήτη</h3>
-                            <p className="font-bold text-lg">{owner.firstName} {owner.lastName}</p>
-                            <div className="space-y-1 mt-2 text-muted-foreground">
-                                <p className="flex items-center gap-2"><MapPin className="w-4 h-4"/> {ownerFullAddress || 'Δεν έχει οριστεί'}</p>
-                                <p className="flex items-center gap-2"><Phone className="w-4 h-4"/> {owner.mobilePhone || owner.landlinePhone || 'Δεν έχει οριστεί'}</p>
+                            <h2 className="text-2xl md:text-3xl font-bold text-primary">ΕΝΤΟΛΗ ΕΡΓΑΣΙΑΣ</h2>
+                            <p className="text-muted-foreground">Αναφορά για συνεργάτες</p>
+                        </div>
+                        <div className="text-left sm:text-right">
+                            <div className="flex items-center sm:justify-end gap-2">
+                                 <svg
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="text-primary"
+                                >
+                                  <path
+                                    d="M12 2L2 7L12 12L22 7L12 2Z"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M2 17L12 22L22 17"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M2 12L12 17L22 12"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                                <span className="font-semibold">NESTOR eco</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">Ημερομηνία: {isClient ? format(new Date(), 'dd MMMM yyyy', { locale: el }) : '...'}</p>
+                        </div>
+                    </header>
+
+                    <section className="grid md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <h3 className="text-xl font-semibold border-b pb-2 mb-3">Στοιχεία Έργου</h3>
+                            <div className="space-y-1">
+                                <p><strong>Τίτλος:</strong> {project.name}</p>
+                                {project.applicationNumber && <p><strong>Αρ. Αίτησης:</strong> {project.applicationNumber}</p>}
+                                {project.deadline && (
+                                    <p className="flex items-center gap-2">
+                                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                                        <span><strong>Προθεσμία:</strong> {isClient ? format(new Date(project.deadline), 'dd/MM/yyyy') : '...'}</span>
+                                    </p>
+                                )}
                             </div>
                         </div>
-                    )}
-                </section>
-
-                <section>
-                    <h3 className="text-h2 mb-4 text-primary">Λίστα Παρεμβάσεων & Εργασιών</h3>
-                    <div className="space-y-6">
-                        {project.interventions.length > 0 ? project.interventions.map(intervention => (
-                            <div key={intervention.id} className="p-4 border rounded-md bg-muted/50 print:bg-gray-50 print:border-gray-200">
-                                <h4 className="text-h4">{intervention.interventionSubcategory || intervention.interventionCategory}</h4>
-                                <div className="mt-4 pl-4 border-l-2 border-primary/50 space-y-2">
-                                    {intervention.stages && intervention.stages.length > 0 ? (
-                                        intervention.stages.map(stage => (
-                                            <div key={stage.id} className="text-sm">
-                                                <p><span className="font-semibold">{stage.title}</span> - <span className="text-muted-foreground">Προθεσμία: {isClient ? format(new Date(stage.deadline), 'dd/MM/yyyy') : '...'}</span></p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-sm text-muted-foreground italic">Δεν έχουν οριστεί στάδια για αυτή την παρέμβαση.</p>
-                                    )}
+                        {owner && (
+                            <div>
+                                <h3 className="text-xl font-semibold border-b pb-2 mb-3">Στοιχεία Ιδιοκτήτη</h3>
+                                <p className="font-bold text-lg">{owner.firstName} {owner.lastName}</p>
+                                <div className="space-y-1 mt-2 text-muted-foreground">
+                                    <p className="flex items-center gap-2"><MapPin className="w-4 h-4"/> {ownerFullAddress || 'Δεν έχει οριστεί'}</p>
+                                    <p className="flex items-center gap-2"><Phone className="w-4 h-4"/> {owner.mobilePhone || owner.landlinePhone || 'Δεν έχει οριστεί'}</p>
                                 </div>
                             </div>
-                        )) : (
-                            <p className="text-center text-muted-foreground py-8">Δεν υπάρχουν παρεμβάσεις σε αυτό το έργο.</p>
                         )}
-                    </div>
-                </section>
+                    </section>
+
+                    <section>
+                        <h3 className="text-2xl font-bold mb-4 text-primary">Παρεμβάσεις & Εργασίες</h3>
+                        <div className="space-y-6">
+                            {project.interventions.length > 0 ? project.interventions.map(intervention => (
+                                <div key={intervention.id} className="p-4 border rounded-md bg-muted/50 print:bg-gray-50 print:border-gray-200">
+                                    <h4 className="text-lg font-semibold">{intervention.interventionSubcategory || intervention.interventionCategory}</h4>
+                                    <div className="mt-4 pl-4 border-l-2 border-primary/50 space-y-2">
+                                        {intervention.stages && intervention.stages.length > 0 ? (
+                                            intervention.stages.map(stage => (
+                                                <div key={stage.id} className="text-sm">
+                                                    <p><span className="font-semibold">{stage.title}</span> - <span className="text-muted-foreground">Προθεσμία: {isClient ? format(new Date(stage.deadline), 'dd/MM/yyyy') : '...'}</span></p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-muted-foreground italic">Δεν έχουν οριστεί στάδια για αυτή την παρέμβαση.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )) : (
+                                <p className="text-center text-muted-foreground py-8">Δεν υπάρχουν παρεμβάσεις σε αυτό το έργο.</p>
+                            )}
+                        </div>
+                    </section>
+                </div>
             </div>
         </main>
     );

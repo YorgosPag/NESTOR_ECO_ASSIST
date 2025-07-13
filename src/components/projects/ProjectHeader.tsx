@@ -29,7 +29,7 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
     return (
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{project.name}</h1>
                 <div className="text-muted-foreground mt-2 space-y-1.5">
                     {owner && (
                         <p className="font-semibold text-foreground/80">{owner.firstName} {owner.lastName} - {owner.addressCity || owner.addressStreet}</p>
@@ -40,12 +40,12 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
                     {project.deadline && (
                         <p className="flex items-center gap-2 text-sm">
                             <Calendar className="h-4 w-4" />
-                            <span>Προθεσμία Ολοκλήρωσης: {isMounted ? format(new Date(project.deadline), 'dd MMMM, yyyy') : '...'}</span>
+                            <span>Προθεσμία: {isMounted ? format(new Date(project.deadline), 'dd MMMM, yyyy') : '...'}</span>
                         </p>
                     )}
                 </div>
             </div>
-            <div className="flex items-center gap-2 self-start md:self-center shrink-0">
+            <div className="flex items-center gap-2 self-start">
                 {isMounted ? (
                     <Badge variant={statusConfig.variant as any} className="text-sm py-1 px-3 gap-2">
                         {statusConfig.icon}
@@ -55,7 +55,7 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
                     <Skeleton className="h-8 w-40" />
                 )}
                 {isMounted && project.alerts && project.alerts > 0 ? (
-                    <Badge variant="outline" className="text-destructive border-destructive">{project.alerts} Ειδοποιήσεις</Badge>
+                    <Badge variant="outline" className="text-destructive border-destructive">{project.alerts} Ειδοπ.</Badge>
                 ) : null}
             </div>
         </div>

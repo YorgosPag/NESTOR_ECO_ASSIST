@@ -41,28 +41,29 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      <ProjectHeader project={serverProject} owner={owner} isMounted={isMounted} />
+      <div className="flex flex-col gap-4">
+        <ProjectHeader project={serverProject} owner={owner} isMounted={isMounted} />
+        <ProjectDetailsActions project={serverProject} contacts={contacts} />
+      </div>
       
-      <ProjectDetailsActions project={serverProject} contacts={contacts} />
-
       <ProjectAlerts project={serverProject} isMounted={isMounted} />
 
       {isMounted && hasInterventions && (
         <Accordion type="single" collapsible value={isSummaryOpen ? "summary" : ""} onValueChange={(value) => setIsSummaryOpen(value === "summary")}>
           <AccordionItem value="summary" className="border-b-0">
              <Card>
-                <AccordionTrigger className="p-6 hover:no-underline">
+                <AccordionTrigger className="p-4 md:p-6 hover:no-underline">
                      <div className="flex flex-col items-start text-left">
-                        <CardTitle className="flex items-center gap-2">
+                        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                            <FileText className="h-5 w-5"/>
-                           Συνοπτική Οικονομική Ανάλυση Έργου
+                           Συνοπτική Οικονομική Ανάλυση
                         </CardTitle>
-                        <CardDescription className="pt-1">
-                           Αναλυτική εικόνα του κόστους, των εσόδων και του περιθωρίου κέρδους.
+                        <CardDescription className="pt-1 text-xs md:text-sm">
+                           Αναλυτική εικόνα κόστους και κέρδους.
                         </CardDescription>
                      </div>
                 </AccordionTrigger>
-                <AccordionContent className="px-6 pb-6">
+                <AccordionContent className="px-4 md:px-6 pb-4 md:pb-6">
                     <QuotationSummaryCard interventions={serverProject.interventions} />
                 </AccordionContent>
              </Card>
@@ -71,19 +72,19 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
       )}
 
       <Tabs defaultValue="interventions" className="w-full">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="interventions">Παρεμβάσεις</TabsTrigger>
             <TabsTrigger value="audit-log">
                 <History className="w-4 h-4 mr-2" />
-                Ιστορικό Ενεργειών
+                Ιστορικό
             </TabsTrigger>
         </TabsList>
         <TabsContent value="interventions" className="mt-4 space-y-6">
           
           <div>
-            <div className="flex items-center justify-between gap-2 mb-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-4">
                 <AddInterventionDialog projectId={serverProject.id} customLists={customLists} customListItems={customListItems}>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Προσθήκη Παρέμβασης
                   </Button>
@@ -91,11 +92,11 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
               <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={expandAll} disabled={!hasInterventions}>
                       <ChevronsDown className="mr-2 h-4 w-4" />
-                      Ανάπτυξη Όλων
+                      Όλα
                   </Button>
                   <Button variant="outline" size="sm" onClick={collapseAll} disabled={!hasInterventions}>
                       <ChevronsUp className="mr-2 h-4 w-4" />
-                      Σύμπτυξη Όλων
+                      Κανένα
                   </Button>
               </div>
             </div>

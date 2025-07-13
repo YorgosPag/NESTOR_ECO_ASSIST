@@ -84,9 +84,8 @@ export function ContactsTable({ contacts, customLists, customListItems }: Contac
             <TableHeader>
             <TableRow>
                 <TableHead>Όνομα/Εταιρεία</TableHead>
-                <TableHead>Ρόλος/Ειδικότητα</TableHead>
-                <TableHead>Επικοινωνία</TableHead>
-                <TableHead className="hidden md:table-cell">Σημειώσεις</TableHead>
+                <TableHead className="hidden sm:table-cell">Ρόλος</TableHead>
+                <TableHead className="hidden md:table-cell">Επικοινωνία</TableHead>
                 <TableHead>
                 <span className="sr-only">Ενέργειες</span>
                 </TableHead>
@@ -114,21 +113,17 @@ export function ContactsTable({ contacts, customLists, customListItems }: Contac
                             <div>
                                 <div className="font-medium">{`${contact.firstName} ${contact.lastName}`}</div>
                                 {contact.company && <div className="text-sm text-muted-foreground">{contact.company}</div>}
+                                <div className="block sm:hidden text-sm text-muted-foreground">{contact.role}</div>
                             </div>
                         </div>
                     </TableCell>
-                    <TableCell>
-                        <div className="flex items-center gap-2">
-                            <Badge variant="secondary">{contact.role}</Badge>
-                            {contact.specialty && <span className="text-xs text-muted-foreground">{contact.specialty}</span>}
-                        </div>
+                    <TableCell className="hidden sm:table-cell">
+                        <Badge variant="secondary">{contact.role}</Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                         <div className="text-sm">{contact.email}</div>
                         {contact.mobilePhone && <div className="text-sm text-muted-foreground">Κιν: {contact.mobilePhone}</div>}
-                        {contact.landlinePhone && <div className="text-sm text-muted-foreground">Σταθ: {contact.landlinePhone}</div>}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell max-w-xs truncate">{contact.notes || '-'}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>
