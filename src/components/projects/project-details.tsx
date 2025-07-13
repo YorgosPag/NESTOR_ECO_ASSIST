@@ -81,7 +81,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
           
           <div>
             <div className="flex items-center justify-between gap-2 mb-4">
-                <AddInterventionDialog projectId={serverProject.id} customLists={customLists} customListItems={customListItems} masterInterventions={masterInterventions}>
+                <AddInterventionDialog projectId={serverProject.id} customLists={customLists} customListItems={customListItems}>
                   <Button variant="outline">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Προσθήκη Παρέμβασης

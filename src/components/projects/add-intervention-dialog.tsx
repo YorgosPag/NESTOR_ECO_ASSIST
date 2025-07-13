@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from 'react';
-import type { Project, Contact, CustomList, CustomListItem, MasterIntervention } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -11,16 +10,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddInterventionForm } from './add-intervention-form';
+import type { CustomList, CustomListItem } from '@/types';
 
 interface AddInterventionDialogProps {
     projectId: string;
     children: React.ReactNode;
     customLists: CustomList[];
     customListItems: CustomListItem[];
-    masterInterventions: MasterIntervention[];
 }
 
-export function AddInterventionDialog({ projectId, children, customLists, customListItems, masterInterventions }: AddInterventionDialogProps) {
+export function AddInterventionDialog({ projectId, children, customLists, customListItems }: AddInterventionDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,14 +28,9 @@ export function AddInterventionDialog({ projectId, children, customLists, custom
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Προσθήκη Νέας Παρέμβασης</DialogTitle>
-          <DialogDescription>Επιλέξτε τον τύπο της παρέμβασης που θέλετε να προσθέσετε στο έργο.</DialogDescription>
+          <DialogDescription>Επιλέξτε το όνομα για τη νέα παρέμβαση.</DialogDescription>
         </DialogHeader>
-        <AddInterventionForm 
-            projectId={projectId} 
-            setOpen={setOpen} 
-            customLists={customLists}
-            customListItems={customListItems}
-        />
+        <AddInterventionForm projectId={projectId} setOpen={setOpen} customLists={customLists} customListItems={customListItems} />
       </DialogContent>
     </Dialog>
   );
