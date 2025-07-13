@@ -1,62 +1,50 @@
+"use client"
+
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+} from "@/components/ui/card"
 
-const chartData = [
-  { month: "January", initiated: 18, completed: 12 },
-  { month: "February", initiated: 20, completed: 15 },
-  { month: "March", initiated: 25, completed: 18 },
-  { month: "April", initiated: 22, completed: 20 },
-  { month: "May", initiated: 30, completed: 25 },
-  { month: "June", initiated: 28, completed: 26 },
-];
+interface OverviewChartProps {
+  data: { name: string; total: number }[];
+}
 
-const chartConfig = {
-  initiated: {
-    label: "Initiated",
-    color: "hsl(var(--primary))",
-  },
-  completed: {
-    label: "Completed",
-    color: "hsl(var(--accent))",
-  },
-};
-
-export function OverviewChart() {
+export function OverviewChart({ data }: OverviewChartProps) {
   return (
-    <Card>
+    <Card className="col-span-1 lg:col-span-4">
       <CardHeader>
-        <CardTitle>Projects Overview</CardTitle>
-        <CardDescription>Initiated vs. Completed Projects</CardDescription>
+        <CardTitle>Overview</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
+      <CardContent className="pl-2">
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart data={data}>
             <XAxis
-              dataKey="month"
+              dataKey="name"
+              stroke="#888888"
+              fontSize={12}
               tickLine={false}
-              tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
             />
-            <YAxis />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="initiated" fill="var(--color-initiated)" radius={4} />
-            <Bar dataKey="completed" fill="var(--color-completed)" radius={4} />
+            <YAxis
+              stroke="#888888"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => `$${value}`}
+            />
+            <Bar
+              dataKey="total"
+              fill="currentColor"
+              radius={[4, 4, 0, 0]}
+              className="fill-primary"
+            />
           </BarChart>
-        </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )
 }
