@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { AppLayout } from "@/components/app-layout";
 
 export const metadata: Metadata = {
-  title: "Prasina",
-  description: "Environmental Project Management",
+  title: "EcoAssist",
+  description: "Streamlining environmental project management.",
   icons: [{ rel: "icon", url: "/icon.svg" }],
 };
 
