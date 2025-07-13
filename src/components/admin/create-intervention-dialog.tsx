@@ -1,4 +1,3 @@
-// src/components/admin/create-intervention-dialog.tsx
 "use client";
 
 import { useState } from 'react';
@@ -10,8 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { CustomList, CustomListItem } from '@/types';
 import { CreateInterventionForm } from './create-intervention-form';
+import type { CustomList, CustomListItem } from '@/types';
 
 interface CreateInterventionDialogProps {
     children: React.ReactNode;
@@ -25,10 +24,10 @@ export function CreateInterventionDialog({ children, customLists, customListItem
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Δημιουργία Νέας Παρέμβασης</DialogTitle>
-          <DialogDescription>Συμπληρώστε τα στοιχεία της νέας master παρέμβασης.</DialogDescription>
+          <DialogTitle>Δημιουργία Νέας Master Παρέμβασης</DialogTitle>
+          <DialogDescription>Συμπληρώστε τα στοιχεία της νέας παρέμβασης που θα είναι διαθέσιμη για προσθήκη στα έργα.</DialogDescription>
         </DialogHeader>
         <CreateInterventionForm setOpen={setOpen} customLists={customLists} customListItems={customListItems} />
       </DialogContent>
