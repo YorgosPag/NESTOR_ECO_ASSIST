@@ -34,7 +34,7 @@ export function EditContactDialog({ contact, children, customLists, customListIt
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[70vh] pr-6">
-            <EditContactForm contact={contact} setOpen={setOpen} />
+            <EditContactForm contact={contact} setOpen={setOpen} customLists={customLists} customListItems={customListItems} />
         </ScrollArea>
       </DialogContent>
     </Dialog>

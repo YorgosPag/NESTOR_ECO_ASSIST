@@ -31,7 +31,7 @@ export function CreateContactDialog({ children, customLists, customListItems }: 
           <DialogDescription>Συμπληρώστε τα στοιχεία της νέας επαφής.</DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[70vh] pr-6">
-          <CreateContactForm setOpen={setOpen} />
+          <CreateContactForm setOpen={setOpen} customLists={customLists} customListItems={customListItems} />
         </ScrollArea>
       </DialogContent>
     </Dialog>

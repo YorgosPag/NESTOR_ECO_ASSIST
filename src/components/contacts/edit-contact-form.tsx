@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import type { Contact } from '@/types';
+import type { Contact, CustomList, CustomListItem } from '@/types';
 import { Textarea } from '../ui/textarea';
 
 const initialState = {
@@ -30,9 +30,11 @@ function SubmitButton() {
 interface EditContactFormProps {
     contact: Contact;
     setOpen: (open: boolean) => void;
+    customLists: CustomList[];
+    customListItems: CustomListItem[];
 }
 
-export function EditContactForm({ contact, setOpen }: EditContactFormProps) {
+export function EditContactForm({ contact, setOpen, customLists, customListItems }: EditContactFormProps) {
     const [state, formAction] = useActionState(updateContactAction, initialState);
     const { toast } = useToast();
 
@@ -49,7 +51,15 @@ export function EditContactForm({ contact, setOpen }: EditContactFormProps) {
         }
     }, [state, toast, setOpen]);
 
-    const roles = ['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'];
+    // Fallback roles in case custom list is not available
+    const fallbackRoles = ['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'];
+    const rolesList = customLists.find(l => l.name === 'Contact Roles');
+    let roles = rolesList
+        ? customListItems.filter(item => item.listId === rolesList.id).map(item => item.name)
+        : fallbackRoles;
+    if (roles.length === 0) {
+        roles = fallbackRoles;
+    }
 
     return (
         <form action={formAction} className="space-y-4 pt-4 pr-1">

@@ -1,4 +1,3 @@
-// src/app/actions/contacts.ts
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -11,12 +10,15 @@ import {
 } from '@/lib/contacts-data';
 import type { Contact } from '@/types';
 
+// Define a reusable list of roles for validation and fallback
+const roleEnum: [string, ...string[]] = ['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'];
+
 const ContactSchema = z.object({
     id: z.string().optional(),
     firstName: z.string().min(1, 'Το όνομα είναι υποχρεωτικό.'),
     lastName: z.string().min(1, 'Το επώνυμο είναι υποχρεωτικό.'),
     email: z.string().email('Μη έγκυρη διεύθυνση email.'),
-    role: z.enum(['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'], {
+    role: z.enum(roleEnum, {
         errorMap: () => ({ message: "Παρακαλώ επιλέξτε έναν έγκυρο ρόλο." }),
     }),
     company: z.string().optional(),

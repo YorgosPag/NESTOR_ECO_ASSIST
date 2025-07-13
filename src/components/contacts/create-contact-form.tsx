@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import type { CustomList, CustomListItem } from '@/types';
 
 const initialState = {
   message: null,
@@ -28,9 +29,11 @@ function SubmitButton() {
 
 interface CreateContactFormProps {
     setOpen: (open: boolean) => void;
+    customLists: CustomList[];
+    customListItems: CustomListItem[];
 }
 
-export function CreateContactForm({ setOpen }: CreateContactFormProps) {
+export function CreateContactForm({ setOpen, customLists, customListItems }: CreateContactFormProps) {
     const [state, formAction] = useActionState(createContactAction, initialState);
     const { toast } = useToast();
 
@@ -47,7 +50,15 @@ export function CreateContactForm({ setOpen }: CreateContactFormProps) {
         }
     }, [state, toast, setOpen]);
 
-    const roles = ['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'];
+    // Fallback roles in case custom list is not available
+    const fallbackRoles = ['Πελάτης', 'Ομάδα', 'Ενδιαφερόμενος', 'Διαχειριστής'];
+    const rolesList = customLists.find(l => l.name === 'Contact Roles');
+    let roles = rolesList 
+        ? customListItems.filter(item => item.listId === rolesList.id).map(item => item.name)
+        : fallbackRoles;
+    if (roles.length === 0) {
+        roles = fallbackRoles;
+    }
 
     return (
         <form action={formAction} className="space-y-4 pt-4 pr-1">
