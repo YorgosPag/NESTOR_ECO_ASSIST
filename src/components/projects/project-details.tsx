@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,7 +12,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { AddInterventionDialog } from "./add-intervention-dialog";
 import { QuotationSummaryCard } from "./quotation-summary-card";
 import { ProjectHeader } from "./ProjectHeader";
-import { ProjectActions } from "./ProjectActions";
+import { ProjectDetailsActions } from "./ProjectDetailsActions";
 import { ProjectAlerts } from "./ProjectAlerts";
 import { InterventionCard } from "./InterventionCard";
 
@@ -42,7 +43,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <ProjectHeader project={serverProject} owner={owner} isMounted={isMounted} />
       
-      <ProjectActions project={serverProject} contacts={contacts} />
+      <ProjectDetailsActions project={serverProject} contacts={contacts} />
 
       <ProjectAlerts project={serverProject} isMounted={isMounted} />
 

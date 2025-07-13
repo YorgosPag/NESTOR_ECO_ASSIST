@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -36,12 +37,12 @@ function ActivateProjectButton({ projectId }: { projectId: string }) {
     );
 }
 
-interface ProjectActionsProps {
+interface ProjectDetailsActionsProps {
     project: Project;
     contacts: Contact[];
 }
 
-export function ProjectActions({ project, contacts }: ProjectActionsProps) {
+export function ProjectDetailsActions({ project, contacts }: ProjectDetailsActionsProps) {
     const isQuotation = project.status === 'Quotation';
     return (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -54,7 +55,7 @@ export function ProjectActions({ project, contacts }: ProjectActionsProps) {
             <div className="flex items-center gap-2">
                 {!isQuotation && (
                     <Button asChild variant="outline">
-                        <Link href={`/projects/${project.id}/work-order`}>
+                        <Link href={`/project/${project.id}/work-order`}>
                             <FileText className="mr-2 h-4 w-4" />
                             Αναφορά Εργασιών
                         </Link>
