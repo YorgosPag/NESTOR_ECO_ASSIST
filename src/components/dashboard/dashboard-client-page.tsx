@@ -97,7 +97,7 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
             </div>
             <div className="grid grid-cols-1 gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
                 <div className="xl:col-span-2">
-                    <OverviewChart />
+                    <OverviewChart data={chartData} />
                 </div>
                 <UpcomingDeadlines projects={projects} />
             </div>

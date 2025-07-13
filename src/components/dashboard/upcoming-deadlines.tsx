@@ -1,61 +1,71 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import type { Project } from "@/lib/data";
-import { differenceInDays, parseISO } from "date-fns";
+"use client";
 
-export function UpcomingDeadlines({ projects }: { projects: Project[] }) {
-  const upcomingProjects = projects
-    .filter((p) => p.status !== "Completed")
-    .map((p) => ({
-      ...p,
-      daysLeft: differenceInDays(parseISO(p.endDate), new Date()),
-    }))
-    .filter((p) => p.daysLeft >= 0)
-    .sort((a, b) => a.daysLeft - b.daysLeft)
-    .slice(0, 5);
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDistanceToNow } from "date-fns";
+import type { Contact } from "@/lib/data";
+
+interface Deadline {
+    projectId: string;
+    projectTitle: string;
+    stageId: string;
+    stageTitle: string;
+    deadline: string;
+    assigneeContactId?: string;
+}
+
+interface UpcomingDeadlinesProps {
+    deadlines?: Deadline[];
+    contacts: Contact[];
+}
+
+export function UpcomingDeadlines({ deadlines = [], contacts }: UpcomingDeadlinesProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
-    <Card>
+    <Card className="col-span-1 lg:col-span-3">
       <CardHeader>
         <CardTitle>Upcoming Deadlines</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Project</TableHead>
-              <TableHead className="text-right">Days Left</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {upcomingProjects.length > 0 ? (
-              upcomingProjects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">{project.name}</TableCell>
-                  <TableCell className="text-right">{project.daysLeft}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={2} className="text-center">
-                  No upcoming deadlines.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        {deadlines.length > 0 ? (
+            <div className="space-y-8">
+            {deadlines.map((item) => {
+                const assignee = contacts.find(c => c.id === item.assigneeContactId);
+                return (
+                    <div key={item.stageId} className="flex items-center">
+                        {assignee && (
+                             <Avatar className="h-9 w-9">
+                                <AvatarImage src={assignee.avatarUrl} alt={assignee.firstName} data-ai-hint="person" />
+                                <AvatarFallback>{assignee.firstName?.[0]}</AvatarFallback>
+                            </Avatar>
+                        )}
+                        <div className="ml-4 space-y-1">
+                            <p className="text-sm font-medium leading-none">
+                                <Link href={`/project/${item.projectId}`} className="hover:underline">
+                                    {item.stageTitle}
+                                </Link>
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                                {item.projectTitle}
+                            </p>
+                        </div>
+                        <div className="ml-auto font-medium text-sm">
+                           {isClient ? formatDistanceToNow(new Date(item.deadline), { addSuffix: true }) : "..."}
+                        </div>
+                    </div>
+                )
+            })}
+            </div>
+        ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">No upcoming deadlines.</p>
+        )}
       </CardContent>
     </Card>
   );
