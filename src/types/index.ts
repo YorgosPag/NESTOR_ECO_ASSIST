@@ -30,12 +30,9 @@ export type Project = {
 
   export type MasterIntervention = {
     id: string;
-    code: string;
-    expenseCategory: string;
-    interventionCategory: string;
-    unit: string;
-    maxUnitPrice: number;
-    maxAmount: number;
+    name: string;
+    description?: string;
+    category: string;
   }
   
   export type StageStatus = "Ολοκληρωμένο" | "Σε Εξέλιξη" | "Δεν έχει ξεκινήσει" | "Σε Καθυστέρηση" | "Απέτυχε";
@@ -103,6 +100,7 @@ export type Project = {
     id: string;
     name: string;
     key?: string;
+    order: number;
   }
 
   export type CustomListItem = {

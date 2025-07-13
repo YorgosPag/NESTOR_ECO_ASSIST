@@ -1,7 +1,7 @@
 // src/components/admin/edit-intervention-form.tsx
 "use client";
 
-import { useEffect, useState, useActionState } from 'react';
+import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { updateMasterInterventionAction } from '@/app/actions/admin';
 import { useToast } from '@/hooks/use-toast';

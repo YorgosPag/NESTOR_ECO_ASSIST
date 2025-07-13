@@ -5,12 +5,13 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { getAdminDb } from "@/lib/firebase-admin";
 import {
-    addCustomList,
-    updateCustomList,
-    deleteCustomList,
-    addCustomListItem,
-    updateCustomListItem,
-    deleteCustomListItem,
+    addCustomList as addCustomListData,
+    updateCustomList as updateCustomListData,
+    deleteCustomList as deleteCustomListData,
+    moveCustomList as moveCustomListData,
+    addCustomListItem as addCustomListItemData,
+    updateCustomListItem as updateCustomListItemData,
+    deleteCustomListItem as deleteCustomListItemData,
 } from "@/lib/custom-lists-data";
 import type { CustomList, CustomListItem } from '@/types';
 
@@ -27,7 +28,7 @@ export async function createListAction(prevState: any, formData: FormData) {
   }
   try {
     const db = getAdminDb();
-    await addCustomList(db, validatedFields.data as Omit<CustomList, 'id'>);
+    await addCustomListData(db, validatedFields.data as Omit<CustomList, 'id' | 'order'>);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }
@@ -36,14 +37,15 @@ export async function createListAction(prevState: any, formData: FormData) {
 }
 
 export async function updateListAction(prevState: any, formData: FormData) {
-  const schema = ListSchema.extend({ id: z.string().min(1) });
+  const schema = ListSchema.extend({ id: z.string().min(1), order: z.string() });
   const validatedFields = schema.safeParse(Object.fromEntries(formData.entries()));
   if (!validatedFields.success) {
     return { success: false, errors: validatedFields.error.flatten().fieldErrors, message: 'Σφάλμα επικύρωσης.' };
   }
   try {
     const db = getAdminDb();
-    await updateCustomList(db, validatedFields.data as CustomList);
+    const listData = { ...validatedFields.data, order: parseInt(validatedFields.data.order, 10) };
+    await updateCustomListData(db, listData as CustomList);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }
@@ -59,13 +61,36 @@ export async function deleteListAction(prevState: any, formData: FormData) {
   }
   try {
     const db = getAdminDb();
-    await deleteCustomList(db, validatedFields.data.id);
+    await deleteCustomListData(db, validatedFields.data.id);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }
   revalidatePath('/admin/custom-lists');
   return { success: true, message: 'Η λίστα διαγράφηκε με επιτυχία.' };
 }
+
+const MoveListSchema = z.object({
+  id: z.string().min(1),
+  direction: z.enum(['up', 'down']),
+});
+
+export async function moveListAction(formData: FormData) {
+  const validatedFields = MoveListSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!validatedFields.success) {
+    return { success: false, message: 'Μη έγκυρα δεδομένα για μετακίνηση.' };
+  }
+
+  try {
+    const db = getAdminDb();
+    await moveCustomListData(db, validatedFields.data.id, validatedFields.data.direction);
+  } catch(e: any) {
+     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
+  }
+
+  revalidatePath('/admin/custom-lists');
+  return { success: true };
+}
+
 
 // Item Actions
 const ItemSchema = z.object({
@@ -81,7 +106,7 @@ export async function createItemAction(prevState: any, formData: FormData) {
   }
   try {
     const db = getAdminDb();
-    await addCustomListItem(db, validatedFields.data as Omit<CustomListItem, 'id'>);
+    await addCustomListItemData(db, validatedFields.data as Omit<CustomListItem, 'id'>);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }
@@ -97,7 +122,7 @@ export async function updateItemAction(prevState: any, formData: FormData) {
   }
   try {
     const db = getAdminDb();
-    await updateCustomListItem(db, validatedFields.data as CustomListItem);
+    await updateCustomListItemData(db, validatedFields.data as CustomListItem);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }
@@ -113,7 +138,7 @@ export async function deleteItemAction(prevState: any, formData: FormData) {
   }
   try {
     const db = getAdminDb();
-    await deleteCustomListItem(db, validatedFields.data.id);
+    await deleteCustomListItemData(db, validatedFields.data.id);
   } catch (e: any) {
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${e.message}` };
   }

@@ -34,9 +34,17 @@ export function CustomListsManager({ lists, items }: CustomListsManagerProps) {
             </div>
             {lists.length > 0 ? (
                 <Accordion type="multiple" className="w-full space-y-4">
-                    {lists.map(list => {
+                    {lists.map((list, index) => {
                         const listItems = items.filter(item => item.listId === list.id);
-                        return <ListCard key={list.id} list={list} items={listItems} />;
+                        return (
+                            <ListCard 
+                                key={list.id} 
+                                list={list} 
+                                items={listItems} 
+                                canMoveUp={index > 0}
+                                canMoveDown={index < lists.length - 1}
+                            />
+                        );
                     })}
                 </Accordion>
             ) : (

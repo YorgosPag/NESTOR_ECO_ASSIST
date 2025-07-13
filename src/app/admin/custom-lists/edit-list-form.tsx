@@ -43,6 +43,7 @@ export function EditListForm({ list, setOpen }: EditListFormProps) {
     return (
         <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="id" value={list.id} />
+            <input type="hidden" name="order" value={list.order} />
             <div className="space-y-2">
                 <Label htmlFor="name">Όνομα Λίστας</Label>
                 <Input id="name" name="name" defaultValue={list.name} required />
