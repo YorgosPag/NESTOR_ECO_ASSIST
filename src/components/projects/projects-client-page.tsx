@@ -38,17 +38,19 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
         const normalizedFilter = normalizeForSearch(searchTerm);
         
         return projects.filter(project => {
-            
+            const owner = contacts.find(c => c.id === project.ownerContactId);
             const haystack = [
                 project.name,
-                project.manager
+                project.applicationNumber,
+                owner?.firstName,
+                owner?.lastName,
             ].filter(Boolean).join(' ');
             
             const normalizedHaystack = normalizeForSearch(haystack);
             
             return normalizedHaystack.includes(normalizedFilter);
         });
-    }, [projects, searchTerm]);
+    }, [projects, contacts, searchTerm]);
     
 
     const onHoldProjects = filteredProjects.filter(p => p.status === 'On Hold');

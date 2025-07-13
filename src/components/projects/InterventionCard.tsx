@@ -4,7 +4,7 @@ import type { Project, ProjectIntervention, Contact, CustomList, CustomListItem,
 import { AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AddStageDialog } from "./add-stage-dialog";
 import { InterventionPipeline } from "./InterventionPipeline";
@@ -21,7 +21,7 @@ interface InterventionCardProps {
     owner?: Contact;
 }
 
-export function InterventionCard({ project, intervention, allProjectInterventions, masterInterventions, contacts, customLists, customListItems, owner }: InterventionCardProps) {
+export function InterventionCard({ project, intervention, allProjectInterventions, masterInterventions, contacts, owner }: InterventionCardProps) {
 
     const masterIntervention = masterInterventions.find(mi => mi.id === intervention.masterInterventionId);
 

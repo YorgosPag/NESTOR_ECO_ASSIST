@@ -66,7 +66,7 @@ export function EditProjectForm({ project, contacts, setOpen }: EditProjectFormP
             </div>
              <div className="space-y-2">
                 <Label htmlFor="ownerContactId">Owner / Beneficiary</Label>
-                <Select name="ownerContactId" defaultValue={project.manager}>
+                <Select name="ownerContactId" defaultValue={project.ownerContactId}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select an owner" />
                     </SelectTrigger>

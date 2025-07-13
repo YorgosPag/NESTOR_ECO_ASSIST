@@ -32,7 +32,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
   }
   const collapseAll = () => setOpenInterventions([]);
   
-  const owner = contacts.find(c => c.id === serverProject.manager);
+  const owner = contacts.find(c => c.id === serverProject.ownerContactId);
   
   const hasInterventions = serverProject.interventions && serverProject.interventions.length > 0;
 
@@ -103,7 +103,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
                     <CardDescription>A complete history of all actions taken on this project.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <AuditLogDisplay auditLogs={serverProject.auditLog} />
+                    <AuditLogDisplay auditLogs={serverProject.auditLog || []} />
                 </CardContent>
             </Card>
         </TabsContent>

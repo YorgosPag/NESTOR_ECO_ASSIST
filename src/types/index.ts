@@ -3,14 +3,14 @@ export type Project = {
     name: string;
     status: "On Track" | "At Risk" | "Completed" | "On Hold";
     progress: number;
-    manager: string; // This is now a contact ID
+    ownerContactId: string;
     applicationNumber?: string;
     budget?: number;
     startDate: string;
     endDate: string;
     deadline?: string;
     description: string;
-    interventions?: ProjectIntervention[];
+    interventions: ProjectIntervention[];
     alerts?: number;
     auditLog?: AuditLog[];
   };
@@ -19,11 +19,7 @@ export type Project = {
     id: string;
     masterInterventionId: string;
     projectId: string;
-    status: "On Track" | "At Risk" | "Completed" | "On Hold";
-    progress: number;
     stages: Stage[];
-    interventionCategory?: string; 
-    interventionSubcategory?: string; 
   }
 
   export type MasterIntervention = {
@@ -39,8 +35,7 @@ export type Project = {
     deadline: string;
     assigneeContactId?: string;
     status: "Completed" | "In Progress" | "Not Started" | "Delayed";
-    progress: number;
-    lastUpdated?: string;
+    lastUpdated: string;
   };
   
   export type File = {

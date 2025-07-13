@@ -43,6 +43,8 @@ export function ProjectCard({ project: serverProject, contacts }: ProjectCardPro
 
 
   const displayProject = isMounted ? project : serverProject;
+  
+  const projectOwner = contacts.find(c => c.id === displayProject.ownerContactId);
 
   const statusVariant = {
     'On Track': 'default',
@@ -56,7 +58,7 @@ export function ProjectCard({ project: serverProject, contacts }: ProjectCardPro
       <CardHeader>
         <div className="flex justify-between items-start gap-2">
             <div className="flex-1">
-                <p className="text-sm text-muted-foreground">{project.manager}</p>
+                <p className="text-sm text-muted-foreground">{projectOwner?.firstName} {projectOwner?.lastName}</p>
                 <CardTitle className="mt-1 text-lg">
                     <Link href={`/project/${project.id}`} className="hover:underline">
                         {project.name}
