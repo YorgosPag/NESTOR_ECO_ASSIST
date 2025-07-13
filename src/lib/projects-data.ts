@@ -40,13 +40,7 @@ const projects: Project[] = [
     endDate: "2026-06-01",
     deadline: "2026-06-01",
     description: "Efforts to restore coral populations through innovative cultivation and transplantation techniques.",
-    interventions: [
-        { id: 'inter-3', masterInterventionId: 'master-int-3', projectId: 'proj-002', stages: [
-            { id: 'p2-int3-s1', title: "Stakeholder Identification", files: [], deadline: "2024-07-30T00:00:00Z", status: "Completed", lastUpdated: '2024-07-30', assigneeContactId: 'contact-3' },
-            { id: 'p2-int3-s2', title: "Public Meetings", files: [], deadline: "2024-08-10T00:00:00Z", status: "Delayed", lastUpdated: '2024-08-18', assigneeContactId: 'contact-1' },
-             { id: 'p2-int3-s3', title: "Feedback Analysis", files: [], deadline: "2024-09-01T00:00:00Z", status: "Not Started", lastUpdated: '2024-08-18', assigneeContactId: 'contact-1' },
-        ]}
-    ],
+    interventions: [],
     auditLog: [
         { id: 'log-p2-1', user: { name: 'Kenji Tanaka', avatar: 'https://placehold.co/32x32.png' }, action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed project status to At Risk' },
     ]

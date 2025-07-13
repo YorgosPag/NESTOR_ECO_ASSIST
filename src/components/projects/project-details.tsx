@@ -34,7 +34,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
   
   const owner = contacts.find(c => c.id === serverProject.ownerContactId);
   
-  const hasInterventions = serverProject.interventions && serverProject.interventions.length > 0;
+  const hasInterventions = Array.isArray(serverProject.interventions) && serverProject.interventions.length > 0;
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">

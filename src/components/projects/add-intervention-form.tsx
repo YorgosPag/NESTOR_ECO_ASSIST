@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { SearchableSelect } from '../ui/searchable-select';
 import type { CustomList, CustomListItem } from '@/types';
-import { Separator } from '../ui/separator';
 
 const initialState: AddInterventionState = {
   message: null,
