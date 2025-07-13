@@ -1,9 +1,10 @@
 import { projects } from "@/lib/data";
 import { ProjectPipeline } from "@/components/project/project-pipeline";
 import { notFound } from "next/navigation";
+import type { Project } from "@/types";
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const project = projects.find((p) => p.id === params.id);
+  const project: Project | undefined = projects.find((p) => p.id === params.id);
 
   if (!project) {
     notFound();

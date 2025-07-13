@@ -1,6 +1,6 @@
 "use client";
 
-import type { Stage, File as ProjectFile } from "@/lib/data";
+import type { Stage, File as ProjectFile } from "@/types";
 import {
   Table,
   TableBody,

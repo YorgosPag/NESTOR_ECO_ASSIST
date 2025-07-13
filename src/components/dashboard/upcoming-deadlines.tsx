@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import type { Contact } from "@/lib/data";
+import type { Contact } from "@/types";
 
 interface Deadline {
     projectId: string;
@@ -21,7 +21,7 @@ interface UpcomingDeadlinesProps {
     contacts: Contact[];
 }
 
-export function UpcomingDeadlines({ deadlines = [], contacts }: UpcomingDeadlinesProps) {
+export function UpcomingDeadlines({ deadlines = [], contacts = [] }: UpcomingDeadlinesProps) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {

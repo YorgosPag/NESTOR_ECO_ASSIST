@@ -8,13 +8,24 @@ import { Users, DollarSign, FileText, PlusCircle, ArrowRight, Activity, LayoutGr
 import { Button } from '@/components/ui/button';
 import { OverviewChart } from '@/components/dashboard/overview-chart';
 import { UpcomingDeadlines } from '@/components/dashboard/upcoming-deadlines';
-import type { Project } from "@/lib/data";
+import type { Project, Contact, Stage } from "@/types";
 
 interface DashboardClientPageProps {
     projects: Project[];
+    contacts: Contact[];
 }
 
-export function DashboardClientPage({ projects: serverProjects }: DashboardClientPageProps) {
+interface Deadline {
+    projectId: string;
+    projectTitle: string;
+    stageId: string;
+    stageTitle: string;
+    deadline: string;
+    assigneeContactId?: string;
+}
+
+
+export function DashboardClientPage({ projects: serverProjects, contacts }: DashboardClientPageProps) {
     
     const projects = useMemo(() => serverProjects, [serverProjects]);
     const [chartData, setChartData] = useState<any[]>([]);
@@ -35,6 +46,21 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
     const atRiskProjects = projects.filter(p => p.status === 'At Risk').length;
     const completedProjects = projects.filter(p => p.status === 'Completed').length;
 
+    const upcomingDeadlines: Deadline[] = activeProjects
+    .flatMap((p: Project) => 
+        p.stages?.map((s: Stage) => ({
+            projectId: p.id,
+            projectTitle: p.name,
+            stageId: s.id,
+            stageTitle: s.name,
+            deadline: s.deadline,
+            assigneeContactId: s.assigneeContactId,
+        })) || []
+    )
+    .filter(stage => new Date(stage.deadline) >= new Date())
+    .sort((a,b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+    .slice(0, 5);
+
 
     return (
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -47,7 +73,7 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
                     <p className="text-muted-foreground">An overview of your projects.</p>
                 </div>
                 <Button asChild>
-                    <Link href="#">
+                    <Link href="/projects/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Create Project
                     </Link>
@@ -88,7 +114,7 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{projects.filter(p => p.status !== 'Completed').length}</div>
+                        <div className="text-2xl font-bold">{upcomingDeadlines.length}</div>
                          <p className="text-xs text-muted-foreground">
                             Across all active projects
                         </p>
@@ -99,7 +125,7 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
                 <div className="xl:col-span-2">
                     <OverviewChart data={chartData} />
                 </div>
-                <UpcomingDeadlines projects={projects} />
+                <UpcomingDeadlines deadlines={upcomingDeadlines} contacts={contacts} />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -11,7 +11,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Project } from "@/lib/data";
+import type { Project } from "@/types";
 import { ArrowUpRight } from "lucide-react";
 
 interface ProjectCardProps {

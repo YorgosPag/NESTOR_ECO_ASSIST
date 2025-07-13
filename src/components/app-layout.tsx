@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { LayoutGrid, Settings } from 'lucide-react';
+import { LayoutGrid, Settings, FolderKanban } from 'lucide-react';
 import { Header } from './layout/header';
 
 const EcoFlowLogo = () => (
@@ -56,7 +56,7 @@ function SidebarNav() {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathname === path;
+    return pathname.startsWith(path);
   };
 
   return (
@@ -72,9 +72,21 @@ function SidebarNav() {
               isActive={isActive("/dashboard")}
               tooltip="Dashboard"
             >
-              <Link href="/">
+              <Link href="/dashboard">
                 <LayoutGrid />
                 <span>Dashboard</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/projects")}
+              tooltip="Projects"
+            >
+              <Link href="/projects">
+                <FolderKanban />
+                <span>Projects</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

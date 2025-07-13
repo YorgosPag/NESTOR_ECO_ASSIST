@@ -1,6 +1,6 @@
 "use client";
 
-import type { Project } from "@/lib/data";
+import type { Project } from "@/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileManager } from "./file-manager";
 
