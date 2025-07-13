@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { AuditLogDisplay } from "@/components/projects/audit-log";
-import { History, PlusCircle, ChevronsUp, ChevronsDown } from "lucide-react";
-import { Accordion } from "@/components/ui/accordion";
+import { History, PlusCircle, ChevronsUp, ChevronsDown, FileText } from "lucide-react";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { AddInterventionDialog } from "./add-intervention-dialog";
+import { QuotationSummaryCard } from "./quotation-summary-card";
 import { ProjectHeader } from "./ProjectHeader";
 import { ProjectActions } from "./ProjectActions";
 import { ProjectAlerts } from "./ProjectAlerts";
@@ -18,6 +18,7 @@ import { InterventionCard } from "./InterventionCard";
 export function ProjectDetails({ project: serverProject, masterInterventions, contacts, customLists, customListItems }: { project: Project, masterInterventions: MasterIntervention[], contacts: Contact[], customLists: CustomList[], customListItems: CustomListItem[] }) {
   const [openInterventions, setOpenInterventions] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -45,12 +46,35 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
 
       {isMounted && <ProjectAlerts project={serverProject} />}
 
+      {isMounted && hasInterventions && (
+        <Accordion type="single" collapsible value={isSummaryOpen ? "summary" : ""} onValueChange={(value) => setIsSummaryOpen(value === "summary")}>
+          <AccordionItem value="summary" className="border-b-0">
+             <Card>
+                <AccordionTrigger className="p-6 hover:no-underline">
+                     <div className="flex flex-col items-start text-left">
+                        <CardTitle className="flex items-center gap-2">
+                           <FileText className="h-5 w-5"/>
+                           Συνοπτική Οικονομική Ανάλυση Έργου
+                        </CardTitle>
+                        <CardDescription className="pt-1">
+                           Αναλυτική εικόνα του κόστους, των εσόδων και του περιθωρίου κέρδους.
+                        </CardDescription>
+                     </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                    <QuotationSummaryCard interventions={serverProject.interventions} />
+                </AccordionContent>
+             </Card>
+          </AccordionItem>
+        </Accordion>
+      )}
+
       <Tabs defaultValue="interventions" className="w-full">
         <TabsList>
-            <TabsTrigger value="interventions">Interventions</TabsTrigger>
+            <TabsTrigger value="interventions">Παρεμβάσεις</TabsTrigger>
             <TabsTrigger value="audit-log">
                 <History className="w-4 h-4 mr-2" />
-                Audit Log
+                Ιστορικό Ενεργειών
             </TabsTrigger>
         </TabsList>
         <TabsContent value="interventions" className="mt-4 space-y-6">
@@ -60,17 +84,17 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
                 <AddInterventionDialog projectId={serverProject.id} customLists={customLists} customListItems={customListItems} masterInterventions={masterInterventions}>
                   <Button variant="outline">
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Intervention
+                    Προσθήκη Παρέμβασης
                   </Button>
                 </AddInterventionDialog>
               <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={expandAll} disabled={!hasInterventions}>
                       <ChevronsDown className="mr-2 h-4 w-4" />
-                      Expand All
+                      Ανάπτυξη Όλων
                   </Button>
                   <Button variant="outline" size="sm" onClick={collapseAll} disabled={!hasInterventions}>
                       <ChevronsUp className="mr-2 h-4 w-4" />
-                      Collapse All
+                      Σύμπτυξη Όλων
                   </Button>
               </div>
             </div>
@@ -92,7 +116,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
               </Accordion>
             ) : (
               <div className="text-center text-muted-foreground py-8 border border-dashed rounded-lg">
-                No interventions have been added to this project yet.
+                Δεν υπάρχουν ακόμη παρεμβάσεις για αυτό το έργο.
               </div>
             )}
           </div>
@@ -100,8 +124,8 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
          <TabsContent value="audit-log" className="mt-4">
             <Card>
                 <CardHeader>
-                    <CardTitle>Project Audit Log</CardTitle>
-                    <CardDescription>A complete history of all actions taken on this project.</CardDescription>
+                    <CardTitle>Ιστορικό Ενεργειών Έργου</CardTitle>
+                    <CardDescription>Ένα πλήρες ιστορικό όλων των ενεργειών σε αυτό το έργο.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <AuditLogDisplay auditLogs={serverProject.auditLog || []} />

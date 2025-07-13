@@ -21,7 +21,7 @@ interface InterventionCardProps {
     owner?: Contact;
 }
 
-export function InterventionCard({ project, intervention, allProjectInterventions, masterInterventions, contacts, owner }: InterventionCardProps) {
+export function InterventionCard({ project, intervention, allProjectInterventions, masterInterventions, contacts, owner, customLists, customListItems }: InterventionCardProps) {
 
     const masterIntervention = masterInterventions.find(mi => mi.id === intervention.masterInterventionId);
 

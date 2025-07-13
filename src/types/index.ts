@@ -19,6 +19,9 @@ export type Project = {
     id: string;
     masterInterventionId: string;
     projectId: string;
+    cost?: number;
+    price?: number;
+    vat?: number;
     stages: Stage[];
   }
 
@@ -36,6 +39,9 @@ export type Project = {
     assigneeContactId?: string;
     status: "Completed" | "In Progress" | "Not Started" | "Delayed";
     lastUpdated: string;
+    cost?: number;
+    price?: number;
+    vat?: number;
   };
   
   export type File = {
