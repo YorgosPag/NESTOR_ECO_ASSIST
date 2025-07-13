@@ -12,7 +12,6 @@ import type { Project, Contact, Stage } from "@/types";
 
 interface DashboardClientPageProps {
     projects: Project[];
-    contacts: Contact[];
 }
 
 interface Deadline {
@@ -25,10 +24,12 @@ interface Deadline {
 }
 
 
-export function DashboardClientPage({ projects: serverProjects, contacts }: DashboardClientPageProps) {
+export function DashboardClientPage({ projects: serverProjects }: DashboardClientPageProps) {
     
     const projects = useMemo(() => serverProjects, [serverProjects]);
     const [chartData, setChartData] = useState<any[]>([]);
+    const [contacts, setContacts] = useState<Contact[]>([]);
+
 
     useEffect(() => {
         setChartData([

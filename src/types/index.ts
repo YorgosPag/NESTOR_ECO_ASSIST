@@ -16,6 +16,8 @@ export type Project = {
     files: File[];
     deadline: string;
     assigneeContactId?: string;
+    status: "Completed" | "In Progress" | "Not Started" | "Delayed";
+    progress: number;
   };
   
   export type File = {

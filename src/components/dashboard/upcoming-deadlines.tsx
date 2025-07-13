@@ -18,7 +18,7 @@ interface Deadline {
 
 interface UpcomingDeadlinesProps {
     deadlines?: Deadline[];
-    contacts: Contact[];
+    contacts?: Contact[];
 }
 
 export function UpcomingDeadlines({ deadlines = [], contacts = [] }: UpcomingDeadlinesProps) {
