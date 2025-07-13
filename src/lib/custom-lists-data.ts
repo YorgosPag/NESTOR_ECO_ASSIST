@@ -2,14 +2,24 @@ import type { CustomList, CustomListItem } from "@/types";
 
 const customLists: CustomList[] = [
     { id: 'list-1', name: 'Τίτλοι Παρεμβάσεων', key: 'INTERVENTION_TITLES' },
+    { id: 'list-2', name: 'Ρόλοι Επαφών', key: 'CONTACT_ROLES' },
 ];
 const customListItems: CustomListItem[] = [
+    // Intervention Titles
     { id: 'item-1', listId: 'list-1', name: 'Environmental Impact Assessment' },
     { id: 'item-2', listId: 'list-1', name: 'Site Survey' },
     { id: 'item-3', listId: 'list-1', name: 'Community Consultation' },
     { id: 'item-4', listId: 'list-1', name: 'Water Quality Testing' },
     { id: 'item-5', listId: 'list-1', name: 'Soil Analysis' },
     { id: 'item-6', listId: 'list-1', name: 'Air Quality Monitoring' },
+
+    // Contact Roles
+    { id: 'item-7', listId: 'list-2', name: 'Πελάτης' },
+    { id: 'item-8', listId: 'list-2', name: 'Ομάδα' },
+    { id: 'item-9', listId: 'list-2', name: 'Ενδιαφερόμενος' },
+    { id: 'item-10', listId: 'list-2', name: 'Διαχειριστής' },
+    { id: 'item-11', listId: 'list-2', name: 'Συνεργάτης' },
+    { id: 'item-12', listId: 'list-2', name: 'Προμηθευτής' },
 ];
 
 export async function getCustomLists(db?: any) {
