@@ -26,6 +26,7 @@ interface SearchableSelectProps {
   placeholder?: string
   searchPlaceholder?: string
   emptyMessage?: string
+  children?: React.ReactNode;
 }
 
 export function SearchableSelect({
@@ -35,6 +36,7 @@ export function SearchableSelect({
   placeholder = "Select an option...",
   searchPlaceholder = "Search...",
   emptyMessage = "No results found.",
+  children
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -62,9 +64,13 @@ export function SearchableSelect({
               {options.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
+                  value={option.label} // Compare with label for filtering
                   onSelect={(currentValue) => {
-                    onValueChange(currentValue === value ? "" : currentValue)
+                    // Find the option where the label matches the selection
+                    const selectedOption = options.find(opt => opt.label.toLowerCase() === currentValue.toLowerCase());
+                    if (selectedOption) {
+                      onValueChange(selectedOption.value === value ? "" : selectedOption.value)
+                    }
                     setOpen(false)
                   }}
                 >
@@ -78,6 +84,7 @@ export function SearchableSelect({
                 </CommandItem>
               ))}
             </CommandGroup>
+            {children}
           </CommandList>
         </Command>
       </PopoverContent>

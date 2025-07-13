@@ -83,11 +83,12 @@ export type Project = {
   export type CustomList = {
     id: string;
     name: string;
+    key?: string;
   }
 
   export type CustomListItem = {
     id: string;
     listId: string;
-    value: string;
+    name: string;
   }
   
