@@ -45,6 +45,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
 
     const activeProjects = projects.filter(p => p.status === 'On Track' || p.status === 'Delayed');
     const onTrackProjects = projects.filter(p => p.status === 'On Track').length;
+    const quotationProjects = projects.filter(p => p.status === 'Quotation').length;
     const delayedProjects = projects.filter(p => p.status === 'Delayed').length;
     const completedProjects = projects.filter(p => p.status === 'Completed').length;
     const recentActiveProjects = activeProjects.slice(0, 3);
@@ -82,7 +83,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     </Link>
                 </Button>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
@@ -94,6 +95,20 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                         <div className="text-2xl font-bold">{activeProjects.length}</div>
                         <p className="text-xs text-muted-foreground">
                             {onTrackProjects} on track, {delayedProjects} delayed
+                        </p>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                           Quotations
+                        </CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{quotationProjects}</div>
+                        <p className="text-xs text-muted-foreground">
+                           Pending activation
                         </p>
                     </CardContent>
                 </Card>

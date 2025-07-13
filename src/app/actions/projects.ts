@@ -24,6 +24,9 @@ const DeleteSchema = z.object({
   id: z.string(),
 });
 
+const ActivateProjectSchema = z.object({
+    projectId: z.string(),
+});
 
 export type State = {
   errors?: {
@@ -34,6 +37,12 @@ export type State = {
   message?: string | null;
   success?: boolean;
 };
+
+export type ActivateProjectState = {
+    message: string | null;
+    success: boolean;
+};
+
 
 export async function createProjectAction(prevState: State, formData: FormData) {
   const validatedFields = CreateFormSchema.safeParse({
@@ -114,4 +123,30 @@ export async function deleteProjectAction(prevState: State, formData: FormData) 
 
     // This return is for type consistency, but redirect will happen first.
     return { message: 'Project deleted successfully.', success: true };
+}
+
+export async function activateProjectAction(prevState: ActivateProjectState, formData: FormData): Promise<ActivateProjectState> {
+    const validatedFields = ActivateProjectSchema.safeParse({
+        projectId: formData.get('projectId'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            message: 'Invalid project ID.',
+            success: false,
+        };
+    }
+
+    const { projectId } = validatedFields.data;
+
+    // In a real app, you would find the project and update its status from 'Quotation' to 'On Track'
+    // and potentially add an audit log entry.
+    console.log(`Activating project with ID: ${projectId}`);
+    // e.g., db.projects.update({ where: { id: projectId }, data: { status: 'On Track' } });
+    // e.g., db.auditLogs.create({ data: { projectId, action: 'Project Activated', ... } });
+
+    revalidatePath(`/project/${projectId}`);
+    revalidatePath('/projects');
+
+    return { message: 'The project has been successfully activated.', success: true };
 }
