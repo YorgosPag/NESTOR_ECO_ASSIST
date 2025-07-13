@@ -16,7 +16,7 @@ const projects: Project[] = [
     interventions: [
         { 
           id: 'inter-1', masterInterventionId: 'master-int-1', projectId: 'proj-001', 
-          cost: 1200, price: 2000, vat: 480,
+          cost: 1200, price: 2000, vat: 480, name: 'Environmental Impact Assessment',
           stages: [
             { id: 'p1-int1-s1', title: "Scoping", files: [], deadline: "2024-08-01T00:00:00Z", status: "Completed", lastUpdated: '2024-08-01', assigneeContactId: 'contact-2', cost: 500, price: 800, vat: 192 },
             { id: 'p1-int1-s2', title: "Baseline Study", files: [], deadline: "2024-08-15T00:00:00Z", status: "In Progress", lastUpdated: '2024-08-10', assigneeContactId: 'contact-4', cost: 400, price: 600, vat: 144 },
@@ -24,7 +24,7 @@ const projects: Project[] = [
         ]},
         { 
           id: 'inter-2', masterInterventionId: 'master-int-2', projectId: 'proj-001', 
-          cost: 800, price: 1500, vat: 360,
+          cost: 800, price: 1500, vat: 360, name: 'Site Survey',
           stages: [
             { id: 'p1-int2-s1', title: "Topographical Survey", files: [], deadline: "2024-07-20T00:00:00Z", status: "Completed", lastUpdated: '2024-07-20', assigneeContactId: 'contact-4', cost: 800, price: 1500, vat: 360 },
         ]}
@@ -37,7 +37,7 @@ const projects: Project[] = [
   {
     id: "proj-002",
     name: "Great Barrier Reef Coral Restoration",
-    status: "At Risk",
+    status: "Delayed",
     progress: 0,
     ownerContactId: "contact-2",
     applicationNumber: 'APP-2024-002',
@@ -65,7 +65,7 @@ const projects: Project[] = [
     description: "A one-year study monitoring the rate of ice melt in the Arctic circle.",
     interventions: [
        { id: 'inter-4', masterInterventionId: 'master-int-2', projectId: 'proj-003', 
-         cost: 5000, price: 8000, vat: 1920,
+         cost: 5000, price: 8000, vat: 1920, name: 'Quarterly Monitoring',
          stages: [
             { id: 'p3-int2-s1', title: "Initial Survey", files: [], deadline: "2022-09-15T00:00:00Z", status: "Completed", lastUpdated: '2022-09-15', cost: 1000, price: 1500, vat: 360 },
             { id: 'p3-int2-s2', title: "Quarterly Monitoring", files: [], deadline: "2023-08-01T00:00:00Z", status: "Completed", lastUpdated: '2023-08-01', cost: 3000, price: 5000, vat: 1200 },
@@ -77,7 +77,7 @@ const projects: Project[] = [
    {
     id: "proj-004",
     name: "Sahara Desert Greening Initiative",
-    status: "On Hold",
+    status: "Quotation",
     progress: 0,
     ownerContactId: "contact-6",
     applicationNumber: 'APP-2024-008',
@@ -88,7 +88,7 @@ const projects: Project[] = [
     description: "A long-term initiative to explore methods for creating sustainable green areas in the Sahara.",
     interventions: [
         { id: 'inter-5', masterInterventionId: 'master-int-1', projectId: 'proj-004', 
-          cost: 10000, price: 15000, vat: 3600,
+          cost: 10000, price: 15000, vat: 3600, name: 'Feasibility Study',
           stages: [
           { id: 'p4-int1-s1', title: "Feasibility Study", files: [], deadline: "2024-09-10T00:00:00Z", status: "In Progress", lastUpdated: '2024-08-15', assigneeContactId: 'contact-2', cost: 10000, price: 15000, vat: 3600 },
         ]}

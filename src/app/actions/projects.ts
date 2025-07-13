@@ -28,6 +28,20 @@ const ActivateProjectSchema = z.object({
     projectId: z.string(),
 });
 
+const UpdateStageStatusSchema = z.object({
+    projectId: z.string(),
+    stageId: z.string(),
+    status: z.enum(['Not Started', 'In Progress', 'Completed', 'Delayed', 'Failed']),
+});
+
+const MoveStageSchema = z.object({
+    projectId: z.string(),
+    stageId: z.string(),
+    interventionMasterId: z.string(),
+    direction: z.enum(['up', 'down']),
+});
+
+
 export type State = {
   errors?: {
     name?: string[];
@@ -149,4 +163,46 @@ export async function activateProjectAction(prevState: ActivateProjectState, for
     revalidatePath('/projects');
 
     return { message: 'The project has been successfully activated.', success: true };
+}
+
+export async function updateStageStatusAction(formData: FormData) {
+    const validatedFields = UpdateStageStatusSchema.safeParse({
+        projectId: formData.get('projectId'),
+        stageId: formData.get('stageId'),
+        status: formData.get('status'),
+    });
+
+    if (!validatedFields.success) {
+        // Handle validation error, maybe return a message
+        console.error("Validation failed for updating stage status:", validatedFields.error.flatten().fieldErrors);
+        return;
+    }
+
+    const { projectId, stageId, status } = validatedFields.data;
+    
+    // In a real app, you'd find the project, then the intervention, then the stage and update its status.
+    console.log(`Updating stage ${stageId} in project ${projectId} to status: ${status}`);
+    
+    revalidatePath(`/project/${projectId}`);
+}
+
+export async function moveStageAction(formData: FormData) {
+    const validatedFields = MoveStageSchema.safeParse({
+        projectId: formData.get('projectId'),
+        stageId: formData.get('stageId'),
+        interventionMasterId: formData.get('interventionMasterId'),
+        direction: formData.get('direction'),
+    });
+
+    if (!validatedFields.success) {
+        console.error("Validation failed for moving stage:", validatedFields.error.flatten().fieldErrors);
+        return;
+    }
+
+    const { projectId, stageId, interventionMasterId, direction } = validatedFields.data;
+
+    // In a real app, you would implement the logic to reorder the stage in the database.
+    console.log(`Moving stage ${stageId} ${direction} in intervention ${interventionMasterId} of project ${projectId}.`);
+    
+    revalidatePath(`/project/${projectId}`);
 }

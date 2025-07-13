@@ -34,13 +34,15 @@ export type Project = {
     description: string;
   }
   
+  export type StageStatus = "Completed" | "In Progress" | "Not Started" | "Delayed" | "Failed";
+  
   export type Stage = {
     id: string;
     title: string;
     files?: File[];
     deadline: string;
     assigneeContactId?: string;
-    status: "Completed" | "In Progress" | "Not Started" | "Delayed" | "Failed";
+    status: StageStatus;
     lastUpdated: string;
     cost?: number;
     price?: number;
