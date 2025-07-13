@@ -57,12 +57,12 @@ export function StageCard({ stage, project, interventionName, contacts, interven
     'Failed': { variant: "destructive", text: "Απέτυχε" },
   } as const;
 
-  const currentStatus = statusConfig[stage.status] || { variant: "outline", text: "Άγνωστο" };
+  const currentStatus = stage?.status ? statusConfig[stage.status] : { variant: "outline", text: "Άγνωστο" };
   
-  const deadlineDate = new Date(stage.deadline);
-  const isOverdue = isClient ? isPast(deadlineDate) && stage.status !== 'Completed' : false;
-  const daysUntilDeadline = isClient ? differenceInDays(deadlineDate, new Date()) : 0;
-  const isApproaching = isClient ? daysUntilDeadline >= 0 && daysUntilDeadline <= 7 && stage.status !== 'Completed' : false;
+  const deadlineDate = stage?.deadline ? new Date(stage.deadline) : null;
+  const isOverdue = isClient && deadlineDate ? isPast(deadlineDate) && stage.status !== 'Completed' : false;
+  const daysUntilDeadline = isClient && deadlineDate ? differenceInDays(deadlineDate, new Date()) : 0;
+  const isApproaching = isClient && deadlineDate ? daysUntilDeadline >= 0 && daysUntilDeadline <= 7 && stage.status !== 'Completed' : false;
 
   const assignee = contacts.find(c => c.id === stage.assigneeContactId);
 
@@ -156,7 +156,7 @@ export function StageCard({ stage, project, interventionName, contacts, interven
                 </DropdownMenuItem>
               </EditStageDialog>
               <DeleteStageDialog stage={stage} projectId={project.id}>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10">
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10 w-full">
                     <Trash2 className="mr-2 h-4 w-4" />
                     <span>Διαγραφή Σταδίου</span>
                 </DropdownMenuItem>
@@ -178,11 +178,11 @@ export function StageCard({ stage, project, interventionName, contacts, interven
             'font-bold text-foreground': isApproaching && !isOverdue,
         })}>
             <Calendar className="h-4 w-4"/>
-            <span>Λήξη: {isClient ? format(deadlineDate, 'dd MMM, yyyy') : "..."}</span>
+            <span>Λήξη: {isClient && deadlineDate ? format(deadlineDate, 'dd MMM, yyyy') : "..."}</span>
         </div>
         <div className="flex items-center gap-2">
             <Clock className="h-4 w-4"/>
-            <span>Ενημέρωση: {isClient ? format(new Date(stage.lastUpdated), 'dd MMM, yyyy') : "..."}</span>
+            <span>Ενημέρωση: {isClient && stage.lastUpdated ? format(new Date(stage.lastUpdated), 'dd MMM, yyyy') : "..."}</span>
         </div>
       </CardContent>
     </Card>

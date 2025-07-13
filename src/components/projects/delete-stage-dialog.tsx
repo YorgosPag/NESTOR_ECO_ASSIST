@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useActionState } from 'react';
+import { useEffect, useState, type ReactNode, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import {
   AlertDialog,
@@ -29,7 +29,7 @@ function SubmitButton() {
   return (
     <AlertDialogAction asChild>
         <Button type="submit" variant="destructive" disabled={pending}>
-            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Ναι, Διαγραφή"}
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Ναι, Επιβεβαίωση Διαγραφής"}
         </Button>
     </AlertDialogAction>
   );
@@ -38,29 +38,31 @@ function SubmitButton() {
 interface DeleteStageDialogProps {
   stage: Stage;
   projectId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function DeleteStageDialog({ stage, projectId, children }: DeleteStageDialogProps) {
   const [open, setOpen] = useState(false);
   const [state, formAction] = useActionState(deleteStageAction, initialState);
   const { toast } = useToast();
-  
+
   useEffect(() => {
-    if (state.message) {
-      if (state.success) {
-        toast({ title: 'Επιτυχία!', description: state.message });
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Σφάλμα',
-          description: state.message,
-        });
-      }
+    if (!open) return;
+    if (state?.success === true) {
+      toast({ title: 'Επιτυχία!', description: state.message });
+      setOpen(false);
+    } else if (state?.success === false && state.message) {
+      toast({
+        variant: 'destructive',
+        title: 'Σφάλμα',
+        description: state.message,
+      });
       setOpen(false);
     }
-  }, [state, toast, setOpen]);
+  }, [state, toast, open, setOpen]);
   
+  const descriptionText = `Είστε βέβαιος ότι θέλετε να διαγράψετε οριστικά το στάδιο "${stage.title}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.`;
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
@@ -70,7 +72,7 @@ export function DeleteStageDialog({ stage, projectId, children }: DeleteStageDia
         <AlertDialogHeader>
           <AlertDialogTitle>Επιβεβαίωση Διαγραφής Σταδίου</AlertDialogTitle>
           <AlertDialogDescription>
-            Είστε βέβαιος ότι θέλετε να διαγράψετε το στάδιο ‘{stage.title}’; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
+            {descriptionText}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form action={formAction}>
