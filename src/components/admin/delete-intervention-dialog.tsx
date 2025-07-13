@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { deleteMasterInterventionAction } from '@/app/actions/interventions';
+import { deleteMasterInterventionAction } from '@/app/actions/admin';
 import type { MasterIntervention } from '@/types';
 
 const initialState = {
@@ -49,16 +49,18 @@ export function DeleteInterventionDialog({ intervention, children }: DeleteInter
   useEffect(() => {
     if (!open) return; 
 
-    if (state.success) {
-      toast({ title: 'Επιτυχία!', description: state.message });
-      setOpen(false);
-    } else if (state.message) {
-      toast({
-        variant: 'destructive',
-        title: 'Σφάλμα',
-        description: state.message,
-      });
-      setOpen(false);
+    if (state.message) {
+      if (state.success) {
+        toast({ title: 'Επιτυχία!', description: state.message });
+        setOpen(false);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Σφάλμα',
+          description: state.message,
+        });
+        setOpen(false);
+      }
     }
   }, [state, toast, open, setOpen]);
   
