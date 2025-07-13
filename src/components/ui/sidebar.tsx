@@ -40,7 +40,7 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
-export function useSidebar() {
+function useSidebar() {
   const context = React.useContext(SidebarContext)
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider.")
@@ -749,9 +749,10 @@ export {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  // SidebarProvider is defined above
+  SidebarProvider,
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  // useSidebar is defined above
+  useSidebar,
 }
+

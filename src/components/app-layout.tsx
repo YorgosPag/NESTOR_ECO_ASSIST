@@ -13,13 +13,13 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, FolderKanban, Settings, History, Leaf } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { ThemeToggle } from './layout/theme-toggle';
-import { useSidebar } from '@/hooks/use-sidebar';
 
 function SidebarLogo() {
   const { state } = useSidebar();
@@ -114,3 +114,4 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </>
     )
 }
+
