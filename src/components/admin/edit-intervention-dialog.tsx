@@ -1,4 +1,3 @@
-// src/components/admin/edit-intervention-dialog.tsx
 "use client";
 
 import { useState } from 'react';
@@ -26,10 +25,10 @@ export function EditInterventionDialog({ intervention, children, customLists, cu
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Επεξεργασία Παρέμβασης</DialogTitle>
-          <DialogDescription>Ενημερώστε τα στοιχεία της master παρέμβασης.</DialogDescription>
+          <DialogTitle>Επεξεργασία Master Παρέμβασης</DialogTitle>
+          <DialogDescription>Ενημερώστε τα στοιχεία της παρέμβασης. Αυτές οι αλλαγές θα εφαρμοστούν σε όλες τις μελλοντικές προσθήκες στα έργα.</DialogDescription>
         </DialogHeader>
         <EditInterventionForm intervention={intervention} setOpen={setOpen} customLists={customLists} customListItems={customListItems} />
       </DialogContent>
