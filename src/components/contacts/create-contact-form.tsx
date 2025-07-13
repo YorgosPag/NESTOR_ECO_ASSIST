@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PlusCircle } from 'lucide-react';
 import type { CustomList, CustomListItem } from '@/types';
 import { SearchableSelect } from '../ui/searchable-select';
@@ -69,7 +68,7 @@ export function CreateContactForm({ setOpen, customLists, customListItems }: { s
         : [];
 
     return (
-        <form action={formAction} className="space-y-4 pt-4 pr-1">
+        <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="role" value={role} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -88,17 +87,11 @@ export function CreateContactForm({ setOpen, customLists, customListItems }: { s
                 <Input id="email" name="email" type="email" placeholder="email@example.com" />
                 {state.errors?.email && <p className="text-sm font-medium text-destructive mt-1">{state.errors.email[0]}</p>}
             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="mobilePhone">Κινητό Τηλέφωνο</Label>
-                    <Input id="mobilePhone" name="mobilePhone" type="tel" placeholder="π.χ., 6912345678" />
-                    {state.errors?.mobilePhone && <p className="text-sm font-medium text-destructive mt-1">{state.errors.mobilePhone[0]}</p>}
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="landlinePhone">Σταθερό Τηλέφωνο</Label>
-                    <Input id="landlinePhone" name="landlinePhone" type="tel" placeholder="π.χ., 2101234567" />
-                </div>
-             </div>
+             <div className="space-y-2">
+                <Label htmlFor="mobilePhone">Κινητό Τηλέφωνο</Label>
+                <Input id="mobilePhone" name="mobilePhone" type="tel" placeholder="π.χ., 6912345678" />
+                {state.errors?.mobilePhone && <p className="text-sm font-medium text-destructive mt-1">{state.errors.mobilePhone[0]}</p>}
+            </div>
             <div className="space-y-2">
                 <Label htmlFor="role-select">Ρόλος</Label>
                 <SearchableSelect
@@ -120,24 +113,6 @@ export function CreateContactForm({ setOpen, customLists, customListItems }: { s
             <div className="space-y-2">
                 <Label htmlFor="specialty">Επάγγελμα/Ειδικότητα (Προαιρετικό)</Label>
                 <Input id="specialty" name="specialty" placeholder="π.χ., Υδραυλικός" />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="addressStreet">Διεύθυνση (Οδός & Αριθμός)</Label>
-                <Input id="addressStreet" name="addressStreet" placeholder="π.χ., Ερμού 25" />
-            </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="addressCity">Πόλη</Label>
-                    <Input id="addressCity" name="addressCity" placeholder="π.χ., Αθήνα" />
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="addressPostalCode">Τ.Κ.</Label>
-                    <Input id="addressPostalCode" name="addressPostalCode" placeholder="π.χ., 10563" />
-                </div>
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="notes">Σημειώσεις</Label>
-                <Textarea id="notes" name="notes" rows={3} placeholder="Πρόσθετες πληροφορίες για την επαφή..."/>
             </div>
             <SubmitButton />
         </form>
