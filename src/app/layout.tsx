@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 import { ClientWrapper } from "@/components/layout/client-wrapper";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: "Prasina",
@@ -21,8 +21,14 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
-        <ClientWrapper>{children}</ClientWrapper>
-        <Toaster />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <ClientWrapper>{children}</ClientWrapper>
+        </ThemeProvider>
       </body>
     </html>
   );
