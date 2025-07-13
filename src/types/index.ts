@@ -35,7 +35,7 @@ export type Project = {
   
   export type Stage = {
     id: string;
-    name: "Initiation" | "Planning" | "Execution" | "Monitoring" | "Closure";
+    name: string;
     files: File[];
     deadline: string;
     assigneeContactId?: string;

@@ -19,17 +19,18 @@ const projects: Project[] = [
       { id: 'stage-3', name: "Execution", files: [], deadline: "2025-01-01T00:00:00Z", status: "Not Started", progress: 0 },
     ],
     interventions: [
-        { id: 'inter-1', masterInterventionId: 'master-int-1', projectId: 'proj-001', status: "On Track", progress: 80, stages: [
-            { id: 'p1-int1-s1', name: "Initiation", files: [], deadline: "2024-08-01T00:00:00Z", status: "Completed", progress: 100 },
-            { id: 'p1-int1-s2', name: "Planning", files: [], deadline: "2024-08-15T00:00:00Z", status: "In Progress", progress: 60 },
+        { id: 'inter-1', masterInterventionId: 'master-int-1', projectId: 'proj-001', status: "On Track", progress: 80, interventionCategory: 'Environmental Impact Assessment', interventionSubcategory: 'A formal process to predict the environmental consequences of a project.', stages: [
+            { id: 'p1-int1-s1', name: "Scoping", files: [], deadline: "2024-08-01T00:00:00Z", status: "Completed", progress: 100 },
+            { id: 'p1-int1-s2', name: "Baseline Study", files: [], deadline: "2024-08-15T00:00:00Z", status: "In Progress", progress: 60 },
+            { id: 'p1-int1-s3', name: "Impact Prediction", files: [], deadline: "2024-09-01T00:00:00Z", status: "Not Started", progress: 0 },
         ]},
-        { id: 'inter-2', masterInterventionId: 'master-int-2', projectId: 'proj-001', status: "Completed", progress: 100, stages: [
-            { id: 'p1-int2-s1', name: "Initiation", files: [], deadline: "2024-07-20T00:00:00Z", status: "Completed", progress: 100 },
+        { id: 'inter-2', masterInterventionId: 'master-int-2', projectId: 'proj-001', status: "Completed", progress: 100, interventionCategory: 'Site Survey', interventionSubcategory: 'A detailed inspection and measurement of a land area.', stages: [
+            { id: 'p1-int2-s1', name: "Topographical Survey", files: [], deadline: "2024-07-20T00:00:00Z", status: "Completed", progress: 100 },
         ]}
     ],
     auditLog: [
         { id: 'log-p1-1', user: 'Dr. Elena Vasquez', action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf' },
-        { id: 'log-p1-2', user: 'Kenji Tanaka', action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Initiation for Environmental Impact Assessment' },
+        { id: 'log-p1-2', user: 'Kenji Tanaka', action: 'Stage Update', timestamp: '2024-08-01T11:00:00Z', details: 'Completed stage Scoping for Environmental Impact Assessment' },
     ]
   },
   {

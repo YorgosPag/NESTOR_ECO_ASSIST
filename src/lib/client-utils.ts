@@ -4,7 +4,7 @@ import type { Project } from "@/types";
 import { isPast } from 'date-fns';
 
 export function calculateClientProjectMetrics(project: Project): Project {
-    if (!project || !project.stages) {
+    if (!project) {
         return project;
     }
 
@@ -12,19 +12,20 @@ export function calculateClientProjectMetrics(project: Project): Project {
     let completedStages = 0;
     let overdueStages = 0;
 
-    if (project.stages) {
-        totalStages += project.stages.length;
-        project.stages.forEach(stage => {
-            if (stage.status === 'Completed') {
-                completedStages++;
-            } else if (stage.status !== 'Delayed') { // Assuming 'failed' is not a status, but if so, it should be handled.
-                if (isPast(new Date(stage.deadline))) {
-                    overdueStages++;
+    project.interventions?.forEach(intervention => {
+        if (intervention.stages) {
+            totalStages += intervention.stages.length;
+            intervention.stages.forEach(stage => {
+                if (stage.status === 'Completed') {
+                    completedStages++;
+                } else if (stage.status !== 'Completed') {
+                     if (stage.deadline && isPast(new Date(stage.deadline))) {
+                        overdueStages++;
+                    }
                 }
-            }
-        });
-    }
-
+            });
+        }
+    });
 
     const progress = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
     
@@ -43,7 +44,6 @@ export function calculateClientProjectMetrics(project: Project): Project {
         ...project,
         progress,
         status,
-        // The type definition for Project does not have alerts, so I am commenting this out.
-        // alerts: overdueStages, 
+        alerts: overdueStages, 
     };
 }
