@@ -71,7 +71,7 @@ export function EditProjectForm({ project, contacts, setOpen }: EditProjectFormP
                         <SelectValue placeholder="Select an owner" />
                     </SelectTrigger>
                     <SelectContent>
-                        {contacts.filter(c => c.role === 'Client').map(contact => (
+                        {contacts.filter(c => c.role === 'Πελάτης').map(contact => (
                             <SelectItem key={contact.id} value={contact.id}>
                                 {contact.firstName} {contact.lastName}
                             </SelectItem>

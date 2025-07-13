@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState, useFormStatus } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createProjectAction } from '@/app/actions/projects';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { Contact } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -39,6 +39,7 @@ export function CreateProjectForm({ contacts }: { contacts: Contact[] }) {
         title: "Επιτυχία!",
         description: state.message,
       });
+      // Redirect on success
       router.push('/projects');
     } else if (state.message) {
       toast({
