@@ -4,11 +4,11 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import type { Project, Stage, StageStatus } from '@/types';
+import type { Project, Stage, StageStatus, ProjectIntervention, SubIntervention } from '@/types';
 import { getAdminDb } from "@/lib/firebase-admin";
 import { users } from '@/lib/data-helpers';
 import { 
-    getProjectById as getProjectDataById, 
+    getProjectById, 
     updateProject as updateProjectData,
     addProject as addProjectData,
     deleteProject as deleteProjectData,
@@ -78,7 +78,6 @@ export async function createProjectAction(prevState: any, formData: FormData) {
 }
 
 const UpdateProjectSchema = z.object({
-    id: z.string().min(1, "Το ID του έργου είναι απαραίτητο."),
     name: z.string({invalid_type_error: "Παρακαλώ εισάγετε έναν έγκυρο τίτλο."}).min(3, "Ο τίτλος του έργου πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
     applicationNumber: z.string().optional(),
     ownerContactId: z.string().min(1, "Παρακαλώ επιλέξτε έναν ιδιοκτήτη."),
@@ -86,8 +85,12 @@ const UpdateProjectSchema = z.object({
 });
 
 export async function updateProjectAction(prevState: any, formData: FormData) {
+    const projectId = formData.get('id') as string;
+     if (!projectId) {
+        return { success: false, message: 'Το ID του έργου είναι απαραίτητο.' };
+    }
+
     const validatedFields = UpdateProjectSchema.safeParse({
-        id: formData.get('id'),
         name: formData.get('name'),
         applicationNumber: formData.get('applicationNumber'),
         ownerContactId: formData.get('ownerContactId'),
@@ -101,20 +104,20 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
             message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία και προσπαθήστε ξανά.',
         };
     }
-    const { id, ...projectData } = validatedFields.data;
+    
      const updateData = {
-        ...projectData,
-        deadline: projectData.deadline ? new Date(projectData.deadline).toISOString() : '',
+        ...validatedFields.data,
+        deadline: validatedFields.data.deadline ? new Date(validatedFields.data.deadline).toISOString() : '',
      };
 
     try {
         const db = getAdminDb();
-        const project = await getProjectDataById(db, id);
+        const project = await getProjectById(db, projectId);
         if (!project) {
             throw new Error("Το έργο δεν βρέθηκε για ενημέρωση.");
         }
         
-        await updateProjectData(db, { ...project, ...updateData });
+        await updateProjectData(db, projectId, { ...project, ...updateData });
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateProjectAction:", error);
@@ -122,7 +125,7 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/dashboard');
-    revalidatePath(`/project/${id}`);
+    revalidatePath(`/project/${projectId}`);
     return { success: true, message: 'Το έργο ενημερώθηκε με επιτυχία.' };
 }
 
@@ -140,7 +143,7 @@ export async function activateProjectAction(prevState: any, formData: FormData) 
     try {
         const db = getAdminDb();
         
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (!project) {
             throw new Error("Το έργο δεν βρέθηκε.");
         }
@@ -157,7 +160,7 @@ export async function activateProjectAction(prevState: any, formData: FormData) 
         project.status = 'Εντός Χρονοδιαγράμματος';
         project.auditLog = auditLog;
 
-        await updateProjectData(db, project);
+        await updateProjectData(db, projectId, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in activateProjectAction:", error);
@@ -219,10 +222,10 @@ export async function addStageAction(prevState: any, formData: FormData) {
 
     try {
         const db = getAdminDb();
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (!project) throw new Error('Project not found');
 
-        const intervention = project.interventions.find(i => i.masterInterventionId === interventionMasterId);
+        const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
         if (!intervention) throw new Error('Intervention not found');
         
         const { title, deadline, notes, assigneeContactId } = validatedFields.data;
@@ -245,10 +248,10 @@ export async function addStageAction(prevState: any, formData: FormData) {
             user: users[0],
             action: 'Προσθήκη Σταδίου',
             timestamp: new Date().toISOString(),
-            details: `Προστέθηκε το στάδιο "${title}" στην παρέμβαση "${intervention.name}".`,
+            details: `Προστέθηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
         });
         
-        await updateProjectData(db, project);
+        await updateProjectData(db, projectId, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in addStageAction:", error);
@@ -277,10 +280,10 @@ export async function updateStageAction(prevState: any, formData: FormData) {
 
     try {
         const db = getAdminDb();
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (!project) throw new Error('Project not found');
 
-        const intervention = project.interventions.find(i => i.masterInterventionId === interventionMasterId);
+        const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
         if (!intervention) throw new Error('Intervention not found for stage update');
         
         const stage = intervention.stages.find(s => s.id === stageId);
@@ -299,10 +302,10 @@ export async function updateStageAction(prevState: any, formData: FormData) {
             user: users[0],
             action: 'Επεξεργασία Σταδίου',
             timestamp: new Date().toISOString(),
-            details: `Επεξεργάστηκε το στάδιο "${title}" στην παρέμβαση "${intervention.name}".`,
+            details: `Επεξεργάστηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
         });
 
-        await updateProjectData(db, project);
+        await updateProjectData(db, projectId, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateStageAction:", error);
@@ -328,7 +331,7 @@ export async function deleteStageAction(prevState: any, formData: FormData) {
 
     try {
         const db = getAdminDb();
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (!project) throw new Error('Project not found');
 
         let interventionContainingStage = null;
@@ -357,10 +360,10 @@ export async function deleteStageAction(prevState: any, formData: FormData) {
             user: users[0],
             action: 'Διαγραφή Σταδίου',
             timestamp: new Date().toISOString(),
-            details: `Διαγράφηκε το στάδιο "${stageToDelete.title}" από την παρέμβαση "${interventionContainingStage.name}".`,
+            details: `Διαγράφηκε το στάδιο "${stageToDelete.title}" από την παρέμβαση "${interventionContainingStage.interventionSubcategory}".`,
         });
 
-        await updateProjectData(db, project);
+        await updateProjectData(db, projectId, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in deleteStageAction:", error);
@@ -393,7 +396,7 @@ export async function updateStageStatusAction(formData: FormData) {
     
     const db = getAdminDb();
     try {
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (project) {
             let stageFound = false;
             for (const intervention of project.interventions) {
@@ -406,7 +409,7 @@ export async function updateStageStatusAction(formData: FormData) {
                 }
             }
             if (stageFound) {
-                await updateProjectData(db, project);
+                await updateProjectData(db, projectId, project);
             }
         }
     } catch (error) {
@@ -434,10 +437,10 @@ export async function moveStageAction(formData: FormData) {
     const { projectId, interventionMasterId, stageId, direction } = validatedFields.data;
     try {
         const db = getAdminDb();
-        const project = await getProjectDataById(db, projectId);
+        const project = await getProjectById(db, projectId);
         if (!project) throw new Error('Project not found');
 
-        const intervention = project.interventions.find(i => i.masterInterventionId === interventionMasterId);
+        const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
         if (!intervention) throw new Error('Intervention not found');
 
         const stages = intervention.stages;
@@ -453,7 +456,7 @@ export async function moveStageAction(formData: FormData) {
             return;
         }
         
-        await updateProjectData(db, project);
+        await updateProjectData(db, projectId, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in moveStageAction:", error);
@@ -464,115 +467,477 @@ export async function moveStageAction(formData: FormData) {
 
 const AddInterventionSchema = z.object({
   projectId: z.string(),
-  interventionName: z.string().min(1, { message: 'Please select an intervention type.' }),
+  interventionName: z.string().min(3, "Το όνομα της παρέμβασης πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
 });
 
-export type AddInterventionState = {
-  errors?: {
-    interventionName?: string[];
-  };
-  message?: string | null;
-  success?: boolean;
-};
-
-export async function addInterventionAction(prevState: AddInterventionState, formData: FormData) {
-  const validatedFields = AddInterventionSchema.safeParse({
-    projectId: formData.get('projectId'),
-    interventionName: formData.get('interventionName'),
-  });
+export async function addInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = AddInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Validation failed. Please select an intervention.',
       success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία και προσπαθήστε ξανά.',
     };
   }
-  
+
   const { projectId, interventionName } = validatedFields.data;
-  const db = getAdminDb();
 
   try {
-    const project = await getProjectDataById(db, projectId);
-
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
     if (!project) {
-        return { message: 'Project not found.', success: false };
+      return { success: false, errors: {}, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
     }
 
-    const newIntervention = {
-        id: `inter-${new Date().getTime()}`,
-        masterInterventionId: `master-int-${new Date().getTime()}`,
-        projectId: projectId,
-        interventionCategory: 'Uncategorized',
-        interventionSubcategory: interventionName,
-        name: interventionName,
-        stages: [],
-        costOfMaterials: 0,
-        costOfLabor: 0,
-        totalCost: 0,
+    const newIntervention: ProjectIntervention = {
+      masterId: `${interventionName.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substring(2, 7)}`,
+      code: 'CUSTOM',
+      expenseCategory: interventionName,
+      interventionCategory: interventionName,
+      interventionSubcategory: interventionName,
+      quantity: 0,
+      totalCost: 0,
+      stages: [],
+      subInterventions: [],
     };
-
-    project.interventions.push(newIntervention);
     
-    await updateProjectData(db, project);
+    if (!project.interventions) {
+        project.interventions = [];
+    }
+    project.interventions.push(newIntervention);
 
-  } catch (error) {
-    console.error('Error adding intervention:', error);
-    return { message: 'Database error: Could not add intervention.', success: false };
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Προσθήκη Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Προστέθηκε η παρέμβαση: "${interventionName}".`,
+    });
+
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in addInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
   }
-  
-  revalidatePath(`/project/${projectId}`);
 
-  return { message: 'Intervention added successfully.', success: true };
+  revalidatePath(`/project/${projectId}`);
+  return { success: true, message: 'Η παρέμβαση προστέθηκε με επιτυχία.' };
 }
 
+
+const UpdateInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  interventionSubcategory: z.string().min(3, "Το όνομα της παρέμβασης πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
+});
+
+export async function updateInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = UpdateInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία και προσπαθήστε ξανά.',
+    };
+  }
+
+  const { projectId } = validatedFields.data;
+
+  try {
+    const { interventionMasterId, interventionSubcategory } = validatedFields.data;
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
+    if (!project) {
+      return { success: false, errors: {}, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
+    }
+
+    const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+    if (!intervention) {
+      return { success: false, errors: {}, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
+    }
+
+    intervention.interventionSubcategory = interventionSubcategory;
+    if (intervention.code === 'CUSTOM') {
+        intervention.interventionCategory = interventionSubcategory;
+        intervention.expenseCategory = interventionSubcategory;
+    }
+
+
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Επεξεργασία Ονόματος Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Άλλαξε το όνομα της παρέμβασης σε: "${interventionSubcategory}".`,
+    });
+
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in updateInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+  }
+
+  revalidatePath(`/project/${projectId}`);
+  return { success: true, message: 'Η παρέμβαση ενημερώθηκε με επιτυχία.' };
+}
 
 const DeleteInterventionSchema = z.object({
   projectId: z.string(),
-  interventionId: z.string(),
+  interventionMasterId: z.string(),
 });
 
-export type DeleteInterventionState = {
-  message?: string | null;
-  success?: boolean;
-};
-
-
-export async function deleteInterventionAction(prevState: DeleteInterventionState, formData: FormData) {
-  const validatedFields = DeleteInterventionSchema.safeParse({
-    projectId: formData.get('projectId'),
-    interventionId: formData.get('interventionId'),
-  });
+export async function deleteInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = DeleteInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
 
   if (!validatedFields.success) {
-    return {
-      message: 'Validation failed. Invalid data provided.',
-      success: false,
-    };
+    return { success: false, message: 'Μη έγκυρα δεδομένα.' };
   }
-
-  const { projectId, interventionId } = validatedFields.data;
-  const db = getAdminDb();
+  const { projectId } = validatedFields.data;
 
   try {
-    const project = await getProjectDataById(db, projectId);
-
+    const { interventionMasterId } = validatedFields.data;
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
     if (!project) {
-        return { message: 'Project not found.', success: false };
+      return { success: false, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
     }
 
-    project.interventions = project.interventions.filter(
-      (intervention) => intervention.id !== interventionId
-    );
+    const interventionIndex = project.interventions.findIndex(i => i.masterId === interventionMasterId);
+    if (interventionIndex === -1) {
+      return { success: false, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
+    }
 
-    await updateProjectData(db, project);
-
-  } catch (error) {
-    console.error('Error deleting intervention:', error);
-    return { message: 'Database error: Could not delete intervention.', success: false };
+    const intervention = project.interventions[interventionIndex];
+    
+    project.interventions.splice(interventionIndex, 1);
+    
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Διαγραφή Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Διαγράφηκε: "${intervention.interventionCategory}".`,
+    });
+    
+    await updateProjectData(db, projectId, project);
+  } catch (error: any) {
+    console.error("🔥 ERROR in deleteInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
   }
 
   revalidatePath(`/project/${projectId}`);
-
-  return { message: 'Intervention deleted successfully.', success: true };
+  return { success: true, message: 'Η παρέμβαση διαγράφηκε με επιτυχία.' };
 }
+
+
+const AddSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subcategoryCode: z.string().min(1, "Ο κωδικός είναι υποχρεωτικός."),
+  description: z.string().min(3, "Η περιγραφή πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
+  quantity: z.coerce.number().optional(),
+  quantityUnit: z.string().optional(),
+  cost: z.coerce.number().positive("Το κόστος πρέπει να είναι θετικός αριθμός."),
+  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  unitCost: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  implementedQuantity: z.coerce.number().min(0, "Η ποσότητα πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+});
+
+export async function addSubInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = AddSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία.',
+    };
+  }
+
+  const { projectId, interventionMasterId } = validatedFields.data;
+
+  try {
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
+    if (!project) {
+      return { success: false, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
+    }
+
+    const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+    if (!intervention) {
+      return { success: false, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
+    }
+
+    const { subcategoryCode, description, cost, quantity, quantityUnit, costOfMaterials, costOfLabor, unitCost, implementedQuantity } = validatedFields.data;
+    const newSubIntervention: SubIntervention = {
+        id: `sub-${Date.now()}`,
+        subcategoryCode,
+        description,
+        cost,
+        quantity,
+        quantityUnit,
+        costOfMaterials: costOfMaterials || 0,
+        costOfLabor: costOfLabor || 0,
+        unitCost: unitCost || 0,
+        implementedQuantity: implementedQuantity || 0,
+    };
+
+    if (!intervention.subInterventions) {
+        intervention.subInterventions = [];
+    }
+    intervention.subInterventions.push(newSubIntervention);
+    
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Προσθήκη Υπο-Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Προστέθηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
+    });
+    
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in addSubInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+  }
+
+  revalidatePath(`/project/${projectId}`);
+  return { success: true, message: 'Η υπο-παρέμβαση προστέθηκε με επιτυχία.' };
+}
+
+const UpdateSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subInterventionId: z.string(),
+  subcategoryCode: z.string().min(1, "Ο κωδικός είναι υποχρεωτικός."),
+  expenseCategory: z.string().optional(),
+  description: z.string().min(3, "Η περιγραφή πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
+  quantity: z.coerce.number().optional(),
+  quantityUnit: z.string().optional(),
+  cost: z.coerce.number().positive("Το κόστος πρέπει να είναι θετικός αριθμός."),
+  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  unitCost: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  implementedQuantity: z.coerce.number().min(0, "Η ποσότητα πρέπει να είναι μη αρνητικός αριθμός.").optional(),
+  selectedEnergySpec: z.string().optional(),
+});
+
+export async function updateSubInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = UpdateSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία.',
+    };
+  }
+
+  const { projectId, interventionMasterId, subInterventionId } = validatedFields.data;
+
+  try {
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
+    if (!project) {
+      return { success: false, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
+    }
+
+    const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+    if (!intervention) {
+      return { success: false, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
+    }
+    
+    if (!intervention.subInterventions) {
+        return { success: false, message: 'Σφάλμα: Δεν βρέθηκαν υπο-παρεμβάσεις.' };
+    }
+
+    const subIntervention = intervention.subInterventions.find(sub => sub.id === subInterventionId);
+    if (!subIntervention) {
+        return { success: false, message: 'Σφάλμα: Η υπο-παρέμβαση δεν βρέθηκε.' };
+    }
+
+    const { subcategoryCode, description, cost, quantity, quantityUnit, costOfMaterials, costOfLabor, unitCost, implementedQuantity, expenseCategory, selectedEnergySpec } = validatedFields.data;
+    subIntervention.subcategoryCode = subcategoryCode;
+    subIntervention.expenseCategory = expenseCategory;
+    subIntervention.description = description;
+    subIntervention.cost = cost;
+    subIntervention.quantity = quantity;
+    subIntervention.quantityUnit = quantityUnit;
+    subIntervention.costOfMaterials = costOfMaterials || 0;
+    subIntervention.costOfLabor = costOfLabor || 0;
+    subIntervention.unitCost = unitCost || 0;
+    subIntervention.implementedQuantity = implementedQuantity || 0;
+    subIntervention.selectedEnergySpec = selectedEnergySpec;
+    
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Επεξεργασία Υπο-Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Επεξεργάστηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
+    });
+    
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in updateSubInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+  }
+
+  revalidatePath(`/project/${projectId}`);
+  return { success: true, message: 'Η υπο-παρέμβαση ενημερώθηκε με επιτυχία.' };
+}
+
+const DeleteSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subInterventionId: z.string(),
+});
+
+export async function deleteSubInterventionAction(prevState: any, formData: FormData) {
+  const validatedFields = DeleteSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!validatedFields.success) {
+      return { success: false, message: 'Μη έγκυρα δεδομένα.' };
+  }
+
+  const { projectId, interventionMasterId, subInterventionId } = validatedFields.data;
+
+  try {
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
+    if (!project) {
+      return { success: false, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
+    }
+
+    const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+    if (!intervention || !intervention.subInterventions) {
+      return { success: false, message: 'Σφάλμα: Η παρέμβαση ή οι υπο-παρεμβάσεις δεν βρέθηκαν.' };
+    }
+
+    const subInterventionIndex = intervention.subInterventions.findIndex(sub => sub.id === subInterventionId);
+    if (subInterventionIndex === -1) {
+        return { success: false, message: 'Σφάλμα: Η υπο-παρέμβαση δεν βρέθηκε.' };
+    }
+
+    const deletedSubIntervention = intervention.subInterventions.splice(subInterventionIndex, 1)[0];
+    
+    project.auditLog.unshift({
+      id: `log-${Date.now()}`,
+      user: users[0],
+      action: 'Διαγραφή Υπο-Παρέμβασης',
+      timestamp: new Date().toISOString(),
+      details: `Διαγράφηκε η υπο-παρέμβαση "${deletedSubIntervention.description}" από την παρέμβαση "${intervention.interventionCategory}".`,
+    });
+    
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in deleteSubInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+  }
+
+  revalidatePath(`/project/${projectId}`);
+  return { success: true, message: 'Η υπο-παρέμβαση διαγράφηκε με επιτυχία.' };
+}
+
+
+const UpdateInterventionCostsSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
+  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
+});
+
+export async function updateInterventionCostsAction(prevState: any, formData: FormData) {
+    const validatedFields = UpdateInterventionCostsSchema.safeParse(Object.fromEntries(formData.entries()));
+
+    if (!validatedFields.success) {
+        return {
+            success: false,
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Σφάλμα. Παρακαλώ διορθώστε τα πεδία.',
+        };
+    }
+
+    const { projectId, interventionMasterId, costOfMaterials, costOfLabor } = validatedFields.data;
+
+    try {
+        const db = getAdminDb();
+        const project = await getProjectById(db, projectId);
+        if (!project) {
+            return { success: false, message: 'Σφάλμα: Το έργο δεν βρέθηκε.' };
+        }
+
+        const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+        if (!intervention) {
+            return { success: false, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
+        }
+        
+        await updateProjectData(db, projectId, project);
+    } catch (error: any) {
+        console.error("🔥 ERROR in updateInterventionCostsAction:", error);
+        return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+    }
+
+    revalidatePath(`/projects/${projectId}`);
+    return { success: true, message: 'Το κόστος της παρέμβασης ενημερώθηκε με επιτυχία.' };
+}
+
+const MoveSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subInterventionId: z.string(),
+  direction: z.enum(['up', 'down']),
+});
+
+export async function moveSubInterventionAction(prevState: any, formData: FormData) {
+  const effectiveFormData = formData instanceof FormData ? formData : prevState;
+
+  if (!(effectiveFormData instanceof FormData)) {
+    return { success: false, message: 'Μη έγκυρα δεδομένα φόρμας.' };
+  }
+  
+  const validatedFields = MoveSubInterventionSchema.safeParse(Object.fromEntries(effectiveFormData.entries()));
+  if (!validatedFields.success) {
+    return { success: false, message: 'Μη έγκυρα δεδομένα.' };
+  }
+  const { projectId, interventionMasterId, subInterventionId, direction } = validatedFields.data;
+
+  try {
+    const db = getAdminDb();
+    const project = await getProjectById(db, projectId);
+    if (!project) throw new Error('Δεν βρέθηκε το έργο.');
+
+    const intervention = project.interventions.find(i => i.masterId === interventionMasterId);
+    if (!intervention || !intervention.subInterventions) throw new Error('Δεν βρέθηκε η παρέμβαση.');
+
+    const subInterventions = intervention.subInterventions;
+    const fromIndex = subInterventions.findIndex(s => s.id === subInterventionId);
+    if (fromIndex === -1) throw new Error('Δεν βρέθηκε η υπο-παρέμβαση.');
+    
+    const toIndex = direction === 'up' ? fromIndex - 1 : fromIndex + 1;
+
+    if (toIndex >= 0 && toIndex < subInterventions.length) {
+        [subInterventions[fromIndex], subInterventions[toIndex]] = [subInterventions[toIndex], subInterventions[fromIndex]];
+    } else {
+        return { success: true, message: 'Δεν είναι δυνατή η περαιτέρω μετακίνηση.' };
+    }
+    
+    await updateProjectData(db, projectId, project);
+
+  } catch (error: any) {
+    console.error("🔥 ERROR in moveSubInterventionAction:", error);
+    return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
+  }
+
+  revalidatePath(`/projects/${projectId}`);
+  return { success: true, message: 'Η σειρά άλλαξε.' };
+}
+```/src/lib/projects-data.ts

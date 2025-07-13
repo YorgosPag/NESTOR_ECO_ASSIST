@@ -27,7 +27,6 @@ import { moveStageAction, updateStageStatusAction } from "@/app/actions/projects
 interface StageCardProps {
   stage: Stage;
   project: Project;
-  allProjectInterventions: ProjectIntervention[];
   interventionName: string;
   contacts: Contact[];
   owner?: Contact;

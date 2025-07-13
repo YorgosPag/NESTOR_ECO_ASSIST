@@ -16,18 +16,31 @@ export type Project = {
   };
 
   export type ProjectIntervention = {
+    masterId: string;
+    code: string;
+    expenseCategory: string;
+    interventionCategory: string;
+    interventionSubcategory: string;
+    quantity: number;
+    totalCost: number; // This is the budget/revenue for the intervention
+    stages: Stage[];
+    subInterventions: SubIntervention[];
+  }
+
+  export type SubIntervention = {
     id: string;
-    masterInterventionId: string;
-    projectId: string;
-    name: string;
-    interventionCategory?: string;
-    interventionSubcategory?: string;
+    subcategoryCode: string;
+    expenseCategory?: string;
+    description: string;
+    quantity?: number;
+    quantityUnit?: string;
+    cost: number;
     costOfMaterials?: number;
     costOfLabor?: number;
-    totalCost?: number; // This is the budget/revenue for the intervention
+    unitCost?: number;
+    implementedQuantity?: number;
     selectedEnergySpec?: string;
-    stages: Stage[];
-  }
+  };
 
   export type MasterIntervention = {
     id: string;

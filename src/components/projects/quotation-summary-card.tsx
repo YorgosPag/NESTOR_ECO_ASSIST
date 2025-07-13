@@ -25,12 +25,12 @@ interface QuotationSummaryCardProps {
 export function QuotationSummaryCard({ interventions }: QuotationSummaryCardProps) {
   const summaryData = useMemo(() => {
     return interventions.map((intervention) => {
-      const internalCost = (intervention.costOfMaterials || 0) + (intervention.costOfLabor || 0);
+      const internalCost = intervention.subInterventions.reduce((sum, sub) => sum + (sub.costOfMaterials || 0) + (sub.costOfLabor || 0), 0);
       const programBudget = intervention.totalCost || 0;
       const profit = programBudget - internalCost;
       const margin = programBudget > 0 ? (profit / programBudget) * 100 : 0;
       return {
-        name: intervention.interventionSubcategory || intervention.interventionCategory || intervention.name || 'Unnamed Intervention',
+        name: intervention.interventionSubcategory,
         internalCost,
         programBudget,
         profit,

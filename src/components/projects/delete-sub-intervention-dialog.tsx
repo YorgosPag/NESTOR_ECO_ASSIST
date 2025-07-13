@@ -1,6 +1,7 @@
+// src/components/projects/delete-sub-intervention-dialog.tsx
 "use client";
 
-import { useEffect, useState, useActionState } from 'react';
+import { useEffect, useState, useActionState, type ReactNode } from 'react';
 import { useFormStatus } from 'react-dom';
 import {
   AlertDialog,
@@ -16,8 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { deleteInterventionAction } from '@/app/actions/projects';
-import type { Project, ProjectIntervention } from '@/types';
+import { deleteSubInterventionAction } from '@/app/actions/projects';
+import type { Project, ProjectIntervention, SubIntervention } from '@/types';
 
 const initialState = {
   message: null,
@@ -35,27 +36,25 @@ function SubmitButton() {
   );
 }
 
-interface DeleteInterventionDialogProps {
+interface DeleteSubInterventionDialogProps {
   project: Project;
   intervention: ProjectIntervention;
-  children: React.ReactNode;
+  subIntervention: SubIntervention;
+  children: ReactNode;
 }
 
-export function DeleteInterventionDialog({ project, intervention, children }: DeleteInterventionDialogProps) {
+export function DeleteSubInterventionDialog({ project, intervention, subIntervention, children }: DeleteSubInterventionDialogProps) {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useActionState(deleteInterventionAction, initialState);
+  const [state, formAction] = useActionState(deleteSubInterventionAction, initialState);
   const { toast } = useToast();
-  
-  const interventionName = intervention.interventionSubcategory || intervention.interventionCategory;
-
 
   useEffect(() => {
     if (!open) return; 
 
-    if (state?.success === true) {
+    if (state.success) {
       toast({ title: 'Επιτυχία!', description: state.message });
       setOpen(false);
-    } else if (state?.success === false && state.message) {
+    } else if (state.message) {
       toast({
         variant: 'destructive',
         title: 'Σφάλμα',
@@ -67,23 +66,20 @@ export function DeleteInterventionDialog({ project, intervention, children }: De
   
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <div onClick={(e) => { e.stopPropagation(); setOpen(true); }}>
-          {children}
-        </div>
-      </AlertDialogTrigger>
-      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Επιβεβαίωση Διαγραφής</AlertDialogTitle>
+          <AlertDialogTitle>Επιβεβαίωση Διαγραφής Υπο-Παρέμβασης</AlertDialogTitle>
           <AlertDialogDescription>
-            Είστε βέβαιος ότι θέλετε να διαγράψετε την παρέμβαση ‘{interventionName}’; Η ενέργεια αυτή θα διαγράψει και όλες τις υπο-παρεμβάσεις και τα στάδια που περιέχει και δεν μπορεί να αναιρεθεί.
+            Είστε βέβαιος ότι θέλετε να διαγράψετε την υπο-παρέμβαση ‘{subIntervention.description}’; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form action={formAction}>
             <input type="hidden" name="projectId" value={project.id} />
             <input type="hidden" name="interventionMasterId" value={intervention.masterId} />
+            <input type="hidden" name="subInterventionId" value={subIntervention.id} />
             <AlertDialogFooter>
-                <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Άκυρο</AlertDialogCancel>
+                <AlertDialogCancel>Άκυρο</AlertDialogCancel>
                 <SubmitButton />
             </AlertDialogFooter>
         </form>

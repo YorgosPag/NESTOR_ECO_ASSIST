@@ -1,20 +1,43 @@
-// Placeholder for EditInterventionDialog component
-import type { Project, ProjectIntervention, CustomList, CustomListItem } from "@/types";
+"use client";
+
+import { useState, type ReactNode } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import type { Project, ProjectIntervention } from '@/types';
+import { EditInterventionForm } from './edit-intervention-form';
+
 
 interface EditInterventionDialogProps {
   project: Project;
   intervention: ProjectIntervention;
-  customLists: CustomList[];
-  customListItems: CustomListItem[];
   children: React.ReactNode;
 }
 
-export function EditInterventionDialog({children}: EditInterventionDialogProps) {
-    // In a real implementation, this would open a form in a dialog.
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        console.log('Opening edit intervention dialog...');
-    };
+export function EditInterventionDialog({ project, intervention, children }: EditInterventionDialogProps) {
+    const [open, setOpen] = useState(false);
 
-    return <div onClick={handleClick}>{children}</div>;
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Επεξεργασία Παρέμβασης</DialogTitle>
+                    <DialogDescription>
+                        Ενημερώστε το όνομα της παρέμβασης.
+                    </DialogDescription>
+                </DialogHeader>
+                <EditInterventionForm
+                    project={project}
+                    intervention={intervention}
+                    setOpen={setOpen}
+                />
+            </DialogContent>
+        </Dialog>
+    );
 }

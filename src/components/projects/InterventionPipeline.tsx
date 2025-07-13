@@ -6,23 +6,20 @@ import { StageCard } from "./StageCard";
 interface InterventionPipelineProps {
   stages: Stage[];
   project: Project;
-  allProjectInterventions: ProjectIntervention[];
   interventionName: string;
   contacts: Contact[];
   owner?: Contact;
   interventionMasterId: string;
 }
 
-const PipelineColumn = ({ title, stages, project, allProjectInterventions, interventionName, contacts, owner, interventionMasterId }: { title: string, stages: Stage[], project: Project, allProjectInterventions: ProjectIntervention[], interventionName: string, contacts: Contact[], owner?: Contact, interventionMasterId: string }) => (
-  <div>
+const PipelineColumn = ({ title, stages, project, interventionName, contacts, owner, interventionMasterId }: { title: string, stages: Stage[], project: Project, interventionName: string, contacts: Contact[], owner?: Contact, interventionMasterId: string }) => (
+  <div className="flex flex-col gap-3 flex-shrink-0 w-72">
     <h3 className="font-semibold mb-3 px-2 text-muted-foreground">{title} ({stages.length})</h3>
-    <div className="flex flex-col gap-3">
       {stages.map((stage, index) => (
         <StageCard 
             key={stage.id} 
             stage={stage} 
             project={project}
-            allProjectInterventions={allProjectInterventions}
             interventionName={interventionName}
             contacts={contacts} 
             owner={owner}
@@ -31,23 +28,22 @@ const PipelineColumn = ({ title, stages, project, allProjectInterventions, inter
             canMoveDown={index < stages.length - 1}
         />
       ))}
-      {stages.length === 0 && <p className="text-sm text-muted-foreground px-2 italic">Κανένα στάδιο σε αυτή τη στήλη.</p>}
-    </div>
+      {stages.length === 0 && <p className="text-sm text-muted-foreground px-2 italic pt-4">Κανένα στάδιο σε αυτή τη στήλη.</p>}
   </div>
 );
 
-export function InterventionPipeline({ stages, project, allProjectInterventions, interventionName, contacts, owner, interventionMasterId }: InterventionPipelineProps) {
-  const pendingItems = stages.filter((s) => s.status === 'Not Started');
-  const inProgressItems = stages.filter((s) => s.status === 'In Progress' || s.status === 'Delayed');
-  const completedItems = stages.filter((s) => s.status === 'Completed');
-  const failedItems = stages.filter((s) => s.status === 'Failed');
+export function InterventionPipeline({ stages, project, interventionName, contacts, owner, interventionMasterId }: InterventionPipelineProps) {
+  const notStartedItems = stages.filter((s) => s.status === 'Δεν έχει ξεκινήσει');
+  const inProgressItems = stages.filter((s) => s.status === 'Σε Εξέλιξη' || s.status === 'Σε Καθυστέρηση');
+  const completedItems = stages.filter((s) => s.status === 'Ολοκληρωμένο');
+  const failedItems = stages.filter((s) => s.status === 'Απέτυχε');
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <PipelineColumn title="Σε Εκκρεμότητα" stages={pendingItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId} />
-      <PipelineColumn title="Σε Εξέλιξη" stages={inProgressItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
-      <PipelineColumn title="Ολοκληρωμένα" stages={completedItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
-      <PipelineColumn title="Απέτυχαν" stages={failedItems} project={project} allProjectInterventions={allProjectInterventions} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
+    <div className="flex gap-6">
+      <PipelineColumn title="Σε Εκκρεμότητα" stages={notStartedItems} project={project} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId} />
+      <PipelineColumn title="Σε Εξέλιξη" stages={inProgressItems} project={project} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
+      <PipelineColumn title="Ολοκληρωμένα" stages={completedItems} project={project} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
+      <PipelineColumn title="Απέτυχαν" stages={failedItems} project={project} interventionName={interventionName} contacts={contacts} owner={owner} interventionMasterId={interventionMasterId}/>
     </div>
   );
 }

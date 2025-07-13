@@ -24,13 +24,13 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
   useEffect(() => {
     setIsMounted(true);
     if (serverProject.interventions) {
-      setOpenInterventions(serverProject.interventions.map(i => i.id));
+      setOpenInterventions(serverProject.interventions.map(i => i.masterId));
     }
   }, [serverProject.interventions]);
 
   const expandAll = () => {
     if (serverProject.interventions) {
-      setOpenInterventions(serverProject.interventions.map(i => i.id));
+      setOpenInterventions(serverProject.interventions.map(i => i.masterId));
     }
   }
   const collapseAll = () => setOpenInterventions([]);
@@ -83,7 +83,7 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
           
           <div>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-4">
-                <AddInterventionDialog projectId={serverProject.id} customLists={customLists} customListItems={customListItems}>
+                <AddInterventionDialog projectId={serverProject.id}>
                   <Button variant="outline" className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Προσθήκη Παρέμβασης
@@ -104,10 +104,9 @@ export function ProjectDetails({ project: serverProject, masterInterventions, co
               <Accordion type="multiple" value={openInterventions} onValueChange={setOpenInterventions} className="w-full space-y-4">
                   {serverProject.interventions?.map((intervention) => (
                       <InterventionCard 
-                          key={intervention.id}
+                          key={intervention.masterId}
                           project={serverProject}
                           intervention={intervention}
-                          allProjectInterventions={serverProject.interventions as ProjectIntervention[]}
                           contacts={contacts}
                           customLists={customLists}
                           customListItems={customListItems}
