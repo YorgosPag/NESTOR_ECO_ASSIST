@@ -69,17 +69,17 @@ export function DeleteContactDialog({ contact, children }: DeleteContactDialogPr
           {children}
         </div>
       </AlertDialogTrigger>
-      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Επιβεβαίωση Διαγραφής</AlertDialogTitle>
           <AlertDialogDescription>
             Είστε βέβαιος ότι θέλετε να διαγράψετε την επαφή '{contact.firstName} {contact.lastName}'; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <form action={formAction}>
+        <form action={formAction} key={contact.id}>
             <input type="hidden" name="id" value={contact.id} />
             <AlertDialogFooter>
-                <AlertDialogCancel onClick={(e) => e.stopPropagation()}>Άκυρο</AlertDialogCancel>
+                <AlertDialogCancel>Άκυρο</AlertDialogCancel>
                 <SubmitButton />
             </AlertDialogFooter>
         </form>
