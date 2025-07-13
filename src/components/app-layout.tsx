@@ -13,7 +13,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { LayoutGrid, Settings, FolderKanban } from 'lucide-react';
+import { LayoutGrid, Settings, FolderKanban, BookUser } from 'lucide-react';
 import { Header } from './layout/header';
 
 const EcoFlowLogo = () => (
@@ -48,7 +48,7 @@ const EcoFlowLogo = () => (
         strokeLinejoin="round"
       />
     </svg>
-    <span className="font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">EcoFlow</span>
+    <span className="font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">Prasina</span>
   </div>
 );
 
@@ -87,6 +87,18 @@ function SidebarNav() {
               <Link href="/projects">
                 <FolderKanban />
                 <span>Projects</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/contacts")}
+              tooltip="Contacts"
+            >
+              <Link href="/contacts">
+                <BookUser />
+                <span>Contacts</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -11,6 +11,34 @@ const contacts: Contact[] = [
 
 ];
 
-export async function getContacts(db?: any) {
-    return Promise.resolve(contacts);
+export async function getContacts(db?: any): Promise<Contact[]> {
+    return Promise.resolve(JSON.parse(JSON.stringify(contacts)));
+}
+
+export async function addContact(db: any, contactData: Omit<Contact, 'id'>): Promise<Contact> {
+    const newContact: Contact = {
+        id: `contact-${Date.now()}`,
+        avatarUrl: 'https://placehold.co/32x32.png',
+        ...contactData
+    };
+    contacts.unshift(newContact);
+    return Promise.resolve(newContact);
+}
+
+export async function updateContact(db: any, updatedContact: Contact): Promise<boolean> {
+    const index = contacts.findIndex(c => c.id === updatedContact.id);
+    if (index !== -1) {
+        contacts[index] = { ...contacts[index], ...updatedContact };
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
+}
+
+export async function deleteContact(db: any, contactId: string): Promise<boolean> {
+    const index = contacts.findIndex(c => c.id === contactId);
+    if (index !== -1) {
+        contacts.splice(index, 1);
+        return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
 }
