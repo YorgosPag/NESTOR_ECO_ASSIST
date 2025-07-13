@@ -1,4 +1,4 @@
-import type { Contact } from "@/types";
+import type { Contact, ContactRole } from "@/types";
 
 const contacts: Contact[] = [
     { 
@@ -93,7 +93,8 @@ export async function addContact(db: any, contactData: Omit<Contact, 'id'>): Pro
     const newContact: Contact = {
         id: `contact-${Date.now()}`,
         avatarUrl: `https://placehold.co/40x40.png?text=${contactData.firstName.charAt(0)}${contactData.lastName.charAt(0)}`,
-        ...contactData
+        ...contactData,
+        role: contactData.role as ContactRole,
     };
     contacts.unshift(newContact);
     return Promise.resolve(newContact);

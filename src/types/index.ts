@@ -73,13 +73,15 @@ export type Project = {
     details: string;
   };
   
+  export type ContactRole = 'Πελάτης' | 'Ομάδα' | 'Ενδιαφερόμενος' | 'Διαχειριστής' | 'Συνεργάτης' | 'Προμηθευτής';
+  
   export type Contact = {
       id: string;
       firstName: string;
       lastName: string;
       email: string;
       avatarUrl?: string;
-      role: 'Πελάτης' | 'Ομάδα' | 'Ενδιαφερόμενος' | 'Διαχειριστής';
+      role: string;
       company?: string;
       specialty?: string;
       mobilePhone?: string;
