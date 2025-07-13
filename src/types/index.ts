@@ -11,11 +11,12 @@ export type Project = {
     deadline?: string;
     description: string;
     stages: Stage[];
-    interventions?: Intervention[]; // Optional for now
+    interventions?: ProjectIntervention[];
     alerts?: number;
+    auditLog?: AuditLog[];
   };
 
-  export type Intervention = {
+  export type ProjectIntervention = {
     id: string;
     masterInterventionId: string;
     projectId: string;
@@ -76,3 +77,4 @@ export type Project = {
     value: string;
   }
   
+
