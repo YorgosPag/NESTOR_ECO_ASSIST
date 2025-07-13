@@ -42,11 +42,10 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
             toast({ title: 'Επιτυχία!', description: state.message });
             router.push('/projects');
         } else if (state?.success === false && state.message) {
-            const errorMessages = state.errors ? Object.values(state.errors).flat().join('\n') : '';
             toast({
                 variant: 'destructive',
                 title: 'Σφάλμα',
-                description: `${state.message}\n${errorMessages}`,
+                description: state.message,
             });
         }
     }, [state, toast, router]);
@@ -54,9 +53,9 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
     return (
         <form action={formAction} className="space-y-4 pt-4">
              <div className="space-y-2">
-                <Label htmlFor="name">Όνομα Έργου</Label>
-                <Input id="name" name="name" placeholder="π.χ., Αναδάσωση Αμαζονίου" required />
-                {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
+                <Label htmlFor="title">Όνομα Έργου</Label>
+                <Input id="title" name="title" placeholder="π.χ., Αναδάσωση Αμαζονίου" required />
+                {state.errors?.title && <p className="text-sm font-medium text-destructive mt-1">{state.errors.title[0]}</p>}
             </div>
              <div className="space-y-2">
                 <Label htmlFor="description">Περιγραφή</Label>
@@ -69,12 +68,12 @@ export function CreateProjectForm({ contacts }: CreateProjectFormProps) {
             </div>
              <div className="space-y-2">
                 <Label htmlFor="ownerContactId">Ιδιοκτήτης / Δικαιούχος</Label>
-                <Select name="ownerContactId">
+                <Select name="ownerContactId" defaultValue="">
                     <SelectTrigger>
                         <SelectValue placeholder="Επιλέξτε ιδιοκτήτη" />
                     </SelectTrigger>
                     <SelectContent>
-                        {contacts.filter(c => c.role === 'Client').map(contact => (
+                        {contacts.filter(c => c.role === 'Πελάτης').map(contact => (
                             <SelectItem key={contact.id} value={contact.id}>
                                 {contact.firstName} {contact.lastName}
                             </SelectItem>

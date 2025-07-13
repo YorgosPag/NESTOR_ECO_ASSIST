@@ -10,7 +10,7 @@ import type { Stage, StageStatus } from '@/types';
 
 // Project Actions
 const CreateFormSchema = z.object({
-  name: z.string().min(1, { message: 'Το όνομα του έργου είναι υποχρεωτικό.' }),
+  title: z.string().min(1, { message: 'Το όνομα του έργου είναι υποχρεωτικό.' }),
   description: z.string().min(1, { message: 'Η περιγραφή είναι υποχρεωτική.' }),
   applicationNumber: z.string().optional(),
   ownerContactId: z.string().min(1, { message: 'Παρακαλώ επιλέξτε έναν ιδιοκτήτη.' }),
@@ -49,7 +49,7 @@ const MoveStageSchema = z.object({
 
 export type State = {
   errors?: {
-    name?: string[];
+    title?: string[];
     description?: string[];
     ownerContactId?: string[];
   };
@@ -65,7 +65,7 @@ export type ActivateProjectState = {
 
 export async function createProjectAction(prevState: State, formData: FormData) {
   const validatedFields = CreateFormSchema.safeParse({
-    name: formData.get('name'),
+    title: formData.get('title'),
     description: formData.get('description'),
     applicationNumber: formData.get('applicationNumber'),
     ownerContactId: formData.get('ownerContactId'),

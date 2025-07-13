@@ -75,7 +75,7 @@ export type Project = {
       lastName: string;
       email: string;
       avatarUrl?: string;
-      role: 'Client' | 'Team' | 'Stakeholder' | 'Admin';
+      role: 'Πελάτης' | 'Ομάδα' | 'Ενδιαφερόμενος' | 'Διαχειριστής';
       addressStreet?: string;
       addressNumber?: string;
       addressCity?: string;
