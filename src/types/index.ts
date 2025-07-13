@@ -11,8 +11,24 @@ export type Project = {
     deadline?: string;
     description: string;
     stages: Stage[];
+    interventions?: Intervention[]; // Optional for now
     alerts?: number;
   };
+
+  export type Intervention = {
+    id: string;
+    masterInterventionId: string;
+    projectId: string;
+    status: "On Track" | "At Risk" | "Completed" | "On Hold";
+    progress: number;
+    stages: Stage[];
+  }
+
+  export type MasterIntervention = {
+    id: string;
+    name: string;
+    description: string;
+  }
   
   export type Stage = {
     id: string;
@@ -47,5 +63,16 @@ export type Project = {
       email: string;
       avatarUrl?: string;
       role: 'Client' | 'Team' | 'Stakeholder';
+  }
+
+  export type CustomList = {
+    id: string;
+    name: string;
+  }
+
+  export type CustomListItem = {
+    id: string;
+    listId: string;
+    value: string;
   }
   

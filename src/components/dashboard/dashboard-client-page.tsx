@@ -3,15 +3,16 @@
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ProjectCard } from '@/components/dashboard/project-card';
-import { Users, DollarSign, FileText, PlusCircle, ArrowRight, Activity, LayoutGrid } from 'lucide-react';
+import { Users, FileText, PlusCircle, Activity, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { OverviewChart } from '@/components/dashboard/overview-chart';
 import { UpcomingDeadlines } from '@/components/dashboard/upcoming-deadlines';
 import type { Project, Contact, Stage } from "@/types";
+import { SmartReminders } from './smart-reminders';
 
 interface DashboardClientPageProps {
     projects: Project[];
+    contacts: Contact[];
 }
 
 interface Deadline {
@@ -24,11 +25,10 @@ interface Deadline {
 }
 
 
-export function DashboardClientPage({ projects: serverProjects }: DashboardClientPageProps) {
+export function DashboardClientPage({ projects: serverProjects, contacts }: DashboardClientPageProps) {
     
     const projects = useMemo(() => serverProjects, [serverProjects]);
     const [chartData, setChartData] = useState<any[]>([]);
-    const [contacts, setContacts] = useState<Contact[]>([]);
 
 
     useEffect(() => {
@@ -122,17 +122,12 @@ export function DashboardClientPage({ projects: serverProjects }: DashboardClien
                     </CardContent>
                 </Card>
             </div>
-            <div className="grid grid-cols-1 gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-                <div className="xl:col-span-2">
+            <div className="grid grid-cols-1 gap-4 md:gap-8 lg:grid-cols-3">
+                <div className="lg:col-span-2 grid gap-4">
                     <OverviewChart data={chartData} />
+                    <SmartReminders projects={projects} />
                 </div>
                 <UpcomingDeadlines deadlines={upcomingDeadlines} contacts={contacts} />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {projects.map((project) => (
-                    <ProjectCard key={project.id} project={project} />
-                ))}
             </div>
         </main>
     );

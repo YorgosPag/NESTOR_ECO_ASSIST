@@ -12,7 +12,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Project } from "@/types";
+import type { Project, Contact } from "@/types";
 import { ArrowUpRight, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -26,13 +26,13 @@ import { calculateClientProjectMetrics } from '@/lib/client-utils';
 import { Skeleton } from "../ui/skeleton";
 import { EditProjectDialog } from "../projects/edit-project-dialog";
 import { DeleteProjectDialog } from "../projects/delete-project-dialog";
-import { contacts } from "@/lib/data";
 
 interface ProjectCardProps {
   project: Project;
+  contacts: Contact[];
 }
 
-export function ProjectCard({ project: serverProject }: ProjectCardProps) {
+export function ProjectCard({ project: serverProject, contacts }: ProjectCardProps) {
   const [project, setProject] = useState(serverProject);
   const [isMounted, setIsMounted] = useState(false);
 

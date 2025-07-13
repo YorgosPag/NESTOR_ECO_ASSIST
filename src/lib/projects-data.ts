@@ -1,6 +1,6 @@
-import type { Project, AuditLog, Contact } from "@/types";
+import type { Project } from "@/types";
 
-export const projects: Project[] = [
+const projects: Project[] = [
   {
     id: "proj-001",
     name: "Amazon Rainforest Reforestation",
@@ -83,16 +83,12 @@ export const projects: Project[] = [
   },
 ];
 
-export const auditLogs: AuditLog[] = [
-    { id: 'log-1', user: 'Dr. Elena Vasquez', action: 'File Upload', timestamp: '2023-01-20T10:00:00Z', details: 'Uploaded Project Charter.pdf to proj-001' },
-    { id: 'log-2', user: 'admin', action: 'User Update', timestamp: '2023-01-18T14:30:00Z', details: 'Updated permissions for Kenji Tanaka' },
-    { id: 'log-3', user: 'Kenji Tanaka', action: 'Project Status Change', timestamp: '2023-07-15T09:15:00Z', details: 'Changed status of proj-002 to At Risk' },
-    { id: 'log-4', user: 'Anya Sharma', action: 'File Upload', timestamp: '2023-08-28T16:45:00Z', details: 'Uploaded Final Report.docx to proj-003' },
-    { id: 'log-5', user: 'Anya Sharma', action: 'Project Status Change', timestamp: '2023-09-01T11:00:00Z', details: 'Changed status of proj-003 to Completed' },
-];
+// Mock function to simulate fetching projects
+export async function getProjects(db?: any) {
+    return Promise.resolve(projects);
+}
 
-export const contacts: Contact[] = [
-    { id: 'contact-1', firstName: 'Elena', lastName: 'Vasquez', email: 'e.vasquez@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Client' },
-    { id: 'contact-2', firstName: 'Kenji', lastName: 'Tanaka', email: 'k.tanaka@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Team' },
-    { id: 'contact-3', firstName: 'Anya', lastName: 'Sharma', email: 'a.sharma@example.com', avatarUrl: 'https://placehold.co/32x32.png', role: 'Client' },
-];
+// Mock function to simulate fetching a single project by ID
+export async function getProjectById(db: any, id: string) {
+    return Promise.resolve(projects.find(p => p.id === id));
+}

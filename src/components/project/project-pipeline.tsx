@@ -9,9 +9,16 @@ type ProjectPipelineProps = {
 };
 
 export function ProjectPipeline({ project }: ProjectPipelineProps) {
+  if (!project.stages || project.stages.length === 0) {
+    return (
+        <div className="py-8 text-center text-muted-foreground">
+            No stages defined for this project yet.
+        </div>
+    )
+  }
   return (
     <Tabs defaultValue={project.stages[0].id} className="w-full">
-      <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
+      <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {project.stages.map((stage) => (
           <TabsTrigger key={stage.id} value={stage.id}>
             {stage.name}

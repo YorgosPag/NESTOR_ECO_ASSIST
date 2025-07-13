@@ -118,7 +118,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     ) : allNonCompletedProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {allNonCompletedProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} />
+                                <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
                     ) : (
@@ -129,7 +129,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     {onHoldProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {onHoldProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} />
+                                <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
                     ) : <EmptyStateFiltered title="No quotations found" description="There are no projects in quotation phase matching your search." />}
@@ -138,7 +138,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     {onTrackProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {onTrackProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} />
+                                <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
                     ) : <EmptyStateFiltered />}
@@ -147,7 +147,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                      {atRiskProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {atRiskProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} />
+                                <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
                     ) : <EmptyStateFiltered />}
@@ -156,7 +156,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                     {completedProjects.length > 0 ? (
                         <div className="grid gap-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {completedProjects.map((project) => (
-                                <ProjectCard key={project.id} project={project} />
+                                <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
                     ) : <EmptyStateFiltered />}
