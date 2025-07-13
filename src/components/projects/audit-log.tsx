@@ -28,7 +28,7 @@ export function AuditLogDisplay({ auditLogs }: AuditLogDisplayProps) {
   if (!auditLogs || auditLogs.length === 0) {
     return (
       <p className="text-muted-foreground text-center py-8">
-        No action history for this project yet.
+        Δεν υπάρχει ακόμη ιστορικό ενεργειών για αυτό το έργο.
       </p>
     );
   }
@@ -36,10 +36,10 @@ export function AuditLogDisplay({ auditLogs }: AuditLogDisplayProps) {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>User</TableHead>
-          <TableHead>Action</TableHead>
-          <TableHead>Details</TableHead>
-          <TableHead className="text-right">Timestamp</TableHead>
+          <TableHead>Χρήστης</TableHead>
+          <TableHead>Ενέργεια</TableHead>
+          <TableHead>Λεπτομέρειες</TableHead>
+          <TableHead className="text-right">Ημερομηνία</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -48,7 +48,9 @@ export function AuditLogDisplay({ auditLogs }: AuditLogDisplayProps) {
             <TableCell>
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={log.user.avatar} alt={log.user.name} data-ai-hint="person" />
+                  {log.user.avatar && (
+                     <AvatarImage src={log.user.avatar} alt={log.user.name} data-ai-hint="person" />
+                  )}
                   <AvatarFallback>{log.user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="font-medium">{log.user.name}</div>
@@ -58,11 +60,11 @@ export function AuditLogDisplay({ auditLogs }: AuditLogDisplayProps) {
               <Badge variant="secondary">{log.action}</Badge>
             </TableCell>
             <TableCell className="text-muted-foreground">
-              {log.details || "N/A"}
+              {log.details || "Δ/Υ"}
             </TableCell>
             <TableCell className="text-right text-muted-foreground">
               {isClient
-                ? format(new Date(log.timestamp), "MMM d, yyyy, h:mm a")
+                ? format(new Date(log.timestamp), "dd MMM, yyyy, HH:mm")
                 : "..."}
             </TableCell>
           </TableRow>
