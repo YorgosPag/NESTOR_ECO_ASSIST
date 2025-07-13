@@ -29,7 +29,7 @@ function SubmitButton() {
   return (
     <AlertDialogAction asChild>
         <Button type="submit" variant="destructive" disabled={pending}>
-            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Yes, Delete Project"}
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Ναι, Διαγραφή Έργου"}
         </Button>
     </AlertDialogAction>
   );
@@ -49,12 +49,12 @@ export function DeleteProjectDialog({ project, children }: DeleteProjectDialogPr
     if (!open) return;
 
     if (state?.success === true) {
-      toast({ title: 'Success!', description: state.message });
+      toast({ title: 'Επιτυχία!', description: state.message });
       setOpen(false);
     } else if (state?.success === false && state.message) {
       toast({
         variant: 'destructive',
-        title: 'Error',
+        title: 'Σφάλμα',
         description: state.message,
       });
       setOpen(false);
@@ -68,15 +68,15 @@ export function DeleteProjectDialog({ project, children }: DeleteProjectDialogPr
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+          <AlertDialogTitle>Επιβεβαίωση Διαγραφής</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to permanently delete the project ‘{project.name}’? This action cannot be undone and will delete all associated interventions and stages.
+            Είστε βέβαιος ότι θέλετε να διαγράψετε οριστικά το έργο ‘{project.name}’; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί και θα διαγράψει όλες τις σχετικές παρεμβάσεις και στάδια.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form action={formAction}>
             <input type="hidden" name="id" value={project.id} />
             <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>Άκυρο</AlertDialogCancel>
                 <SubmitButton />
             </AlertDialogFooter>
         </form>

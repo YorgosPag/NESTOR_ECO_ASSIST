@@ -50,7 +50,7 @@ export async function createProjectAction(prevState: any, formData: FormData) {
             applicationNumber,
             ownerContactId,
             deadline: deadline ? new Date(deadline).toISOString() : undefined,
-            status: 'Quotation',
+            status: 'Προσφορά',
             interventions: [],
             progress: 0,
             startDate: new Date().toISOString(),
@@ -154,7 +154,7 @@ export async function activateProjectAction(prevState: any, formData: FormData) 
             details: 'Η κατάσταση του έργου άλλαξε από "Προσφορά" σε "Εντός Χρονοδιαγράμματος".',
         });
 
-        project.status = 'On Track';
+        project.status = 'Εντός Χρονοδιαγράμματος';
         project.auditLog = auditLog;
 
         await updateProjectData(db, project);
@@ -230,7 +230,7 @@ export async function addStageAction(prevState: any, formData: FormData) {
         const newStage: Stage = {
             id: `stage-${Date.now()}`,
             title,
-            status: 'Not Started',
+            status: 'Δεν έχει ξεκινήσει',
             deadline: new Date(deadline).toISOString(),
             lastUpdated: new Date().toISOString(),
             files: [],
@@ -374,7 +374,7 @@ export async function deleteStageAction(prevState: any, formData: FormData) {
 const UpdateStageStatusSchema = z.object({
   projectId: z.string(),
   stageId: z.string(),
-  status: z.enum(['Not Started', 'In Progress', 'Completed', 'Delayed', 'Failed']),
+  status: z.enum(['Δεν έχει ξεκινήσει', 'Σε Εξέλιξη', 'Ολοκληρωμένο', 'Σε Καθυστέρηση', 'Απέτυχε']),
 });
 
 export async function updateStageStatusAction(formData: FormData) {

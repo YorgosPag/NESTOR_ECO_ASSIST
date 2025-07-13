@@ -34,12 +34,12 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
 
     useEffect(() => {
         setChartData([
-            { name: 'Jan', total: Math.floor(Math.random() * 5000) + 1000 },
-            { name: 'Feb', total: Math.floor(Math.random() * 5000) + 1000 },
-            { name: 'Mar', total: Math.floor(Math.random() * 5000) + 1000 },
-            { name: 'Apr', total: Math.floor(Math.random() * 5000) + 1000 },
-            { name: 'May', total: Math.floor(Math.random() * 5000) + 1000 },
-            { name: 'Jun', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Ιαν', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Φεβ', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Μαρ', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Απρ', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Μαϊ', total: Math.floor(Math.random() * 5000) + 1000 },
+            { name: 'Ιουν', total: Math.floor(Math.random() * 5000) + 1000 },
         ]);
     }, []);
 
@@ -72,14 +72,14 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                         <LayoutGrid className="h-6 w-6" />
-                        Dashboard
+                        Πίνακας Ελέγχου
                     </h1>
-                    <p className="text-muted-foreground">An overview of your projects.</p>
+                    <p className="text-muted-foreground">Μια συνολική εικόνα των έργων σας.</p>
                 </div>
                 <Button asChild>
                     <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Create Project
+                        Δημιουργία Έργου
                     </Link>
                 </Button>
             </div>
@@ -87,54 +87,54 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                            Active Projects
+                            Ενεργά Έργα
                         </CardTitle>
                         <Activity className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{activeProjects.length}</div>
                         <p className="text-xs text-muted-foreground">
-                            {onTrackProjects} on track, {delayedProjects} delayed
+                            {onTrackProjects} εντός χρονοδ., {delayedProjects} σε καθυστέρηση
                         </p>
                     </CardContent>
                 </Card>
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                           Quotations
+                           Προσφορές
                         </CardTitle>
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{quotationProjects}</div>
                         <p className="text-xs text-muted-foreground">
-                           Pending activation
+                           Εκκρεμεί ενεργοποίηση
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                           Completed Projects
+                           Ολοκληρωμένα Έργα
                         </CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{completedProjects}</div>
                         <p className="text-xs text-muted-foreground">
-                           Successfully finished
+                           Ολοκληρώθηκαν με επιτυχία
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Upcoming Deadlines</CardTitle>
+                        <CardTitle className="text-sm font-medium">Προσεχείς Προθεσμίες</CardTitle>
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{upcomingDeadlines.length}</div>
                          <p className="text-xs text-muted-foreground">
-                            Across all active projects
+                            Σε όλα τα ενεργά έργα
                         </p>
                     </CardContent>
                 </Card>
@@ -150,12 +150,12 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
             <div className="space-y-4">
                  <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Recent Projects</h2>
-                        <p className="text-muted-foreground">A look at your most recent active projects.</p>
+                        <h2 className="text-2xl font-bold tracking-tight">Πρόσφατα Έργα</h2>
+                        <p className="text-muted-foreground">Μια ματιά στα πιο πρόσφατα ενεργά έργα σας.</p>
                     </div>
                      <Button asChild variant="outline">
                         <Link href="/projects">
-                           View All Projects
+                           Προβολή Όλων των Έργων
                         </Link>
                     </Button>
                 </div>
@@ -167,7 +167,7 @@ export function DashboardClientPage({ projects: serverProjects, contacts }: Dash
                     </div>
                 ) : (
                     <div className="text-center text-muted-foreground py-8">
-                        No active projects to display.
+                        Δεν υπάρχουν ενεργά έργα για προβολή.
                     </div>
                 )}
             </div>

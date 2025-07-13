@@ -38,12 +38,12 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Ο Λογαριασμός μου</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem>Ρυθμίσεις</DropdownMenuItem>
+            <DropdownMenuItem>Υποστήριξη</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem>Αποσύνδεση</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

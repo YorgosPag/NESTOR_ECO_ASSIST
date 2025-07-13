@@ -29,19 +29,19 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
       if (activeProjects.length === 0) {
         toast({
           variant: "default",
-          title: "No Active Projects",
-          description: "There are no active projects to generate reminders for.",
+          title: "Δεν υπάρχουν Ενεργά Έργα",
+          description: "Δεν υπάρχουν ενεργά έργα για τη δημιουργία υπενθυμίσεων.",
         });
         return;
       }
 
       const projectTimeline = activeProjects.map(p => 
-        `Project: ${p.name}, Deadline: ${p.endDate}, Status: ${p.status}`
+        `Έργο: ${p.name}, Προθεσμία: ${p.endDate}, Κατάσταση: ${p.status}`
       ).join('\n');
 
       const documentContent = activeProjects.flatMap(p => 
         (p.interventions || []).flatMap(i => (i.stages || []).flatMap(s => 
-          (s.files || []).map(f => `File: ${f.name} in stage ${s.title} of project ${p.name}`)
+          (s.files || []).map(f => `Αρχείο: ${f.name} στο στάδιο ${s.title} του έργου ${p.name}`)
         ))
       ).join('\n');
 
@@ -54,8 +54,8 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
       console.error("Failed to generate reminders:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not generate smart reminders. Please try again later.",
+        title: "Σφάλμα",
+        description: "Δεν ήταν δυνατή η δημιουργία έξυπνων υπενθυμίσεων. Παρακαλώ δοκιμάστε ξανά αργότερα.",
       });
     } finally {
       setIsLoading(false);
@@ -67,8 +67,8 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
       <CardHeader>
         <div className='flex items-center justify-between'>
             <div>
-                <CardTitle>AI Smart Reminders</CardTitle>
-                <CardDescription>Get contextual reminders for your projects.</CardDescription>
+                <CardTitle>Έξυπνες Υπενθυμίσεις AI</CardTitle>
+                <CardDescription>Λάβετε σχετικές υπενθυμίσεις για τα έργα σας.</CardDescription>
             </div>
              <Button onClick={handleGenerateReminders} disabled={isLoading} size="sm">
                 {isLoading ? (
@@ -76,7 +76,7 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
                 ) : (
                     <Wand2 className="mr-2 h-4 w-4" />
                 )}
-                Generate
+                Δημιουργία
             </Button>
         </div>
       </CardHeader>
@@ -86,14 +86,14 @@ export function SmartReminders({ projects }: SmartRemindersProps) {
             {reminders.map((reminder, index) => (
               <Alert key={index}>
                 <Bell className="h-4 w-4" />
-                <AlertTitle>Reminder</AlertTitle>
+                <AlertTitle>Υπενθύμιση</AlertTitle>
                 <AlertDescription>{reminder}</AlertDescription>
               </Alert>
             ))}
           </div>
         ) : (
           <div className="text-center text-muted-foreground py-8">
-            <p>Click &quot;Generate&quot; to get smart reminders from the AI.</p>
+            <p>Πατήστε "Δημιουργία" για να λάβετε έξυπνες υπενθυμίσεις από την AI.</p>
           </div>
         )}
       </CardContent>

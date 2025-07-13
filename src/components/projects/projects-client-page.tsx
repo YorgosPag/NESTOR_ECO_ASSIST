@@ -15,7 +15,7 @@ import { PlusCircle, Search, FolderKanban } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { normalizeForSearch } from "@/lib/text-utils";
 
-const EmptyStateFiltered = ({ title = "No projects found", description = "There are no projects that match this category." }) => (
+const EmptyStateFiltered = ({ title = "Δεν βρέθηκαν έργα", description = "Δεν υπάρχουν έργα που να ταιριάζουν σε αυτήν την κατηγορία." }) => (
     <div className="flex flex-col col-span-full items-center justify-center rounded-lg border border-dashed shadow-sm p-8 mt-4 min-h-[400px]">
         <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
         <p className="text-sm text-muted-foreground mt-2">{description}</p>
@@ -66,15 +66,15 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                         <FolderKanban className="h-6 w-6" />
-                        Projects & Quotations
+                        Έργα & Προσφορές
                     </h1>
-                    <p className="text-muted-foreground">View and manage all quotations, active, and completed projects.</p>
+                    <p className="text-muted-foreground">Προβάλετε και διαχειριστείτε όλες τις προσφορές, τα ενεργά και τα ολοκληρωμένα έργα.</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                     <Button asChild>
                     <Link href="/project/new">
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Create Project/Quotation
+                        Δημιουργία Έργου/Προσφοράς
                     </Link>
                     </Button>
                 </div>
@@ -84,7 +84,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Search by project, application, or owner..."
+                        placeholder="Αναζήτηση με έργο, αίτηση, ή ιδιοκτήτη..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-8"
@@ -94,25 +94,25 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
 
             <Tabs defaultValue="all">
                 <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
-                    <TabsTrigger value="all">All ({allNonCompletedProjects.length})</TabsTrigger>
-                    <TabsTrigger value="quotation">Quotations ({quotationProjects.length})</TabsTrigger>
-                    <TabsTrigger value="on_track">On Track ({onTrackProjects.length})</TabsTrigger>
-                    <TabsTrigger value="delayed">Delayed ({delayedProjects.length})</TabsTrigger>
-                    <TabsTrigger value="completed">Completed ({completedProjects.length})</TabsTrigger>
+                    <TabsTrigger value="all">Όλα ({allNonCompletedProjects.length})</TabsTrigger>
+                    <TabsTrigger value="quotation">Προσφορές ({quotationProjects.length})</TabsTrigger>
+                    <TabsTrigger value="on_track">Εντός Χρονοδ. ({onTrackProjects.length})</TabsTrigger>
+                    <TabsTrigger value="delayed">Σε Καθυστέρηση ({delayedProjects.length})</TabsTrigger>
+                    <TabsTrigger value="completed">Ολοκληρωμένα ({completedProjects.length})</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all" className="mt-4">
                     {projects.length === 0 ? (
                         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed shadow-sm p-8 mt-4 min-h-[400px]">
-                            <h3 className="text-2xl font-bold tracking-tight">You have no projects yet</h3>
+                            <h3 className="text-2xl font-bold tracking-tight">Δεν έχετε ακόμη έργα</h3>
                             <p className="text-sm text-muted-foreground mt-2 max-w-md text-center">
-                                To get started, you can create your first project or quotation.
+                                Για να ξεκινήσετε, μπορείτε να δημιουργήσετε το πρώτο σας έργο ή προσφορά.
                             </p>
                             <div className="mt-6 flex gap-4">
                                 <Button asChild>
                                     <Link href="/project/new">
                                         <PlusCircle className="mr-2 h-4 w-4" />
-                                        Create Project/Quotation
+                                        Δημιουργία Έργου/Προσφοράς
                                     </Link>
                                 </Button>
                             </div>
@@ -124,7 +124,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                             ))}
                         </div>
                     ) : (
-                        <EmptyStateFiltered title="No projects found" description="Try a different search term." />
+                        <EmptyStateFiltered title="Δεν βρέθηκαν έργα" description="Δοκιμάστε έναν διαφορετικό όρο αναζήτησης." />
                     )}
                 </TabsContent>
                 <TabsContent value="quotation" className="mt-4">
@@ -134,7 +134,7 @@ export function ProjectsClientPage({ projects, contacts }: ProjectsPageProps) {
                                 <ProjectCard key={project.id} project={project} contacts={contacts} />
                             ))}
                         </div>
-                    ) : <EmptyStateFiltered title="No quotations found" description="There are no projects in quotation phase matching your search." />}
+                    ) : <EmptyStateFiltered title="Δεν βρέθηκαν προσφορές" description="Δεν υπάρχουν έργα σε φάση προσφοράς που να ταιριάζουν με την αναζήτησή σας." />}
                 </TabsContent>
                 <TabsContent value="on_track" className="mt-4">
                     {onTrackProjects.length > 0 ? (

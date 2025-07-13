@@ -16,9 +16,9 @@ export function calculateClientProjectMetrics(project: Project, isClient: boolea
         if (intervention.stages) {
             totalStages += intervention.stages.length;
             intervention.stages.forEach(stage => {
-                if (stage.status === 'Completed') {
+                if (stage.status === 'Ολοκληρωμένο') {
                     completedStages++;
-                } else if (stage.status !== 'Completed') {
+                } else if (stage.status !== 'Ολοκληρωμένο') {
                      if (isClient && stage.deadline && isPast(new Date(stage.deadline))) {
                         overdueStages++;
                     }
@@ -30,13 +30,13 @@ export function calculateClientProjectMetrics(project: Project, isClient: boolea
     const progress = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
     
     let status: Project['status'] = project.status;
-    if (status !== 'Quotation' && status !== 'Completed') {
+    if (status !== 'Προσφορά' && status !== 'Ολοκληρωμένο') {
         if (progress === 100 && totalStages > 0) {
-            status = 'Completed';
+            status = 'Ολοκληρωμένο';
         } else if (overdueStages > 0) {
-            status = 'Delayed';
+            status = 'Σε Καθυστέρηση';
         } else {
-            status = 'On Track';
+            status = 'Εντός Χρονοδιαγράμματος';
         }
     }
 

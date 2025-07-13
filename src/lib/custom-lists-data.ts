@@ -7,12 +7,12 @@ const customLists: CustomList[] = [
 ];
 const customListItems: CustomListItem[] = [
     // Intervention Titles
-    { id: 'item-1', listId: 'list-1', name: 'Environmental Impact Assessment' },
-    { id: 'item-2', listId: 'list-1', name: 'Site Survey' },
-    { id: 'item-3', listId: 'list-1', name: 'Community Consultation' },
-    { id: 'item-4', listId: 'list-1', name: 'Water Quality Testing' },
-    { id: 'item-5', listId: 'list-1', name: 'Soil Analysis' },
-    { id: 'item-6', listId: 'list-1', name: 'Air Quality Monitoring' },
+    { id: 'item-1', listId: 'list-1', name: 'Μελέτη Περιβαλλοντικών Επιπτώσεων' },
+    { id: 'item-2', listId: 'list-1', name: 'Τοπογραφική Αποτύπωση' },
+    { id: 'item-3', listId: 'list-1', name: 'Διαβούλευση με την Κοινότητα' },
+    { id: 'item-4', listId: 'list-1', name: 'Έλεγχος Ποιότητας Υδάτων' },
+    { id: 'item-5', listId: 'list-1', name: 'Ανάλυση Εδάφους' },
+    { id: 'item-6', listId: 'list-1', name: 'Παρακολούθηση Ποιότητας Αέρα' },
 
     // Contact Roles
     { id: 'item-7', listId: 'list-2', name: 'Πελάτης' },
@@ -23,10 +23,10 @@ const customListItems: CustomListItem[] = [
     { id: 'item-12', listId: 'list-2', name: 'Προμηθευτής' },
 
     // Intervention Categories
-    { id: 'item-13', listId: 'list-3', name: 'Studies' },
-    { id: 'item-14', listId: 'list-3', name: 'Surveys' },
-    { id: 'item-15', listId: 'list-3', name: 'Community' },
-    { id: 'item-16', listId: 'list-3', name: 'Monitoring' },
+    { id: 'item-13', listId: 'list-3', name: 'Μελέτες' },
+    { id: 'item-14', listId: 'list-3', name: 'Αποτυπώσεις' },
+    { id: 'item-15', listId: 'list-3', name: 'Κοινότητα' },
+    { id: 'item-16', listId: 'list-3', name: 'Παρακολούθηση' },
 ];
 
 export async function getCustomLists(db?: any) {

@@ -19,10 +19,10 @@ export function ProjectHeader({ project: serverProject, owner, isMounted }: Proj
     const project = useMemo(() => calculateClientProjectMetrics(serverProject, isMounted), [serverProject, isMounted]);
 
     const statusConfig = {
-        'Quotation': { text: 'Σε Προσφορά', variant: 'outline', icon: <Clock className="h-4 w-4" /> },
-        'On Track': { text: 'Εντός Χρονοδιαγράμματος', variant: 'default', icon: <CheckCircle className="h-4 w-4" /> },
-        'Delayed': { text: 'Σε Καθυστέρηση', variant: 'destructive', icon: <AlertTriangle className="h-4 w-4" /> },
-        'Completed': { text: 'Ολοκληρωμένο', variant: 'secondary', icon: <CheckCircle className="h-4 w-4" /> },
+        'Προσφορά': { text: 'Σε Προσφορά', variant: 'outline', icon: <Clock className="h-4 w-4" /> },
+        'Εντός Χρονοδιαγράμματος': { text: 'Εντός Χρονοδιαγράμματος', variant: 'default', icon: <CheckCircle className="h-4 w-4" /> },
+        'Σε Καθυστέρηση': { text: 'Σε Καθυστέρηση', variant: 'destructive', icon: <AlertTriangle className="h-4 w-4" /> },
+        'Ολοκληρωμένο': { text: 'Ολοκληρωμένο', variant: 'secondary', icon: <CheckCircle className="h-4 w-4" /> },
     }[project.status] || { text: 'Άγνωστο', variant: 'outline', icon: <Clock className="h-4 w-4" /> };
     
 

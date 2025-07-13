@@ -31,16 +31,16 @@ export function AuditTrailTable({ auditLogs }: AuditTrailTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Activity Logs</CardTitle>
+        <CardTitle>Αρχείο Καταγραφής</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Details</TableHead>
-              <TableHead className="text-right">Timestamp</TableHead>
+              <TableHead>Χρήστης</TableHead>
+              <TableHead>Ενέργεια</TableHead>
+              <TableHead>Λεπτομέρειες</TableHead>
+              <TableHead className="text-right">Χρονική Σήμανση</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -60,7 +60,7 @@ export function AuditTrailTable({ auditLogs }: AuditTrailTableProps) {
                 </TableCell>
                 <TableCell className="text-muted-foreground">{log.details}</TableCell>
                 <TableCell className="text-right text-muted-foreground">
-                   {isClient ? format(new Date(log.timestamp), "MMM d, yyyy, h:mm a") : "..."}
+                   {isClient ? format(new Date(log.timestamp), "d MMM, yyyy, h:mm a") : "..."}
                 </TableCell>
               </TableRow>
             ))}

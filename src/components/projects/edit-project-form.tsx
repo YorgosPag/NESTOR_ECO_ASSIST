@@ -21,7 +21,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Save Changes"}
+      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Αποθήκευση Αλλαγών"}
     </Button>
   );
 }
@@ -38,13 +38,13 @@ export function EditProjectForm({ project, contacts, setOpen }: EditProjectFormP
 
     useEffect(() => {
         if (state?.success === true) {
-            toast({ title: 'Success!', description: state.message });
+            toast({ title: 'Επιτυχία!', description: state.message });
             setOpen(false);
         } else if (state?.success === false && state.message) {
             const errorMessages = state.errors ? Object.values(state.errors).flat().join('\n') : '';
             toast({
                 variant: 'destructive',
-                title: 'Error',
+                title: 'Σφάλμα',
                 description: `${state.message}\n${errorMessages}`,
             });
         }
@@ -56,19 +56,19 @@ export function EditProjectForm({ project, contacts, setOpen }: EditProjectFormP
         <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="id" value={project.id} />
              <div className="space-y-2">
-                <Label htmlFor="name">Project Name</Label>
+                <Label htmlFor="name">Όνομα Έργου</Label>
                 <Input id="name" name="name" defaultValue={project.name} required />
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
             </div>
             <div className="space-y-2">
-                <Label htmlFor="applicationNumber">Application Number (Optional)</Label>
+                <Label htmlFor="applicationNumber">Αριθμός Αίτησης (Προαιρετικό)</Label>
                 <Input id="applicationNumber" name="applicationNumber" defaultValue={project.applicationNumber || ''} />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="ownerContactId">Owner / Beneficiary</Label>
+                <Label htmlFor="ownerContactId">Ιδιοκτήτης / Ωφελούμενος</Label>
                 <Select name="ownerContactId" defaultValue={project.ownerContactId}>
                     <SelectTrigger>
-                        <SelectValue placeholder="Select an owner" />
+                        <SelectValue placeholder="Επιλέξτε ιδιοκτήτη" />
                     </SelectTrigger>
                     <SelectContent>
                         {contacts.filter(c => c.role === 'Πελάτης').map(contact => (
@@ -81,7 +81,7 @@ export function EditProjectForm({ project, contacts, setOpen }: EditProjectFormP
                  {state.errors?.ownerContactId && <p className="text-sm font-medium text-destructive mt-1">{state.errors.ownerContactId[0]}</p>}
             </div>
              <div className="space-y-2">
-                <Label htmlFor="deadline">Project Deadline (Optional)</Label>
+                <Label htmlFor="deadline">Προθεσμία Έργου (Προαιρετικό)</Label>
                 <Input id="deadline" name="deadline" type="date" defaultValue={formattedDeadline} />
             </div>
             <SubmitButton />

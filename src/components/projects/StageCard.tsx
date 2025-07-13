@@ -50,24 +50,24 @@ export function StageCard({ stage, project, interventionName, contacts, interven
   }, []);
 
   const statusConfig = {
-    'Not Started': { variant: "outline", text: "Σε Εκκρεμότητα" },
-    'In Progress': { variant: "default", text: "Σε Εξέλιξη" },
-    'Completed': { variant: "secondary", text: "Ολοκληρωμένο" },
-    'Delayed': { variant: "destructive", text: "Σε Καθυστέρηση" },
-    'Failed': { variant: "destructive", text: "Απέτυχε", icon: <XCircle className="h-4 w-4" /> },
+    'Δεν έχει ξεκινήσει': { variant: "outline", text: "Σε Εκκρεμότητα" },
+    'Σε Εξέλιξη': { variant: "default", text: "Σε Εξέλιξη" },
+    'Ολοκληρωμένο': { variant: "secondary", text: "Ολοκληρωμένο" },
+    'Σε Καθυστέρηση': { variant: "destructive", text: "Σε Καθυστέρηση" },
+    'Απέτυχε': { variant: "destructive", text: "Απέτυχε", icon: <XCircle className="h-4 w-4" /> },
   } as const;
 
   let currentStageStatus = stage.status;
   const deadlineDate = stage?.deadline ? new Date(stage.deadline) : null;
-  const isOverdue = isClient && deadlineDate ? isPast(deadlineDate) && stage.status !== 'Completed' : false;
+  const isOverdue = isClient && deadlineDate ? isPast(deadlineDate) && stage.status !== 'Ολοκληρωμένο' : false;
 
-  if(isOverdue && stage.status === 'In Progress') {
-    currentStageStatus = 'Delayed';
+  if(isOverdue && stage.status === 'Σε Εξέλιξη') {
+    currentStageStatus = 'Σε Καθυστέρηση';
   }
 
   const currentStatus = statusConfig[currentStageStatus];
   const daysUntilDeadline = isClient && deadlineDate ? differenceInDays(deadlineDate, new Date()) : 0;
-  const isApproaching = isClient && deadlineDate ? daysUntilDeadline >= 0 && daysUntilDeadline <= 7 && stage.status !== 'Completed' : false;
+  const isApproaching = isClient && deadlineDate ? daysUntilDeadline >= 0 && daysUntilDeadline <= 7 && stage.status !== 'Ολοκληρωμένο' : false;
 
   const assignee = contacts.find(c => c.id === stage.assigneeContactId);
 
@@ -86,11 +86,11 @@ export function StageCard({ stage, project, interventionName, contacts, interven
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuSeparator />
-                {stage.status === 'Not Started' && (
+                {stage.status === 'Δεν έχει ξεκινήσει' && (
                     <form action={updateStageStatusAction} ref={formRefStart}>
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="stageId" value={stage.id} />
-                        <input type="hidden" name="status" value="In Progress" />
+                        <input type="hidden" name="status" value="Σε Εξέλιξη" />
                         <DropdownMenuItem onSelect={(e) => { e.preventDefault(); formRefStart.current?.requestSubmit(); }}>
                             <Play className="mr-2 h-4 w-4" />
                             <span>Έναρξη Εργασιών</span>
@@ -98,12 +98,12 @@ export function StageCard({ stage, project, interventionName, contacts, interven
                     </form>
                 )}
 
-                {(stage.status === 'In Progress' || stage.status === 'Delayed') && (
+                {(stage.status === 'Σε Εξέλιξη' || stage.status === 'Σε Καθυστέρηση') && (
                     <>
                         <form action={updateStageStatusAction} ref={formRefComplete}>
                             <input type="hidden" name="projectId" value={project.id} />
                             <input type="hidden" name="stageId" value={stage.id} />
-                            <input type="hidden" name="status" value="Completed" />
+                            <input type="hidden" name="status" value="Ολοκληρωμένο" />
                             <DropdownMenuItem onSelect={(e) => { e.preventDefault(); formRefComplete.current?.requestSubmit(); }}>
                                 <CheckCircle className="mr-2 h-4 w-4" />
                                 <span>Ολοκλήρωση Σταδίου</span>
@@ -112,7 +112,7 @@ export function StageCard({ stage, project, interventionName, contacts, interven
                         <form action={updateStageStatusAction} ref={formRefFail}>
                             <input type="hidden" name="projectId" value={project.id} />
                             <input type="hidden" name="stageId" value={stage.id} />
-                            <input type="hidden" name="status" value="Failed" />
+                            <input type="hidden" name="status" value="Απέτυχε" />
                             <DropdownMenuItem onSelect={(e) => { e.preventDefault(); formRefFail.current?.requestSubmit(); }} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                                 <XCircle className="mr-2 h-4 w-4" />
                                 <span>Σήμανση ως Αποτυχημένο</span>
@@ -121,11 +121,11 @@ export function StageCard({ stage, project, interventionName, contacts, interven
                     </>
                 )}
 
-                {(stage.status === 'Completed' || stage.status === 'Failed') && (
+                {(stage.status === 'Ολοκληρωμένο' || stage.status === 'Απέτυχε') && (
                     <form action={updateStageStatusAction} ref={formRefRestart}>
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="stageId" value={stage.id} />
-                        <input type="hidden" name="status" value="In Progress" />
+                        <input type="hidden" name="status" value="Σε Εξέλιξη" />
                         <DropdownMenuItem onSelect={(e) => { e.preventDefault(); formRefRestart.current?.requestSubmit(); }}>
                             <Undo2 className="mr-2 h-4 w-4" />
                             <span>Επανέναρξη Εργασιών</span>

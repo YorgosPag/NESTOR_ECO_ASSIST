@@ -1,7 +1,7 @@
 export type Project = {
     id: string;
     name: string;
-    status: "On Track" | "Completed" | "Quotation" | "Delayed";
+    status: "Εντός Χρονοδιαγράμματος" | "Ολοκληρωμένο" | "Προσφορά" | "Σε Καθυστέρηση";
     progress: number;
     ownerContactId: string;
     applicationNumber?: string;
@@ -17,15 +17,15 @@ export type Project = {
 
   export type ProjectIntervention = {
     id: string;
-    name?: string;
     masterInterventionId: string;
     projectId: string;
+    name: string;
+    interventionCategory?: string;
+    interventionSubcategory?: string;
     costOfMaterials?: number;
     costOfLabor?: number;
     totalCost?: number; // This is the budget/revenue for the intervention
     stages: Stage[];
-    interventionCategory?: string;
-    interventionSubcategory?: string;
   }
 
   export type MasterIntervention = {
@@ -36,12 +36,9 @@ export type Project = {
     unit: string;
     maxUnitPrice: number;
     maxAmount: number;
-    name: string;
-    description?: string;
-    category: string;
   }
   
-  export type StageStatus = "Completed" | "In Progress" | "Not Started" | "Delayed" | "Failed";
+  export type StageStatus = "Ολοκληρωμένο" | "Σε Εξέλιξη" | "Δεν έχει ξεκινήσει" | "Σε Καθυστέρηση" | "Απέτυχε";
   
   export type Stage = {
     id: string;

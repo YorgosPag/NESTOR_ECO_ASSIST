@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
+import { el } from 'date-fns/locale';
 import type { Contact } from "@/types";
 
 interface Deadline {
@@ -31,7 +32,7 @@ export function UpcomingDeadlines({ deadlines = [], contacts = [] }: UpcomingDea
   return (
     <Card className="col-span-1 lg:col-span-3">
       <CardHeader>
-        <CardTitle>Upcoming Deadlines</CardTitle>
+        <CardTitle>Προσεχείς Προθεσμίες</CardTitle>
       </CardHeader>
       <CardContent>
         {deadlines.length > 0 ? (
@@ -57,14 +58,14 @@ export function UpcomingDeadlines({ deadlines = [], contacts = [] }: UpcomingDea
                             </p>
                         </div>
                         <div className="ml-auto font-medium text-sm">
-                           {isClient ? formatDistanceToNow(new Date(item.deadline), { addSuffix: true }) : "..."}
+                           {isClient ? formatDistanceToNow(new Date(item.deadline), { addSuffix: true, locale: el }) : "..."}
                         </div>
                     </div>
                 )
             })}
             </div>
         ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">No upcoming deadlines.</p>
+            <p className="text-sm text-muted-foreground text-center py-8">Δεν υπάρχουν προσεχείς προθεσμίες.</p>
         )}
       </CardContent>
     </Card>

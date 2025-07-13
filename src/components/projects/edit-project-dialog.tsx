@@ -26,8 +26,8 @@ export function EditProjectDialog({ project, contacts, children }: EditProjectDi
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Project</DialogTitle>
-          <DialogDescription>Update the basic details of the project.</DialogDescription>
+          <DialogTitle>Επεξεργασία Έργου</DialogTitle>
+          <DialogDescription>Ενημερώστε τα βασικά στοιχεία του έργου.</DialogDescription>
         </DialogHeader>
         <EditProjectForm project={project} contacts={contacts} setOpen={setOpen} />
       </DialogContent>

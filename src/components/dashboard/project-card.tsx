@@ -51,6 +51,8 @@ export function ProjectCard({ project: serverProject, contacts }: ProjectCardPro
     'At Risk': 'destructive',
     'Completed': 'secondary',
     'On Hold': 'outline',
+    'Delayed': 'destructive',
+    'Quotation': 'outline'
   }[displayProject.status] as "default" | "destructive" | "secondary" | "outline" | undefined;
 
   return (
@@ -69,22 +71,22 @@ export function ProjectCard({ project: serverProject, contacts }: ProjectCardPro
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
                         <MoreVertical className="h-4 w-4"/>
-                        <span className="sr-only">Project Actions</span>
+                        <span className="sr-only">Ενέργειες Έργου</span>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Project Actions</DropdownMenuLabel>
+                    <DropdownMenuLabel>Ενέργειες Έργου</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <EditProjectDialog project={project} contacts={contacts}>
                          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                             <Pencil className="mr-2 h-4 w-4" />
-                            Edit
+                            Επεξεργασία
                         </DropdownMenuItem>
                     </EditProjectDialog>
                      <DeleteProjectDialog project={project}>
                          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="text-destructive focus:text-destructive focus:bg-destructive/10">
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            Διαγραφή
                         </DropdownMenuItem>
                     </DeleteProjectDialog>
                 </DropdownMenuContent>
@@ -99,20 +101,20 @@ export function ProjectCard({ project: serverProject, contacts }: ProjectCardPro
         </div>
         <div>
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
-            <span>Progress</span>
+            <span>Πρόοδος</span>
             {isMounted ? (
                 <span>{displayProject.progress}%</span>
             ): <Skeleton className="h-4 w-8" />}
           </div>
           {isMounted ? (
-             <Progress value={displayProject.progress} aria-label={`${displayProject.progress}% complete`} />
+             <Progress value={displayProject.progress} aria-label={`${displayProject.progress}% ολοκληρώθηκε`} />
           ) : <Skeleton className="h-4 w-full" /> }
         </div>
       </CardContent>
       <CardFooter>
         <Button asChild variant="outline" className="w-full">
             <Link href={`/project/${project.id}`}>
-                View Project <ArrowUpRight className="h-4 w-4 ml-2" />
+                Προβολή Έργου <ArrowUpRight className="h-4 w-4 ml-2" />
             </Link>
         </Button>
       </CardFooter>
