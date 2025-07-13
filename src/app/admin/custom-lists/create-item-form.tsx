@@ -3,12 +3,13 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { createItemAction } from '@/app/actions/custom-lists';
+import { createCustomListItemAction } from '@/app/actions/admin';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
 
 const initialState = { success: false, errors: {}, message: null };
 
@@ -27,7 +28,7 @@ interface CreateItemFormProps {
 }
 
 export function CreateItemForm({ listId, setOpen }: CreateItemFormProps) {
-    const [state, formAction] = useActionState(createItemAction, initialState);
+    const [state, formAction] = useActionState(createCustomListItemAction, initialState);
     const { toast } = useToast();
     
     useEffect(() => {
@@ -43,14 +44,10 @@ export function CreateItemForm({ listId, setOpen }: CreateItemFormProps) {
         <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="listId" value={listId} />
             <div className="space-y-2">
-                <Label htmlFor="name">Όνομα Στοιχείου</Label>
-                <Input id="name" name="name" placeholder="π.χ., Μελέτη" required />
+                <Label htmlFor="name">Ονόματα Στοιχείων</Label>
+                <Textarea id="name" name="name" placeholder="π.χ., Μελέτη;Τοπογραφικό;Ανάλυση" required />
+                <p className="text-xs text-muted-foreground">Μπορείτε να προσθέσετε πολλαπλά στοιχεία χωρίζοντάς τα με το σύμβολο του ερωτηματικού (;).</p>
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="key">Μοναδικό Κλειδί (Key)</Label>
-                <Input id="key" name="key" placeholder="π.χ., STUDY" />
-                {state.errors?.key && <p className="text-sm font-medium text-destructive mt-1">{state.errors.key[0]}</p>}
             </div>
             <SubmitButton />
         </form>

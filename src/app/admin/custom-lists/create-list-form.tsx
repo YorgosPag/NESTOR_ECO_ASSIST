@@ -3,7 +3,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { createListAction } from '@/app/actions/custom-lists';
+import { createCustomListAction } from '@/app/actions/admin';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +22,7 @@ function SubmitButton() {
 }
 
 export function CreateListForm({ setOpen }: { setOpen: (open: boolean) => void }) {
-    const [state, formAction] = useActionState(createListAction, initialState);
+    const [state, formAction] = useActionState(createCustomListAction, initialState);
     const { toast } = useToast();
     
     useEffect(() => {
@@ -40,11 +40,6 @@ export function CreateListForm({ setOpen }: { setOpen: (open: boolean) => void }
                 <Label htmlFor="name">Όνομα Λίστας</Label>
                 <Input id="name" name="name" placeholder="π.χ., Τύποι Εγγράφων" required />
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="key">Μοναδικό Κλειδί (Key)</Label>
-                <Input id="key" name="key" placeholder="π.χ., DOCUMENT_TYPES" />
-                {state.errors?.key && <p className="text-sm font-medium text-destructive mt-1">{state.errors.key[0]}</p>}
             </div>
             <SubmitButton />
         </form>

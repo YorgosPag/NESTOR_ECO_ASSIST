@@ -3,7 +3,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateItemAction } from '@/app/actions/custom-lists';
+import { updateCustomListItemAction } from '@/app/actions/admin';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ interface EditItemFormProps {
 }
 
 export function EditItemForm({ item, setOpen }: EditItemFormProps) {
-    const [state, formAction] = useActionState(updateItemAction, initialState);
+    const [state, formAction] = useActionState(updateCustomListItemAction, initialState);
     const { toast } = useToast();
     
     useEffect(() => {
@@ -48,11 +48,6 @@ export function EditItemForm({ item, setOpen }: EditItemFormProps) {
                 <Label htmlFor="name">Όνομα Στοιχείου</Label>
                 <Input id="name" name="name" defaultValue={item.name} required />
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="key">Μοναδικό Κλειδί (Key)</Label>
-                <Input id="key" name="key" defaultValue={item.key || ''} />
-                {state.errors?.key && <p className="text-sm font-medium text-destructive mt-1">{state.errors.key[0]}</p>}
             </div>
             <SubmitButton />
         </form>

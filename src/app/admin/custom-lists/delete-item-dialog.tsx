@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { deleteItemAction } from '@/app/actions/custom-lists';
+import { deleteCustomListItemAction } from '@/app/actions/admin';
 import type { CustomListItem } from '@/types';
 
 const initialState = { message: null, success: false };
@@ -40,7 +40,7 @@ interface DeleteItemDialogProps {
 
 export function DeleteItemDialog({ item, children }: DeleteItemDialogProps) {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useActionState(deleteItemAction, initialState);
+  const [state, formAction] = useActionState(deleteCustomListItemAction, initialState);
   const { toast } = useToast();
   
   useEffect(() => {

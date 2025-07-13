@@ -25,14 +25,21 @@ export type Project = {
     costOfMaterials?: number;
     costOfLabor?: number;
     totalCost?: number; // This is the budget/revenue for the intervention
+    selectedEnergySpec?: string;
     stages: Stage[];
   }
 
   export type MasterIntervention = {
     id: string;
-    name: string;
-    description?: string;
-    category: string;
+    code: string;
+    info?: string;
+    energySpecsOptions?: string; // Semicolon-separated values
+    expenseCategory: string;
+    interventionCategory: string;
+    interventionSubcategory?: string;
+    unit: string;
+    maxUnitPrice: number;
+    maxAmount: number;
   }
   
   export type StageStatus = "Ολοκληρωμένο" | "Σε Εξέλιξη" | "Δεν έχει ξεκινήσει" | "Σε Καθυστέρηση" | "Απέτυχε";
@@ -110,3 +117,15 @@ export type Project = {
     key?: string;
   }
   
+  export type Trigger = {
+      id: string;
+      name: string;
+      code: string;
+      interventionCategory: string;
+      description?: string;
+  }
+
+  export type InterventionCategory = {
+      id: string;
+      name: string;
+  }

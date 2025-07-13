@@ -5,6 +5,7 @@ let customLists: CustomList[] = [
     { id: 'list-2', name: 'Ρόλοι Επαφών', key: 'CONTACT_ROLES', order: 1 },
     { id: 'list-3', name: 'Κατηγορίες Παρεμβάσεων', key: 'INTERVENTION_CATEGORIES', order: 2 },
     { id: 'list-4', name: 'Κατηγορίες Δαπάνης', key: 'EXPENSE_CATEGORIES', order: 3 },
+    { id: 'list-5', name: 'Μονάδες Μέτρησης', key: 'UNIT_OF_MEASUREMENT', order: 4 },
 ];
 let customListItems: CustomListItem[] = [
     // Intervention Titles
@@ -33,29 +34,35 @@ let customListItems: CustomListItem[] = [
     { id: 'item-17', listId: 'list-4', name: 'Ενέργεια', key: 'ENERGY' },
     { id: 'item-18', listId: 'list-4', name: 'Ύδρευση', key: 'WATER_SUPPLY' },
     { id: 'item-19', listId: 'list-4', name: 'Αποχέτευση', key: 'SEWAGE' },
+
+    // Units of Measurement
+    { id: 'item-20', listId: 'list-5', name: 'τεμάχιο', key: 'piece' },
+    { id: 'item-21', listId: 'list-5', name: 'm²', key: 'sqm' },
+    { id: 'item-22', listId: 'list-5', name: 'm³', key: 'cbm' },
+    { id: 'item-23', listId: 'list-5', name: 'kW', key: 'kw' },
 ];
 
 export async function getCustomLists(db?: any) {
-    // Sort by order before returning
     const sortedLists = customLists.sort((a, b) => a.order - b.order);
     return Promise.resolve(JSON.parse(JSON.stringify(sortedLists)));
 }
 
-export async function addCustomList(db: any, listData: Omit<CustomList, 'id' | 'order'>) {
+export async function createCustomList(db: any, name: string, key?: string) {
     const maxOrder = customLists.reduce((max, list) => list.order > max ? list.order : max, -1);
     const newList: CustomList = { 
         id: `list-${Date.now()}`, 
-        ...listData,
+        name,
+        key,
         order: maxOrder + 1,
     };
     customLists.push(newList);
     return Promise.resolve(true);
 }
 
-export async function updateCustomList(db: any, updatedList: CustomList) {
-    const index = customLists.findIndex(l => l.id === updatedList.id);
+export async function updateCustomList(db: any, id: string, name: string) {
+    const index = customLists.findIndex(l => l.id === id);
     if (index !== -1) {
-        customLists[index] = { ...customLists[index], ...updatedList };
+        customLists[index].name = name;
         return Promise.resolve(true);
     }
     return Promise.resolve(false);
@@ -65,16 +72,14 @@ export async function deleteCustomList(db: any, listId: string) {
     const index = customLists.findIndex(l => l.id === listId);
     if (index !== -1) {
         customLists.splice(index, 1);
-        // Also delete associated items
         customListItems = customListItems.filter(item => item.listId !== listId);
-        // Re-order remaining lists
         customLists.sort((a, b) => a.order - b.order).forEach((list, i) => list.order = i);
         return Promise.resolve(true);
     }
     return Promise.resolve(false);
 }
 
-export function moveCustomList(db: any, listId: string, direction: 'up' | 'down') {
+export async function moveCustomList(db: any, listId: string, direction: 'up' | 'down') {
     const sortedLists = customLists.sort((a, b) => a.order - b.order);
     const fromIndex = sortedLists.findIndex(l => l.id === listId);
 
@@ -85,10 +90,9 @@ export function moveCustomList(db: any, listId: string, direction: 'up' | 'down'
     const toIndex = direction === 'up' ? fromIndex - 1 : fromIndex + 1;
 
     if (toIndex < 0 || toIndex >= sortedLists.length) {
-        return; // Cannot move
+        return Promise.resolve(false);
     }
     
-    // Swap order values
     const listToMove = sortedLists[fromIndex];
     const otherList = sortedLists[toIndex];
     
@@ -102,19 +106,39 @@ export async function getAllCustomListItems(db?: any) {
     return Promise.resolve(JSON.parse(JSON.stringify(customListItems)));
 }
 
-export async function addCustomListItem(db: any, itemData: Omit<CustomListItem, 'id'>) {
-    const newItem: CustomListItem = { id: `item-${Date.now()}`, ...itemData };
-    customListItems.push(newItem);
-    return Promise.resolve(true);
+export async function createCustomListItem(db: any, listId: string, names: string[]) {
+    const existingNames = new Set(customListItems
+        .filter(item => item.listId === listId)
+        .map(item => item.name.toLowerCase()));
+        
+    const newNamesToAdd = names.filter(name => !existingNames.has(name.toLowerCase()));
+    const duplicateNames = names.filter(name => existingNames.has(name.toLowerCase()));
+
+    newNamesToAdd.forEach(name => {
+        const newItem: CustomListItem = { id: `item-${Date.now()}-${Math.random()}`, listId, name };
+        customListItems.push(newItem);
+    });
+
+    return Promise.resolve({ newNamesToAdd, duplicateNames });
 }
 
-export async function updateCustomListItem(db: any, updatedItem: CustomListItem) {
-    const index = customListItems.findIndex(i => i.id === updatedItem.id);
-    if (index !== -1) {
-        customListItems[index] = { ...customListItems[index], ...updatedItem };
-        return Promise.resolve(true);
+export async function updateCustomListItem(db: any, id: string, name: string, listId: string): Promise<boolean> {
+    const isDuplicate = customListItems.some(item => 
+        item.listId === listId && 
+        item.id !== id && 
+        item.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+        return Promise.resolve(true); // Indicates a duplicate was found
     }
-    return Promise.resolve(false);
+
+    const index = customListItems.findIndex(i => i.id === id);
+    if (index !== -1) {
+        customListItems[index].name = name;
+        return Promise.resolve(false); // Indicates success, no duplicate
+    }
+    throw new Error("Item not found for update");
 }
 
 export async function deleteCustomListItem(db: any, itemId: string) {

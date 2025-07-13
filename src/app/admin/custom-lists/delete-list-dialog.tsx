@@ -17,10 +17,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { deleteListAction } from '@/app/actions/custom-lists';
+import { deleteCustomListAction } from '@/app/actions/admin';
 import type { CustomList } from '@/types';
 
-const initialState = { message: null, success: false };
+const initialState = { message: null, success: false, errors: null };
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -40,7 +40,7 @@ interface DeleteListDialogProps {
 
 export function DeleteListDialog({ list, children }: DeleteListDialogProps) {
   const [open, setOpen] = useState(false);
-  const [state, formAction] = useActionState(deleteListAction, initialState);
+  const [state, formAction] = useActionState(deleteCustomListAction, initialState);
   const { toast } = useToast();
   
   useEffect(() => {

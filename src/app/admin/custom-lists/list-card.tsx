@@ -22,7 +22,7 @@ import { EditListDialog } from "./edit-list-dialog";
 import { DeleteListDialog } from "./delete-list-dialog";
 import { EditItemDialog } from "./edit-item-dialog";
 import { DeleteItemDialog } from "./delete-item-dialog";
-import { moveListAction } from "@/app/actions/custom-lists";
+import { moveCustomListAction } from "@/app/actions/admin";
 
 interface ListCardProps {
     list: CustomList;
@@ -54,7 +54,7 @@ export function ListCard({ list, items, canMoveUp, canMoveDown }: ListCardProps)
         const formData = new FormData();
         formData.append('id', list.id);
         formData.append('direction', direction);
-        moveListAction(formData);
+        moveCustomListAction(formData);
     }
     
     return (

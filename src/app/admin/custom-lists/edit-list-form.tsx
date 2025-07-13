@@ -3,7 +3,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateListAction } from '@/app/actions/custom-lists';
+import { updateCustomListAction } from '@/app/actions/admin';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +28,7 @@ interface EditListFormProps {
 }
 
 export function EditListForm({ list, setOpen }: EditListFormProps) {
-    const [state, formAction] = useActionState(updateListAction, initialState);
+    const [state, formAction] = useActionState(updateCustomListAction, initialState);
     const { toast } = useToast();
     
     useEffect(() => {
@@ -43,16 +43,10 @@ export function EditListForm({ list, setOpen }: EditListFormProps) {
     return (
         <form action={formAction} className="space-y-4 pt-4">
             <input type="hidden" name="id" value={list.id} />
-            <input type="hidden" name="order" value={list.order} />
             <div className="space-y-2">
                 <Label htmlFor="name">Όνομα Λίστας</Label>
                 <Input id="name" name="name" defaultValue={list.name} required />
                 {state.errors?.name && <p className="text-sm font-medium text-destructive mt-1">{state.errors.name[0]}</p>}
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="key">Μοναδικό Κλειδί (Key)</Label>
-                <Input id="key" name="key" defaultValue={list.key || ''} />
-                {state.errors?.key && <p className="text-sm font-medium text-destructive mt-1">{state.errors.key[0]}</p>}
             </div>
             <SubmitButton />
         </form>
