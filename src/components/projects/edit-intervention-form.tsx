@@ -3,7 +3,7 @@
 
 import { useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateInterventionAction } from '@/app/actions/projects';
+import { updateInterventionAction } from '@/app/actions/interventions';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

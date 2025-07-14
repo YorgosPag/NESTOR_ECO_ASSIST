@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EditSubInterventionDialog } from "./edit-sub-intervention-dialog";
 import { DeleteSubInterventionDialog } from "./delete-sub-intervention-dialog";
-import { moveSubInterventionAction } from "@/app/actions/projects";
+import { moveSubInterventionAction } from "@/app/actions/interventions";
 
 const MoveButton = ({ direction, disabled, onClick }: { direction: 'up' | 'down', disabled: boolean, onClick: () => void }) => {
     const [isPending, startTransition] = useTransition();
