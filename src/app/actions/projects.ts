@@ -71,6 +71,7 @@ export async function createProjectAction(prevState: any, formData: FormData) {
 }
 
 const UpdateProjectSchema = z.object({
+    id: z.string(),
     name: z.string({invalid_type_error: "Παρακαλώ εισάγετε έναν έγκυρο τίτλο."}).min(3, "Ο τίτλος του έργου πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
     applicationNumber: z.string().optional(),
     ownerContactId: z.string().min(1, "Παρακαλώ επιλέξτε έναν ιδιοκτήτη."),
@@ -78,11 +79,6 @@ const UpdateProjectSchema = z.object({
 });
 
 export async function updateProjectAction(prevState: any, formData: FormData) {
-    const projectId = formData.get('id') as string;
-     if (!projectId) {
-        return { success: false, message: 'Το ID του έργου είναι απαραίτητο.' };
-    }
-
     const validatedFields = UpdateProjectSchema.safeParse(Object.fromEntries(formData.entries()));
 
     if (!validatedFields.success) {
@@ -93,6 +89,8 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
         };
     }
     
+    const { id: projectId, ...updateData } = validatedFields.data;
+
     try {
         const db = getAdminDb();
         const project = await getProjectById(db, projectId);
@@ -100,17 +98,17 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
             throw new Error("Project not found");
         }
         
-        const updateData = {
-           ...validatedFields.data,
-           deadline: validatedFields.data.deadline ? new Date(validatedFields.data.deadline).toISOString() : '',
+        const dataToMerge = {
+           ...updateData,
+           deadline: updateData.deadline ? new Date(updateData.deadline).toISOString() : '',
         };
         
         const updatedProject = {
             ...project,
-            ...updateData,
+            ...dataToMerge,
         };
         
-        await updateProjectData(db, projectId, updatedProject );
+        await updateProjectData(db, updatedProject);
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateProjectAction:", error);
@@ -153,7 +151,7 @@ export async function activateProjectAction(prevState: any, formData: FormData) 
         project.status = 'Εντός Χρονοδιαγράμματος';
         project.auditLog = auditLog;
 
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in activateProjectAction:", error);
@@ -244,7 +242,7 @@ export async function addStageAction(prevState: any, formData: FormData) {
             details: `Προστέθηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
         });
         
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in addStageAction:", error);
@@ -298,7 +296,7 @@ export async function updateStageAction(prevState: any, formData: FormData) {
             details: `Επεξεργάστηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
         });
 
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateStageAction:", error);
@@ -356,7 +354,7 @@ export async function deleteStageAction(prevState: any, formData: FormData) {
             details: `Διαγράφηκε το στάδιο "${stageToDelete.title}" από την παρέμβαση "${interventionContainingStage.interventionSubcategory}".`,
         });
 
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in deleteStageAction:", error);
@@ -402,7 +400,7 @@ export async function updateStageStatusAction(formData: FormData) {
                 }
             }
             if (stageFound) {
-                await updateProjectData(db, projectId, project);
+                await updateProjectData(db, project);
             }
         }
     } catch (error) {
@@ -449,7 +447,7 @@ export async function moveStageAction(formData: FormData) {
             return;
         }
         
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
 
     } catch (error: any) {
         console.error("🔥 ERROR in moveStageAction:", error);
@@ -510,7 +508,7 @@ export async function addInterventionAction(prevState: any, formData: FormData) 
       details: `Προστέθηκε η παρέμβαση: "${interventionName}".`,
     });
 
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
     console.error("🔥 ERROR in addInterventionAction:", error);
@@ -568,7 +566,7 @@ export async function updateInterventionAction(prevState: any, formData: FormDat
       details: `Άλλαξε το όνομα της παρέμβασης σε: "${interventionSubcategory}".`,
     });
 
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
     console.error("🔥 ERROR in updateInterventionAction:", error);
@@ -617,7 +615,7 @@ export async function deleteInterventionAction(prevState: any, formData: FormDat
       details: `Διαγράφηκε: "${intervention.interventionCategory}".`,
     });
     
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
   } catch (error: any) {
     console.error("🔥 ERROR in deleteInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
@@ -693,7 +691,7 @@ export async function addSubInterventionAction(prevState: any, formData: FormDat
       details: `Προστέθηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
     });
     
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
     console.error("🔥 ERROR in addSubInterventionAction:", error);
@@ -776,7 +774,7 @@ export async function updateSubInterventionAction(prevState: any, formData: Form
       details: `Επεξεργάστηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
     });
     
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
     console.error("🔥 ERROR in updateSubInterventionAction:", error);
@@ -786,6 +784,12 @@ export async function updateSubInterventionAction(prevState: any, formData: Form
   revalidatePath(`/project/${projectId}`);
   return { success: true, message: 'Η υπο-παρέμβαση ενημερώθηκε με επιτυχία.' };
 }
+
+const DeleteSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subInterventionId: z.string(),
+});
 
 export async function deleteSubInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = DeleteSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -823,10 +827,10 @@ export async function deleteSubInterventionAction(prevState: any, formData: Form
       details: `Διαγράφηκε η υπο-παρέμβαση "${deletedSubIntervention.description}" από την παρέμβαση "${intervention.interventionCategory}".`,
     });
     
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
-    console.error("🔥 ERROR in updateSubInterventionAction:", error);
+    console.error("🔥 ERROR in deleteSubInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
   }
 
@@ -834,6 +838,13 @@ export async function deleteSubInterventionAction(prevState: any, formData: Form
   return { success: true, message: 'Η υπο-παρέμβαση διαγράφηκε με επιτυχία.' };
 }
 
+
+const UpdateInterventionCostsSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
+  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
+});
 
 export async function updateInterventionCostsAction(prevState: any, formData: FormData) {
     const validatedFields = UpdateInterventionCostsSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -863,7 +874,7 @@ export async function updateInterventionCostsAction(prevState: any, formData: Fo
         if (costOfMaterials !== undefined) intervention.costOfMaterials = costOfMaterials;
         if (costOfLabor !== undefined) intervention.costOfLabor = costOfLabor;
         
-        await updateProjectData(db, projectId, project);
+        await updateProjectData(db, project);
     } catch (error: any) {
         console.error("🔥 ERROR in updateInterventionCostsAction:", error);
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
@@ -872,6 +883,13 @@ export async function updateInterventionCostsAction(prevState: any, formData: Fo
     revalidatePath(`/project/${projectId}`);
     return { success: true, message: 'Το κόστος της παρέμβασης ενημερώθηκε με επιτυχία.' };
 }
+
+const MoveSubInterventionSchema = z.object({
+  projectId: z.string(),
+  interventionMasterId: z.string(),
+  subInterventionId: z.string(),
+  direction: z.enum(['up', 'down']),
+});
 
 export async function moveSubInterventionAction(prevState: any, formData: FormData) {
   const effectiveFormData = formData instanceof FormData ? formData : prevState;
@@ -906,7 +924,7 @@ export async function moveSubInterventionAction(prevState: any, formData: FormDa
         return { success: true, message: 'Δεν είναι δυνατή η περαιτέρω μετακίνηση.' };
     }
     
-    await updateProjectData(db, projectId, project);
+    await updateProjectData(db, project);
 
   } catch (error: any) {
     console.error("🔥 ERROR in moveSubInterventionAction:", error);
