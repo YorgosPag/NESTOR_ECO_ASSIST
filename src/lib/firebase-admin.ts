@@ -1,51 +1,50 @@
 
-import * as admin from 'firebase-admin';
+import { initializeApp, getApps, getApp, cert, type App } from "firebase-admin/app";
+import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { config } from 'dotenv';
 
 config();
 
-// Check if the service account JSON is provided in the environment
-const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+let app: App;
+let db: Firestore;
 
-/**
- * Initializes the Firebase Admin SDK if it hasn't been already.
- * This function uses a singleton pattern to ensure that initialization only happens once.
- * @returns {admin.app.App} The initialized Firebase app instance.
- */
-function initializeApp() {
-  if (admin.apps.length > 0) {
-    return admin.app();
-  }
-
-  let credential;
-
-  if (serviceAccountJson) {
-    try {
-      const serviceAccount = JSON.parse(serviceAccountJson);
-      credential = admin.credential.cert(serviceAccount);
-      console.log("Initializing Firebase Admin SDK with Service Account from environment variable.");
-    } catch (error: any) {
-      throw new Error(`Error parsing service account JSON: ${error.message}`);
+function getServiceAccount() {
+    const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    if (serviceAccountJson) {
+        try {
+            return JSON.parse(serviceAccountJson);
+        } catch (error: any) {
+            console.error(`Error parsing service account JSON: ${error.message}`);
+            return null;
+        }
     }
-  } else {
-    // Fallback for environments where Application Default Credentials are set up (e.g., Google Cloud Run)
-    console.log("Initializing Firebase Admin SDK with Application Default Credentials.");
-    credential = admin.credential.applicationDefault();
-  }
-  
-  try {
-      return admin.initializeApp({ credential });
-  } catch (error: any) {
-      throw new Error(`Failed to initialize Firebase Admin SDK: ${error.message}`);
-  }
+    console.warn("GOOGLE_SERVICE_ACCOUNT_JSON environment variable not found. Attempting Application Default Credentials.");
+    return null;
 }
 
-/**
- * Gets the Firestore database instance.
- * It ensures that the Firebase app is initialized before returning the database instance.
- * @returns {admin.firestore.Firestore} The Firestore database instance.
- */
-export function getAdminDb() {
-  const app = initializeApp();
-  return app.firestore();
+if (getApps().length === 0) {
+    const serviceAccount = getServiceAccount();
+    try {
+        app = initializeApp({
+            credential: serviceAccount ? cert(serviceAccount) : undefined,
+        });
+        console.log("Firebase Admin SDK initialized successfully.");
+    } catch (error: any) {
+         console.error('Firebase admin initialization error', error);
+         // We do not throw here to avoid crashing the server on boot, 
+         // but getAdminDb will throw if db is not initialized.
+    }
+} else {
+    app = getApp();
+    console.log("Firebase Admin SDK already initialized.");
+}
+
+db = getFirestore(app);
+
+export function getAdminDb(): Firestore {
+    if (!db) {
+        // This case would happen if initialization failed.
+        throw new Error("Firestore database is not available. Initialization may have failed.");
+    }
+    return db;
 }
