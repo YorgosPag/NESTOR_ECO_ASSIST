@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import Link from 'next/link';
@@ -55,7 +56,7 @@ export function ProjectDetailsActions({ project, contacts }: ProjectDetailsActio
             <div className="flex flex-col sm:flex-row items-center gap-2">
                 {!isQuotation && (
                     <Button asChild variant="outline" className="w-full sm:w-auto">
-                        <Link href={`/projects/${project.id}/work-order`}>
+                        <Link href={`/project/${project.id}/work-order`}>
                             <FileText className="mr-2 h-4 w-4" />
                             Αναφορά Εργ.
                         </Link>

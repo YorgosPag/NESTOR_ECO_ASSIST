@@ -1,4 +1,5 @@
 
+
 import { getProjectById, getAllProjects } from "@/lib/projects-data";
 import { notFound } from "next/navigation";
 import { ProjectDetails } from "@/components/projects/project-details";
@@ -9,6 +10,7 @@ import { getCustomLists, getAllCustomListItems } from "@/lib/custom-lists-data";
 import type { Project } from "@/types";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProjectPage({ params }: { params: { id: string } }) {
     const db = getAdminDb();

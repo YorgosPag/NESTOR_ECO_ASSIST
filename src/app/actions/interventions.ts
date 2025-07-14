@@ -1,8 +1,9 @@
+
 "use server";
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { getProjectById, updateProject } from '@/lib/projects-data';
+import { getProjectById, updateProject, addAuditLog } from '@/lib/projects-data';
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { ProjectIntervention, SubIntervention } from '@/types';
 import { users } from '@/lib/data-helpers';
@@ -52,15 +53,8 @@ export async function addInterventionAction(prevState: any, formData: FormData) 
     }
     project.interventions.push(newIntervention);
 
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0], 
-      action: 'Προσθήκη Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Προστέθηκε η παρέμβαση: "${interventionName}".`,
-    });
-
     await updateProject(db, project);
+    await addAuditLog(db, projectId, 'Προσθήκη Παρέμβασης', `Προστέθηκε η παρέμβαση: "${interventionName}".`);
 
   } catch (error: any) {
     console.error("🔥 ERROR in addInterventionAction:", error);
@@ -110,15 +104,9 @@ export async function updateInterventionAction(prevState: any, formData: FormDat
     }
 
 
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0],
-      action: 'Επεξεργασία Ονόματος Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Άλλαξε το όνομα της παρέμβασης σε: "${interventionSubcategory}".`,
-    });
-
     await updateProject(db, project);
+    await addAuditLog(db, projectId, 'Επεξεργασία Ονόματος Παρέμβασης', `Άλλαξε το όνομα της παρέμβασης σε: "${interventionSubcategory}".`);
+
 
   } catch (error: any) {
     console.error("🔥 ERROR in updateInterventionAction:", error);
@@ -159,15 +147,9 @@ export async function deleteInterventionAction(prevState: any, formData: FormDat
     
     project.interventions.splice(interventionIndex, 1);
     
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0],
-      action: 'Διαγραφή Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Διαγράφηκε: "${intervention.interventionCategory}".`,
-    });
-    
     await updateProject(db, project);
+    await addAuditLog(db, projectId, 'Διαγραφή Παρέμβασης', `Διαγράφηκε: "${intervention.interventionCategory}".`);
+
   } catch (error: any) {
     console.error("🔥 ERROR in deleteInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
@@ -235,15 +217,9 @@ export async function addSubInterventionAction(prevState: any, formData: FormDat
     }
     intervention.subInterventions.push(newSubIntervention);
     
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0],
-      action: 'Προσθήκη Υπο-Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Προστέθηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
-    });
-    
     await updateProject(db, project);
+    await addAuditLog(db, projectId, 'Προσθήκη Υπο-Παρέμβασης', `Προστέθηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`);
+    
 
   } catch (error: any) {
     console.error("🔥 ERROR in addSubInterventionAction:", error);
@@ -318,16 +294,9 @@ export async function updateSubInterventionAction(prevState: any, formData: Form
     subIntervention.implementedQuantity = implementedQuantity || 0;
     subIntervention.selectedEnergySpec = selectedEnergySpec;
     
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0],
-      action: 'Επεξεργασία Υπο-Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Επεξεργάστηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`,
-    });
-    
     await updateProject(db, project);
-
+    await addAuditLog(db, projectId, 'Επεξεργασία Υπο-Παρέμβασης', `Επεξεργάστηκε η υπο-παρέμβαση "${description}" στην παρέμβαση "${intervention.interventionCategory}".`);
+    
   } catch (error: any) {
     console.error("🔥 ERROR in updateSubInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
@@ -371,16 +340,9 @@ export async function deleteSubInterventionAction(prevState: any, formData: Form
 
     const deletedSubIntervention = intervention.subInterventions.splice(subInterventionIndex, 1)[0];
     
-    project.auditLog.unshift({
-      id: `log-${Date.now()}`,
-      user: users[0],
-      action: 'Διαγραφή Υπο-Παρέμβασης',
-      timestamp: new Date().toISOString(),
-      details: `Διαγράφηκε η υπο-παρέμβαση "${deletedSubIntervention.description}" από την παρέμβαση "${intervention.interventionCategory}".`,
-    });
-    
     await updateProject(db, project);
-
+    await addAuditLog(db, projectId, 'Διαγραφή Υπο-Παρέμβασης', `Διαγράφηκε η υπο-παρέμβαση "${deletedSubIntervention.description}" από την παρέμβαση "${intervention.interventionCategory}".`);
+    
   } catch (error: any) {
     console.error("🔥 ERROR in deleteSubInterventionAction:", error);
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };

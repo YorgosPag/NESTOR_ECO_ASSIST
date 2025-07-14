@@ -1,9 +1,15 @@
+
 'use client';
 
 import type { Project } from "@/types";
 import { isPast } from 'date-fns';
 
-export function calculateClientProjectMetrics(project: Project, isClient: boolean): Project {
+/**
+ * DEPRECATED: This logic has been moved to the server-side in `projects-data.ts`.
+ * This file is kept for reference but should no longer be used for new calculations.
+ * Client-side calculations were causing performance issues and data inconsistencies.
+ */
+export function calculateClientProjectMetrics(project: Project, isClient: boolean = true): Project {
     if (!project) {
         return project;
     }

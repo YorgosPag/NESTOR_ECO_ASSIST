@@ -1,9 +1,11 @@
+
 import { getAllProjects } from "@/lib/projects-data";
 import { getContacts } from "@/lib/contacts-data";
 import { ProjectsClientPage } from "@/components/projects/projects-client-page";
 import { getAdminDb } from "@/lib/firebase-admin";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProjectsPage() {
   const db = getAdminDb();

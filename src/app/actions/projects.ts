@@ -1,8 +1,9 @@
+
 "use server";
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { getProjectById, updateProject as updateProjectData, addProject as addProjectData, deleteProject as deleteProjectData, findInterventionAndStage as findInterventionAndStageData } from '@/lib/projects-data';
+import { getProjectById, updateProject as updateProjectData, addProject as addProjectData, deleteProject as deleteProjectData, findInterventionAndStage as findInterventionAndStageData, updateStageStatus as updateStageStatusData, addAuditLog } from '@/lib/projects-data';
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { Project, Stage, StageStatus } from '@/types';
 import { users } from '@/lib/data-helpers';
@@ -109,6 +110,7 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
         };
         
         await updateProjectData(db, updatedProject);
+        await addAuditLog(db, projectId, "Ενημέρωση Στοιχείων Έργου", `Τα στοιχεία του έργου ενημερώθηκαν.`);
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateProjectAction:", error);
@@ -139,19 +141,11 @@ export async function activateProjectAction(prevState: any, formData: FormData) 
             throw new Error("Το έργο δεν βρέθηκε.");
         }
         
-        const auditLog = project.auditLog || [];
-        auditLog.unshift({
-            id: `log-${Date.now()}`,
-            user: users[0],
-            action: 'Ενεργοποίηση Έργου',
-            timestamp: new Date().toISOString(),
-            details: 'Η κατάσταση του έργου άλλαξε από "Προσφορά" σε "Εντός Χρονοδιαγράμματος".',
-        });
-
         project.status = 'Εντός Χρονοδιαγράμματος';
-        project.auditLog = auditLog;
 
         await updateProjectData(db, project);
+        await addAuditLog(db, projectId, 'Ενεργοποίηση Έργου', 'Η κατάσταση του έργου άλλαξε από "Προσφορά" σε "Εντός Χρονοδιαγράμματος".');
+
 
     } catch (error: any) {
         console.error("🔥 ERROR in activateProjectAction:", error);
@@ -233,16 +227,10 @@ export async function addStageAction(prevState: any, formData: FormData) {
         };
 
         intervention.stages.push(newStage);
-
-        project.auditLog.unshift({
-            id: `log-${Date.now()}`,
-            user: users[0],
-            action: 'Προσθήκη Σταδίου',
-            timestamp: new Date().toISOString(),
-            details: `Προστέθηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
-        });
         
         await updateProjectData(db, project);
+        await addAuditLog(db, projectId, 'Προσθήκη Σταδίου', `Προστέθηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`);
+
 
     } catch (error: any) {
         console.error("🔥 ERROR in addStageAction:", error);
@@ -288,15 +276,9 @@ export async function updateStageAction(prevState: any, formData: FormData) {
         stage.assigneeContactId = assigneeContactId && assigneeContactId !== 'none' ? assigneeContactId : undefined;
         stage.lastUpdated = new Date().toISOString();
 
-        project.auditLog.unshift({
-            id: `log-${Date.now()}`,
-            user: users[0],
-            action: 'Επεξεργασία Σταδίου',
-            timestamp: new Date().toISOString(),
-            details: `Επεξεργάστηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`,
-        });
-
         await updateProjectData(db, project);
+        await addAuditLog(db, projectId, 'Επεξεργασία Σταδίου', `Επεξεργάστηκε το στάδιο "${title}" στην παρέμβαση "${intervention.interventionSubcategory}".`);
+
 
     } catch (error: any) {
         console.error("🔥 ERROR in updateStageAction:", error);
@@ -346,15 +328,9 @@ export async function deleteStageAction(prevState: any, formData: FormData) {
 
         interventionContainingStage.stages.splice(stageIndex, 1);
         
-        project.auditLog.unshift({
-            id: `log-${Date.now()}`,
-            user: users[0],
-            action: 'Διαγραφή Σταδίου',
-            timestamp: new Date().toISOString(),
-            details: `Διαγράφηκε το στάδιο "${stageToDelete.title}" από την παρέμβαση "${interventionContainingStage.interventionSubcategory}".`,
-        });
-
         await updateProjectData(db, project);
+        await addAuditLog(db, projectId, 'Διαγραφή Σταδίου', `Διαγράφηκε το στάδιο "${stageToDelete.title}" από την παρέμβαση "${interventionContainingStage.interventionSubcategory}".`);
+
 
     } catch (error: any) {
         console.error("🔥 ERROR in deleteStageAction:", error);
@@ -385,24 +361,9 @@ export async function updateStageStatusAction(formData: FormData) {
 
     const { projectId, stageId, status } = validatedFields.data;
     
-    const db = getAdminDb();
     try {
-        const project = await getProjectById(db, projectId);
-        if (project) {
-            let stageFound = false;
-            for (const intervention of project.interventions) {
-                const stage = intervention.stages.find(s => s.id === stageId);
-                if (stage) {
-                    stage.status = status;
-                    stage.lastUpdated = new Date().toISOString();
-                    stageFound = true;
-                    break;
-                }
-            }
-            if (stageFound) {
-                await updateProjectData(db, project);
-            }
-        }
+        const db = getAdminDb();
+        await updateStageStatusData(db, projectId, stageId, status);
     } catch (error) {
         console.error("Database error while updating stage status", error);
     }

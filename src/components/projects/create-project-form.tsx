@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState, useEffect } from 'react';
@@ -37,10 +38,9 @@ export function CreateProjectForm({ contacts }: { contacts: Contact[] }) {
     if (state.success) {
       toast({
         title: "Επιτυχία!",
-        description: state.message,
+        description: state.message || "Το έργο δημιουργήθηκε.",
       });
-      // Redirect on success
-      router.push('/projects');
+      // Redirect is handled by the server action
     } else if (state.message) {
       toast({
         variant: "destructive",
@@ -48,7 +48,7 @@ export function CreateProjectForm({ contacts }: { contacts: Contact[] }) {
         description: state.message,
       });
     }
-  }, [state, toast, router]);
+  }, [state, toast]);
 
   return (
     <form action={formAction} className="space-y-4 pt-4">

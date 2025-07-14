@@ -1,9 +1,11 @@
 
 "use server";
 
-import type { Project, StageStatus } from '@/types';
+import type { Project, StageStatus, Trigger } from '@/types';
 import { firestore } from "firebase-admin";
 import { users } from '@/lib/data-helpers';
+import { isPast } from 'date-fns';
+import { getTriggers } from './triggers-data';
 
 // Helper function to serialize Firestore Timestamps
 function serializeObject(obj: any): any {
@@ -27,6 +29,69 @@ function serializeObject(obj: any): any {
     }
     return newObj;
 }
+
+// Centralized function to calculate and update project metrics
+async function updateProjectMetrics(db: firestore.Firestore, projectId: string): Promise<Project> {
+    const project = await getProjectById(db, projectId);
+    if (!project) throw new Error("Project not found for metrics update");
+
+    let totalStages = 0;
+    let completedStages = 0;
+    let overdueStages = 0;
+
+    project.interventions?.forEach(intervention => {
+        if (intervention.stages) {
+            totalStages += intervention.stages.length;
+            intervention.stages.forEach(stage => {
+                if (stage.status === 'Ολοκληρωμένο') {
+                    completedStages++;
+                } else if (stage.status !== 'Ολοκληρωμένο' && stage.deadline && isPast(new Date(stage.deadline))) {
+                    overdueStages++;
+                }
+            });
+        }
+    });
+
+    const progress = totalStages > 0 ? Math.round((completedStages / totalStages) * 100) : 0;
+    
+    let status: Project['status'] = project.status;
+    if (status !== 'Προσφορά' && status !== 'Ολοκληρωμένο') {
+        if (progress === 100 && totalStages > 0) {
+            status = 'Ολοκληρωμένο';
+        } else if (overdueStages > 0) {
+            status = 'Σε Καθυστέρηση';
+        } else {
+            status = 'Εντός Χρονοδιαγράμματος';
+        }
+    }
+
+    project.progress = progress;
+    project.status = status;
+    project.alerts = overdueStages;
+
+    await updateProject(db, project);
+    return project;
+}
+
+// Centralized function to add an audit log entry
+export async function addAuditLog(db: firestore.Firestore, projectId: string, action: string, details: string) {
+    const projectRef = db.collection('projects').doc(projectId);
+    const newLog = {
+        id: `log-${Date.now()}`,
+        user: users[0],
+        action,
+        timestamp: new Date().toISOString(),
+        details,
+    };
+    
+    const project = await getProjectById(db, projectId);
+    if (project) {
+        const auditLog = project.auditLog || [];
+        auditLog.unshift(newLog);
+        await projectRef.update({ auditLog });
+    }
+}
+
 
 export async function getProjectById(db: firestore.Firestore, id: string): Promise<Project | undefined> {
     const projectsCollection = db.collection('projects');
@@ -91,40 +156,31 @@ export async function findInterventionAndStage(db: firestore.Firestore, projectI
 };
  
 export async function updateStageStatus(db: firestore.Firestore, projectId: string, stageId: string, status: StageStatus): Promise<boolean> {
-    const project = await getProjectById(db, projectId);
-    if (!project) return false;
+    const findResult = await findInterventionAndStage(db, projectId, stageId);
+    if (!findResult) return false;
 
-    let stageUpdated = false;
-    let stageTitle = '';
-    let interventionTitle = '';
+    const { project, intervention, stage } = findResult;
 
-    for (const intervention of project.interventions) {
-        const stage = intervention.stages.find(s => s.id === stageId);
-        if (stage) {
-            stage.status = status;
-            stage.lastUpdated = new Date().toISOString();
-            stageUpdated = true;
-            stageTitle = stage.title;
-            interventionTitle = intervention.interventionCategory;
-            break;
+    if (stage.status === status) return true; // No change
+    
+    const oldStatus = stage.status;
+    stage.status = status;
+    stage.lastUpdated = new Date().toISOString();
+
+    // Log the status change
+    await addAuditLog(db, projectId, 'Ενημέρωση Κατάστασης Σταδίου', `Το στάδιο "${stage.title}" άλλαξε από "${oldStatus}" σε "${status}".`);
+
+    // If stage is completed, check for triggers
+    if (status === 'Ολοκληρωμένο') {
+        const triggers: Trigger[] = await getTriggers(db);
+        const matchedTrigger = triggers.find(t => t.code === intervention.code);
+        if (matchedTrigger) {
+            await addAuditLog(db, projectId, 'Ενεργοποίηση Trigger', `Ολοκληρώθηκε το στάδιο "${stage.title}" και ενεργοποιήθηκε το trigger: "${matchedTrigger.name}"`);
         }
     }
 
-    if (!stageUpdated) return false;
+    await updateProject(db, project);
+    await updateProjectMetrics(db, projectId);
 
-    project.auditLog?.unshift({
-        id: `log-${Date.now()}`,
-        user: users[0], 
-        action: 'Ενημέρωση Κατάστασης Σταδίου',
-        timestamp: new Date().toISOString(),
-        details: `Η κατάσταση του σταδίου "${stageTitle}" στην παρέμβαση "${interventionTitle}" άλλαξε σε "${status}".`
-    });
-
-    try {
-        await updateProject(db, project);
-        return true;
-    } catch (error) {
-        console.error("Error updating stage status:", error);
-        return false;
-    }
+    return true;
 }
