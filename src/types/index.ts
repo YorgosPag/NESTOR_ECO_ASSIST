@@ -7,7 +7,7 @@ export type Project = {
     applicationNumber?: string;
     budget?: number;
     startDate: string;
-    endDate: string;
+    endDate?: string;
     deadline?: string;
     description: string;
     interventions: ProjectIntervention[];
@@ -46,15 +46,9 @@ export type Project = {
 
   export type MasterIntervention = {
     id: string;
-    code: string;
-    info?: string;
-    energySpecsOptions?: string; // Semicolon-separated values
-    expenseCategory: string;
-    interventionCategory: string;
-    interventionSubcategory?: string;
-    unit: string;
-    maxUnitPrice: number;
-    maxAmount: number;
+    name: string;
+    category: string;
+    description?: string;
   }
   
   export type StageStatus = "Ολοκληρωμένο" | "Σε Εξέλιξη" | "Δεν έχει ξεκινήσει" | "Σε Καθυστέρηση" | "Απέτυχε";
