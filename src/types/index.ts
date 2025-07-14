@@ -23,6 +23,8 @@ export type Project = {
     interventionSubcategory: string;
     quantity: number;
     totalCost: number; // This is the budget/revenue for the intervention
+    costOfMaterials?: number;
+    costOfLabor?: number;
     stages: Stage[];
     subInterventions: SubIntervention[];
   }

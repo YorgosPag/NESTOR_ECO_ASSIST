@@ -1,18 +1,12 @@
 "use server";
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import type { Project, Stage, StageStatus, ProjectIntervention, SubIntervention } from '@/types';
+import { getProjectById, updateProject as updateProjectData, addProject as addProjectData, deleteProject as deleteProjectData, findInterventionAndStage as findInterventionAndStageData } from '@/lib/projects-data';
 import { getAdminDb } from "@/lib/firebase-admin";
+import type { Project, ProjectIntervention, Stage, StageStatus, SubIntervention } from '@/types';
 import { users } from '@/lib/data-helpers';
-import { 
-    getProjectById, 
-    updateProject as updateProjectData,
-    addProject as addProjectData,
-    deleteProject as deleteProjectData,
-    findInterventionAndStage as findInterventionAndStageData,
-} from '@/lib/projects-data';
+
 
 const CreateProjectSchema = z.object({
     name: z.string({invalid_type_error: "Παρακαλώ εισάγετε έναν έγκυρο τίτλο."}).min(1, "Ο τίτλος του έργου είναι υποχρεωτικός."),
@@ -89,12 +83,7 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
         return { success: false, message: 'Το ID του έργου είναι απαραίτητο.' };
     }
 
-    const validatedFields = UpdateProjectSchema.safeParse({
-        name: formData.get('name'),
-        applicationNumber: formData.get('applicationNumber'),
-        ownerContactId: formData.get('ownerContactId'),
-        deadline: formData.get('deadline'),
-    });
+    const validatedFields = UpdateProjectSchema.safeParse(Object.fromEntries(formData.entries()));
 
     if (!validatedFields.success) {
         return {
@@ -104,17 +93,17 @@ export async function updateProjectAction(prevState: any, formData: FormData) {
         };
     }
     
-     const updateData = {
-        ...validatedFields.data,
-        deadline: validatedFields.data.deadline ? new Date(validatedFields.data.deadline).toISOString() : '',
-     };
-
     try {
         const db = getAdminDb();
         const project = await getProjectById(db, projectId);
         if (!project) {
             throw new Error("Project not found");
         }
+        
+        const updateData = {
+           ...validatedFields.data,
+           deadline: validatedFields.data.deadline ? new Date(validatedFields.data.deadline).toISOString() : '',
+        };
         
         const updatedProject = {
             ...project,
@@ -469,11 +458,6 @@ export async function moveStageAction(formData: FormData) {
     revalidatePath(`/project/${projectId}`);
 }
 
-const AddInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionName: z.string().min(3, "Το όνομα της παρέμβασης πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
-});
-
 export async function addInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = AddInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -502,6 +486,8 @@ export async function addInterventionAction(prevState: any, formData: FormData) 
       interventionSubcategory: interventionName,
       quantity: 0,
       totalCost: 0,
+      costOfMaterials: 0,
+      costOfLabor: 0,
       stages: [],
       subInterventions: [],
     };
@@ -529,13 +515,6 @@ export async function addInterventionAction(prevState: any, formData: FormData) 
   revalidatePath(`/project/${projectId}`);
   return { success: true, message: 'Η παρέμβαση προστέθηκε με επιτυχία.' };
 }
-
-
-const UpdateInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  interventionSubcategory: z.string().min(3, "Το όνομα της παρέμβασης πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
-});
 
 export async function updateInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = UpdateInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -589,11 +568,6 @@ export async function updateInterventionAction(prevState: any, formData: FormDat
   return { success: true, message: 'Η παρέμβαση ενημερώθηκε με επιτυχία.' };
 }
 
-const DeleteInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-});
-
 export async function deleteInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = DeleteInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -637,20 +611,6 @@ export async function deleteInterventionAction(prevState: any, formData: FormDat
   return { success: true, message: 'Η παρέμβαση διαγράφηκε με επιτυχία.' };
 }
 
-
-const AddSubInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  subcategoryCode: z.string().min(1, "Ο κωδικός είναι υποχρεωτικός."),
-  description: z.string().min(3, "Η περιγραφή πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
-  quantity: z.coerce.number().optional(),
-  quantityUnit: z.string().optional(),
-  cost: z.coerce.number().positive("Το κόστος πρέπει να είναι θετικός αριθμός."),
-  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  unitCost: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  implementedQuantity: z.coerce.number().min(0, "Η ποσότητα πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-});
 
 export async function addSubInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = AddSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -714,23 +674,6 @@ export async function addSubInterventionAction(prevState: any, formData: FormDat
   revalidatePath(`/project/${projectId}`);
   return { success: true, message: 'Η υπο-παρέμβαση προστέθηκε με επιτυχία.' };
 }
-
-const UpdateSubInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  subInterventionId: z.string(),
-  subcategoryCode: z.string().min(1, "Ο κωδικός είναι υποχρεωτικός."),
-  expenseCategory: z.string().optional(),
-  description: z.string().min(3, "Η περιγραφή πρέπει να έχει τουλάχιστον 3 χαρακτήρες."),
-  quantity: z.coerce.number().optional(),
-  quantityUnit: z.string().optional(),
-  cost: z.coerce.number().positive("Το κόστος πρέπει να είναι θετικός αριθμός."),
-  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  unitCost: z.coerce.number().min(0, "Το κόστος πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  implementedQuantity: z.coerce.number().min(0, "Η ποσότητα πρέπει να είναι μη αρνητικός αριθμός.").optional(),
-  selectedEnergySpec: z.string().optional(),
-});
 
 export async function updateSubInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = UpdateSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
@@ -798,12 +741,6 @@ export async function updateSubInterventionAction(prevState: any, formData: Form
   return { success: true, message: 'Η υπο-παρέμβαση ενημερώθηκε με επιτυχία.' };
 }
 
-const DeleteSubInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  subInterventionId: z.string(),
-});
-
 export async function deleteSubInterventionAction(prevState: any, formData: FormData) {
   const validatedFields = DeleteSubInterventionSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -852,13 +789,6 @@ export async function deleteSubInterventionAction(prevState: any, formData: Form
 }
 
 
-const UpdateInterventionCostsSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  costOfMaterials: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
-  costOfLabor: z.coerce.number().min(0, "Το κόστος πρέπει να είναι θετικός αριθμός.").optional(),
-});
-
 export async function updateInterventionCostsAction(prevState: any, formData: FormData) {
     const validatedFields = UpdateInterventionCostsSchema.safeParse(Object.fromEntries(formData.entries()));
 
@@ -883,6 +813,9 @@ export async function updateInterventionCostsAction(prevState: any, formData: Fo
         if (!intervention) {
             return { success: false, message: 'Σφάλμα: Η παρέμβαση δεν βρέθηκε.' };
         }
+
+        if (costOfMaterials !== undefined) intervention.costOfMaterials = costOfMaterials;
+        if (costOfLabor !== undefined) intervention.costOfLabor = costOfLabor;
         
         await updateProjectData(db, projectId, project);
     } catch (error: any) {
@@ -890,16 +823,9 @@ export async function updateInterventionCostsAction(prevState: any, formData: Fo
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
     }
 
-    revalidatePath(`/projects/${projectId}`);
+    revalidatePath(`/project/${projectId}`);
     return { success: true, message: 'Το κόστος της παρέμβασης ενημερώθηκε με επιτυχία.' };
 }
-
-const MoveSubInterventionSchema = z.object({
-  projectId: z.string(),
-  interventionMasterId: z.string(),
-  subInterventionId: z.string(),
-  direction: z.enum(['up', 'down']),
-});
 
 export async function moveSubInterventionAction(prevState: any, formData: FormData) {
   const effectiveFormData = formData instanceof FormData ? formData : prevState;
