@@ -1,8 +1,9 @@
 
+
 export type Project = {
     id: string;
     name: string;
-    status: "Εντός Χρονοδιαγράμματος" | "Ολοκληρωμένο" | "Προσφορά" | "Σε Καθυστέρηση";
+    status: "On Track" | "Completed" | "Quotation" | "Delayed" | "On Hold";
     progress: number;
     ownerContactId: string;
     applicationNumber?: string;
@@ -48,7 +49,7 @@ export type Project = {
   export type MasterIntervention = {
     id: string;
     code: string;
-    name: string;
+    name?: string;
     expenseCategory: string;
     interventionCategory: string;
     interventionSubcategory?: string;

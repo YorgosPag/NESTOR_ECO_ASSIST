@@ -59,7 +59,6 @@ const contacts: Omit<Contact, 'id'>[] = [
 const masterInterventions: Omit<MasterIntervention, 'id'>[] = [
      { 
         code: 'A1',
-        name: 'Environmental Impact Assessment',
         interventionCategory: 'Studies',
         expenseCategory: 'Ενέργεια',
         unit: 'τεμάχιο',
@@ -70,7 +69,6 @@ const masterInterventions: Omit<MasterIntervention, 'id'>[] = [
     },
     { 
         code: 'B2',
-        name: 'Site Survey',
         interventionCategory: 'Surveys',
         expenseCategory: 'Ύδρευση',
         unit: 'm²',
@@ -81,7 +79,6 @@ const masterInterventions: Omit<MasterIntervention, 'id'>[] = [
     },
     { 
         code: 'C3',
-        name: 'Community Consultation',
         interventionCategory: 'Community',
         expenseCategory: 'Αποχέτευση',
         unit: 'τεμάχιο',
@@ -131,7 +128,7 @@ const customListItemsData: { listKey: string; items: Omit<CustomListItem, 'id' |
 const projects: Omit<Project, 'id'>[] = [
   {
     name: "Amazon Rainforest Reforestation",
-    status: "Εντός Χρονοδιαγράμματος",
+    status: "On Track",
     progress: 0,
     ownerContactId: "CONTACT_ID_PLACEHOLDER", // Will be replaced
     applicationNumber: 'APP-2024-001',
@@ -147,7 +144,7 @@ const projects: Omit<Project, 'id'>[] = [
   },
   {
     name: "Great Barrier Reef Coral Restoration",
-    status: "Σε Καθυστέρηση",
+    status: "Delayed",
     progress: 0,
     ownerContactId: "CONTACT_ID_PLACEHOLDER",
     applicationNumber: 'APP-2024-002',
