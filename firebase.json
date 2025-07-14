@@ -4,5 +4,23 @@
     "location": "eur3",
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8085
+    },
+    "ui": {
+      "host": "127.0.0.1",
+      "port": 4002
+    },
+    "hub": {
+      "host": "127.0.0.1",
+      "port": 4402
+    },
+    "logging": {
+      "host": "127.0.0.1",
+      "port": 4502
+    }
   }
 }
