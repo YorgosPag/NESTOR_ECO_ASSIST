@@ -6,7 +6,7 @@ import { getAdminDb } from "@/lib/firebase-admin";
 import type { Firestore } from 'firebase-admin/firestore';
 import { addMasterIntervention, updateMasterIntervention, deleteMasterIntervention } from "@/lib/interventions-data";
 import { addTrigger, updateTrigger, deleteTrigger } from "@/lib/triggers-data";
-import { addInterventionCategory as addInterventionCategoryData, updateInterventionCategory as updateInterventionCategoryData, deleteInterventionCategory as deleteInterventionCategoryData } from '@/lib/intervention-category-data';
+import { addInterventionCategoryData, updateInterventionCategoryData, deleteInterventionCategoryData } from '@/lib/intervention-category-data';
 import { createCustomList, deleteCustomList, createCustomListItem, updateCustomListItem, deleteCustomListItem as deleteCustomListItemData, updateCustomList } from '@/lib/custom-lists-data';
 import { getAllProjects } from '@/lib/projects-data';
 import type { MasterIntervention, Project, Trigger } from '@/types';
