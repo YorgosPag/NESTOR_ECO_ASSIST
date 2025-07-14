@@ -1,55 +1,79 @@
-// src/app/admin/custom-lists/client-page.tsx
 "use client";
 
-import { Accordion } from "@/components/ui/accordion";
+import { useState } from "react";
 import type { CustomList, CustomListItem } from "@/types";
-import { ListCard } from "./list-card";
+import { CreateListDialog } from "@/components/admin/custom-lists/create-list-dialog";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ListChecks } from "lucide-react";
-import { CreateListDialog } from "./create-list-dialog";
+import { Input } from "@/components/ui/input";
+import { PlusCircle, Search, ListChecks } from "lucide-react";
+import { CustomListCard } from "@/components/admin/custom-lists/custom-list-card";
+import { Accordion } from "@/components/ui/accordion";
 
-interface CustomListsManagerProps {
+interface CustomListsClientPageProps {
     lists: CustomList[];
     items: CustomListItem[];
 }
 
-export function CustomListsManager({ lists, items }: CustomListsManagerProps) {
+export function CustomListsManager({ lists, items }: CustomListsClientPageProps) {
+    const [searchTerm, setSearchTerm] = useState("");
 
+    const filteredLists = searchTerm
+        ? lists.filter(list => list.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        : lists;
+    
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight flex items-center gap-2">
-                        <ListChecks className="h-6 w-6" />
-                        Διαχείριση Λιστών Επιλογών
-                    </h1>
-                    <p className="text-muted-foreground">Διαχειριστείτε τις τιμές που εμφανίζονται στα dropdowns της εφαρμογής.</p>
+                <div>
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <ListChecks className="h-5 w-5" />
+                        Προσαρμοσμένες Λίστες
+                    </h2>
+                    <p className="text-muted-foreground">Δημιουργήστε και διαχειριστείτε τις δικές σας λίστες για χρήση στην εφαρμογή.</p>
                 </div>
-                 <CreateListDialog>
+                <CreateListDialog>
                     <Button>
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Νέα Λίστα
+                        Δημιουργία Νέας Λίστας
                     </Button>
                 </CreateListDialog>
             </div>
-            {lists.length > 0 ? (
+            
+            <div className="flex items-center">
+                <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Αναζήτηση λίστας..."
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                        className="pl-8"
+                    />
+                </div>
+            </div>
+
+            {filteredLists.length > 0 ? (
                 <Accordion type="multiple" className="w-full space-y-4">
-                    {lists.map((list, index) => {
-                        const listItems = items.filter(item => item.listId === list.id);
+                    {filteredLists.map((list) => {
                         return (
-                            <ListCard 
+                             <CustomListCard 
                                 key={list.id} 
-                                list={list} 
-                                items={listItems} 
-                                canMoveUp={index > 0}
-                                canMoveDown={index < lists.length - 1}
+                                list={list}
+                                items={items.filter(item => item.listId === list.id)}
                             />
                         );
                     })}
                 </Accordion>
             ) : (
-                <div className="text-center text-muted-foreground py-12 border border-dashed rounded-lg">
-                    Δεν υπάρχουν προσαρμοσμένες λίστες.
+                 <div className="flex flex-col items-center justify-center rounded-lg border border-dashed shadow-sm p-8 min-h-[200px]">
+                    <h3 className="text-lg font-semibold tracking-tight">
+                        {lists.length > 0 ? "Δεν βρέθηκαν λίστες" : "Δεν υπάρχουν προσαρμοσμένες λίστες"}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2">
+                         {lists.length > 0 
+                            ? "Δοκιμάστε έναν διαφορετικό όρο αναζήτησης." 
+                            : 'Πατήστε "Δημιουργία Νέας Λίστας" για να ξεκινήσετε.'
+                        }
+                    </p>
                 </div>
             )}
         </div>

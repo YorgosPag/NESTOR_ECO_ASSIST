@@ -941,7 +941,6 @@ export async function moveSubInterventionAction(prevState: any, formData: FormDa
     return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
   }
 
-  revalidatePath(`/projects/${projectId}`);
+  revalidatePath(`/project/${projectId}`);
   return { success: true, message: 'Η σειρά άλλαξε.' };
 }
-```

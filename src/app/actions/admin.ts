@@ -291,7 +291,7 @@ export async function createCustomListAction(prevState: any, formData: FormData)
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
     }
     
-    revalidatePath('/admin/triggers');
+    revalidatePath('/admin/custom-lists');
     return { success: true, message: 'Η λίστα δημιουργήθηκε με επιτυχία.' };
 }
 
@@ -318,7 +318,7 @@ export async function updateCustomListAction(prevState: any, formData: FormData)
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
     }
     
-    revalidatePath('/admin/triggers');
+    revalidatePath('/admin/custom-lists');
     return { success: true, message: 'Η λίστα ενημερώθηκε με επιτυχία.' };
 }
 
@@ -364,7 +364,7 @@ export async function deleteCustomListAction(prevState: any, formData: FormData)
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}`, errors: null };
     }
 
-    revalidatePath('/admin/triggers');
+    revalidatePath('/admin/custom-lists');
     return { success: true, message: 'Η λίστα διαγράφηκε με επιτυχία.', errors: null };
 }
 
@@ -415,7 +415,7 @@ export async function createCustomListItemAction(prevState: any, formData: FormD
             message = 'Δεν προστέθηκαν νέα αντικείμενα, καθώς υπήρχαν ήδη.';
         }
 
-        revalidatePath('/admin/triggers');
+        revalidatePath('/admin/custom-lists');
         return { success: true, message: message.trim(), errors: {} };
 
     } catch (error: any) {
@@ -456,7 +456,7 @@ export async function updateCustomListItemAction(prevState: any, formData: FormD
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
     }
     
-    revalidatePath('/admin/triggers');
+    revalidatePath('/admin/custom-lists');
     return { success: true, message: 'Το αντικείμενο ενημερώθηκε με επιτυχία.' };
 }
 
@@ -478,6 +478,6 @@ export async function deleteCustomListItemAction(prevState: any, formData: FormD
         return { success: false, message: `Σφάλμα Βάσης Δεδομένων: ${error.message}` };
     }
 
-    revalidatePath('/admin/triggers');
+    revalidatePath('/admin/custom-lists');
     return { success: true, message: 'Το αντικείμενο διαγράφηκε με επιτυχία.' };
 }

@@ -1,4 +1,4 @@
-// src/components/admin/custom-lists/create-item-dialog.tsx
+// src/components/admin/custom-lists/create-list-dialog.tsx
 "use client";
 
 import { useState } from 'react';
@@ -10,14 +10,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CreateItemForm } from './create-item-form';
+import { CreateListForm } from './create-list-form';
 
-interface CreateItemDialogProps {
-    listId: string;
+interface CreateListDialogProps {
     children: React.ReactNode;
 }
 
-export function CreateItemDialog({ listId, children }: CreateItemDialogProps) {
+export function CreateListDialog({ children }: CreateListDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,12 +24,12 @@ export function CreateItemDialog({ listId, children }: CreateItemDialogProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Προσθήκη Νέου Στοιχείου</DialogTitle>
+          <DialogTitle>Δημιουργία Νέας Λίστας</DialogTitle>
           <DialogDescription>
-            Συμπληρώστε το όνομα του νέου στοιχείου.
+            Συμπληρώστε το όνομα της νέας λίστας.
           </DialogDescription>
         </DialogHeader>
-        <CreateItemForm listId={listId} setOpen={setOpen} />
+        <CreateListForm setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );
