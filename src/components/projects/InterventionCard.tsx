@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AccordionContent, AccordionItem } from "@/components/ui/accordion";
 import { InterventionPipeline } from "./InterventionPipeline";
-import { DeleteInterventionDialog } from "./delete-intervention-dialog";
+import { DeleteInterventionDialog } from "../projects/delete-intervention-dialog";
 import { AddStageDialog } from "./add-stage-dialog";
 import { PlusCircle, Trash2, ChevronDown, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -4,7 +4,7 @@
 import { useEffect, useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import type { Project, ProjectIntervention, CustomList, CustomListItem } from "@/types";
-import { addSubInterventionAction } from '@/app/actions/projects';
+import { addSubInterventionAction } from '@/app/actions/interventions';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
