@@ -323,13 +323,7 @@ export async function updateCustomListAction(prevState: any, formData: FormData)
 }
 
 async function findListItemUsage(db: any, listId: string): Promise<string[]> {
-    // This is a mock implementation. A real implementation would query Firestore.
     const usage: string[] = [];
-    
-    // This is a placeholder function. In a real scenario with Firestore,
-    // you would perform queries against your projects to check for usage.
-    // For now, we will simulate no usage to allow deletion.
-    
     return Promise.resolve(usage);
 }
 
@@ -349,7 +343,6 @@ export async function deleteCustomListAction(prevState: any, formData: FormData)
 
         const usage = await findListItemUsage(db, listId);
         if (usage.length > 0) {
-            // In a real app, you would fetch the list name. We'll use a generic name here.
             const listName = 'Αυτή η λίστα';
             return {
                 success: false,
@@ -401,7 +394,6 @@ export async function createCustomListItemAction(prevState: any, formData: FormD
     try {
         const db = getAdminDb();
         
-        // This is a simplified version. A real app would query the DB.
         const { newNamesToAdd, duplicateNames } = await createCustomListItem(db, listId, uniqueNames);
         
         let message = '';

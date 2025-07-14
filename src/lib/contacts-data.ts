@@ -1,118 +1,69 @@
-import type { Contact } from "@/types";
+import type { Contact } from '@/types';
+import type { Firestore } from 'firebase-admin/firestore';
 
-const contacts: Contact[] = [
-    { 
-        id: 'contact-1', 
-        firstName: 'Elena', 
-        lastName: 'Vasquez', 
-        email: 'e.vasquez@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Πελάτης', 
-        addressStreet: 'Tsimiski', 
-        addressNumber: '10',
-        addressCity: 'Thessaloniki',
-        company: 'Eco Solutions Ltd.',
-        specialty: 'Environmental Lawyer',
-        mobilePhone: '6971234567',
-        landlinePhone: '2310123456',
-        notes: 'Primary contact for the Amazon Reforestation project.'
-    },
-    { 
-        id: 'contact-2', 
-        firstName: 'Kenji', 
-        lastName: 'Tanaka', 
-        email: 'k.tanaka@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Ομάδα', 
-        addressCity: 'Athens', 
-        addressStreet: 'Ermou', 
-        addressNumber: '5',
-        specialty: 'Lead Field Biologist',
-        mobilePhone: '6987654321',
-        notes: 'Expert in coral reef ecosystems.'
-    },
-    { 
-        id: 'contact-3', 
-        firstName: 'Anya', 
-        lastName: 'Sharma', 
-        email: 'a.sharma@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Πελάτης', 
-        addressStreet: 'Main St', 
-        addressNumber: '123',
-        company: 'Arctic Research Foundation',
-        mobilePhone: '6912345678'
-    },
-    { 
-        id: 'contact-4', 
-        firstName: 'Liam', 
-        lastName: 'O\'Connor', 
-        email: 'l.oconnor@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Ομάδα', 
-        addressCity: 'Patra',
-        specialty: 'Geologist',
-        landlinePhone: '2610987654'
-    },
-    { 
-        id: 'contact-5', 
-        firstName: 'Fatima', 
-        lastName: 'Al-Jamil', 
-        email: 'f.aljamil@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Ενδιαφερόμενος', 
-        addressCity: 'Heraklion',
-        company: 'Green Future Investors'
-    },
-    { 
-        id: 'contact-6', 
-        firstName: 'George', 
-        lastName: 'Papadopoulos', 
-        email: 'g.papadopoulos@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Πελάτης', 
-        addressCity: 'Larissa', 
-        addressStreet: 'Papakyriazi', 
-        addressNumber: '22' 
-    },
-    { 
-        id: 'contact-admin', 
-        firstName: 'Admin', 
-        lastName: 'User', 
-        email: 'admin@example.com', 
-        avatarUrl: 'https://placehold.co/40x40.png', 
-        role: 'Διαχειριστής' 
+function serializeTimestamps(data: any) {
+    if (!data) return data;
+    const serializedData: { [key: string]: any } = {};
+    for (const key in data) {
+        const value = data[key];
+        if (value && typeof value.toDate === 'function') {
+            serializedData[key] = value.toDate().toISOString();
+        } else {
+            serializedData[key] = value;
+        }
     }
-];
-
-export async function getContacts(db?: any): Promise<Contact[]> {
-    return Promise.resolve(JSON.parse(JSON.stringify(contacts)));
+    return serializedData;
 }
 
-export async function addContact(db: any, contactData: Omit<Contact, 'id'>): Promise<Contact> {
-    const newContact: Contact = {
-        id: `contact-${Date.now()}`,
-        avatarUrl: `https://placehold.co/40x40.png?text=${contactData.firstName.charAt(0)}${contactData.lastName.charAt(0)}`,
-        ...contactData,
-    };
-    contacts.unshift(newContact);
-    return Promise.resolve(newContact);
+export const getContacts = async (db: Firestore): Promise<Contact[]> => {
+    const contactsCollection = db.collection('contacts');
+    const snapshot = await contactsCollection.orderBy('lastName').get();
+    if (snapshot.empty) {
+        return [];
+    }
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...serializeTimestamps(doc.data())
+    } as Contact));
 }
 
-export async function updateContact(db: any, contactId: string, updatedData: Omit<Contact, 'id'>): Promise<boolean> {
-    const index = contacts.findIndex(c => c.id === contactId);
-    if (index !== -1) {
-        contacts[index] = { ...contacts[index], ...updatedData };
-        return Promise.resolve(true);
+export const getContactById = async (db: Firestore, id: string): Promise<Contact | undefined> => {
+    const doc = await db.collection('contacts').doc(id).get();
+    if (!doc.exists) {
+        return undefined;
     }
-    return Promise.resolve(false);
+    const data = doc.data();
+    return { 
+        id: doc.id, 
+        ...serializeTimestamps(data) 
+    } as Contact;
 }
 
-export async function deleteContact(db: any, contactId: string): Promise<boolean> {
-    const index = contacts.findIndex(c => c.id === contactId);
-    if (index !== -1) {
-        contacts.splice(index, 1);
-        return Promise.resolve(true);
+export const addContact = async (db: Firestore, contact: Omit<Contact, 'id'>): Promise<Contact> => {
+    const docRef = await db.collection('contacts').add(contact);
+    const newContact = await getContactById(db, docRef.id);
+    if (!newContact) {
+        throw new Error("Failed to create and retrieve contact.");
     }
-    return Promise.resolve(false);
+    return newContact;
+}
+
+export const updateContact = async (db: Firestore, id: string, updates: Partial<Omit<Contact, 'id'>>): Promise<boolean> => {
+    try {
+        await db.collection('contacts').doc(id).update(updates);
+        return true;
+    } catch (error) {
+        console.error("Error updating contact:", error);
+        return false;
+    }
+}
+
+export const deleteContact = async (db: Firestore, id: string): Promise<boolean> => {
+    try {
+        await db.collection('contacts').doc(id).delete();
+        return true;
+    } catch (error) {
+        console.error("Error deleting contact:", error);
+        return false;
+    }
 }

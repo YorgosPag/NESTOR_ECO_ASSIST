@@ -1,14 +1,18 @@
 import { DashboardClientPage } from "@/components/dashboard/dashboard-client-page";
 import { getAllProjects } from "@/lib/projects-data";
 import { getContacts } from "@/lib/contacts-data";
+import { getAdminDb } from "@/lib/firebase-admin";
 
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  // In a real app, you'd fetch real data. For now, we are using mock data.
-  const projectsData = await getAllProjects();
-  const contactsData = await getContacts();
+  const db = getAdminDb();
+ 
+  const [projectsData, contactsData] = await Promise.all([
+    getAllProjects(db),
+    getContacts(db),
+  ]);
  
   return <DashboardClientPage projects={projectsData} contacts={contactsData} />;
 }
