@@ -1,3 +1,4 @@
+
 export type Project = {
     id: string;
     name: string;
@@ -46,8 +47,17 @@ export type Project = {
 
   export type MasterIntervention = {
     id: string;
+    code: string;
     name: string;
-    category: string;
+    expenseCategory: string;
+    interventionCategory: string;
+    interventionSubcategory?: string;
+    unit: string;
+    maxUnitPrice: number;
+    maxAmount: number;
+    info?: string;
+    energySpecsOptions?: string;
+    category?: string;
     description?: string;
   }
   
