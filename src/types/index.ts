@@ -1,9 +1,10 @@
 
 
+
 export type Project = {
     id: string;
     name: string;
-    status: "On Track" | "Completed" | "Quotation" | "Delayed" | "On Hold";
+    status: "Προσφορά" | "Εντός Χρονοδιαγράμματος" | "Σε Καθυστέρηση" | "Ολοκληρωμένο";
     progress: number;
     ownerContactId: string;
     applicationNumber?: string;
@@ -24,7 +25,7 @@ export type Project = {
     interventionCategory: string;
     interventionSubcategory: string;
     quantity: number;
-    totalCost: number; // This is the budget/revenue for the intervention
+    totalCost?: number; // This is the budget/revenue for the intervention
     costOfMaterials?: number;
     costOfLabor?: number;
     stages: Stage[];
