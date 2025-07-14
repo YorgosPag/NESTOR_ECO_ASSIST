@@ -72,7 +72,7 @@ export function SubInterventionsTable({ project, intervention, customLists, cust
     formData.append('interventionMasterId', intervention.masterId);
     formData.append('subInterventionId', subInterventionId);
     formData.append('direction', direction);
-    moveSubInterventionAction(formData);
+    moveSubInterventionAction(new FormData(), formData);
   };
 
   return (
